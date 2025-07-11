@@ -129,16 +129,44 @@ const EstimationForm = {
                     <div class="flex justify-center">
                         <button
                             type="button"
-                            class="px-6 py-3 bg-gradient-primary text-white font-medium rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
-                            :disabled="!canSubmit"
+                            class="px-6 py-3 bg-gradient-primary text-white font-medium rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center space-x-2"
+                            :disabled="!canSubmit || isGenerating"
+                            @click="generateEstimation"
                         >
-                            🚀 Générer l'estimation
+                            <span v-if="isGenerating" class="animate-spin">⏳</span>
+                            <span v-else>🚀</span>
+                            <span>{{ buttonText }}</span>
                         </button>
                     </div>
-                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        (Fonctionnalité à venir - connexion avec OpenAI via Netlify Functions)
+                    <p v-if="!isGenerating" class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        Estimation intelligente powered by OpenAI
                     </p>
+
+                    <!-- Affichage des erreurs -->
+                    <div v-if="estimationError" class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-red-400">❌</span>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    Erreur lors de la génération
+                                </h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    {{ estimationError }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Affichage des résultats -->
+                <estimation-results
+                    v-if="estimationResult"
+                    :result="estimationResult"
+                    :user-type="selectedUserType"
+                    @new-estimation="resetEstimation"
+                ></estimation-results>
             </div>
         </div>
     `,
@@ -146,6 +174,9 @@ const EstimationForm = {
     data() {
         return {
             selectedUserType: null, // 'freelance' ou 'entreprise'
+            isGenerating: false, // État de génération de l'estimation
+            estimationError: null, // Erreur d'estimation
+            estimationResult: null, // Résultat de l'estimation
             freelanceData: {
                 basics: {
                     projectType: '',
@@ -349,6 +380,10 @@ const EstimationForm = {
                 return Math.round((completedFields / totalFields) * 100);
             }
             return 0;
+        },
+
+        buttonText() {
+            return this.isGenerating ? 'Génération en cours...' : 'Générer l\'estimation';
         }
     },
     
@@ -412,6 +447,139 @@ const EstimationForm = {
         updateEnterprisePricing(newData) {
             this.entrepriseData.pricing = { ...this.entrepriseData.pricing, ...newData };
             console.log('Données enterprise pricing mises à jour:', this.entrepriseData.pricing);
+        },
+
+        // Méthode pour générer l'estimation via OpenAI
+        async generateEstimation() {
+            this.isGenerating = true;
+            this.estimationError = null;
+            this.estimationResult = null;
+
+            try {
+                // Préparer les données selon le type d'utilisateur
+                const estimationData = this.prepareEstimationData();
+
+                console.log('Données envoyées pour estimation:', estimationData);
+
+                // Appel à l'API Netlify Function
+                const response = await fetch('/api/estimate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userType: this.selectedUserType,
+                        data: estimationData
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.estimationResult = result.estimation;
+                    console.log('Estimation reçue:', this.estimationResult);
+                } else {
+                    throw new Error(result.error || 'Erreur inconnue');
+                }
+
+            } catch (error) {
+                console.error('Erreur lors de la génération:', error);
+                this.estimationError = error.message || 'Une erreur est survenue lors de la génération de l\'estimation';
+            } finally {
+                this.isGenerating = false;
+            }
+        },
+
+        // Méthode pour préparer les données d'estimation
+        prepareEstimationData() {
+            if (this.selectedUserType === 'freelance') {
+                return this.prepareFreelanceData();
+            } else {
+                return this.prepareEnterpriseData();
+            }
+        },
+
+        // Préparer les données freelance pour l'API
+        prepareFreelanceData() {
+            const data = this.freelanceData;
+
+            // Extraire les technologies sous forme de tableau
+            const technologies = data.basics.technologies ?
+                data.basics.technologies.split(',').map(t => t.trim()).filter(t => t) : [];
+
+            return {
+                projectType: data.basics.projectType || data.basics.customProjectType,
+                technologies: technologies,
+                pages: data.basics.pageCount,
+                deadline: data.basics.deadlineDays ? `${data.basics.deadlineDays} jours` : null,
+                skillLevel: this.getAverageSkillLevel(data.constraints.skillLevels),
+                fullTime: data.constraints.isFullTime,
+                tjm: data.constraints.tjmTarget,
+                securityMargin: data.constraints.securityMargin,
+                features: data.features.selectedFeatures.concat(data.features.customFeatures),
+                scope: data.deliverables.scope,
+                objectives: data.objectives.selectedObjectives
+            };
+        },
+
+        // Préparer les données entreprise pour l'API
+        prepareEnterpriseData() {
+            const data = this.entrepriseData;
+
+            // Extraire les technologies
+            const technologies = Object.values(data.basics.technologies).filter(t => t);
+
+            return {
+                projectType: data.basics.projectType || data.basics.customProjectType,
+                technologies: technologies,
+                pages: data.basics.pageCount,
+                deadline: this.formatEnterpriseDeadline(data.basics),
+                reason: data.basics.pricingReason,
+                role: data.structure.role,
+                team: data.structure.teamComposition,
+                methodology: data.structure.methodology,
+                features: data.functionalities.selectedFeatures,
+                scalable: data.functionalities.scalable,
+                complexity: data.functionalities.complexity,
+                budget: data.objectives.budget,
+                urgent: data.objectives.urgent,
+                costs: data.pricing.profileCosts,
+                margin: data.pricing.margin,
+                model: data.pricing.billingModel
+            };
+        },
+
+        // Calculer le niveau de compétence moyen
+        getAverageSkillLevel(skillLevels) {
+            const levels = Object.values(skillLevels).filter(level => level);
+            if (levels.length === 0) return 'Non spécifié';
+
+            const levelMap = { 'débutant': 1, 'intermédiaire': 2, 'expert': 3 };
+            const average = levels.reduce((sum, level) => sum + (levelMap[level] || 2), 0) / levels.length;
+
+            if (average <= 1.5) return 'débutant';
+            if (average <= 2.5) return 'intermédiaire';
+            return 'expert';
+        },
+
+        // Formater la deadline entreprise
+        formatEnterpriseDeadline(basics) {
+            if (basics.deadlineType === 'duration' && basics.deadlineDuration) {
+                return `${basics.deadlineDuration} ${basics.deadlineUnit}`;
+            } else if (basics.deadlineType === 'date' && basics.deadlineDate) {
+                return `Date limite: ${basics.deadlineDate}`;
+            }
+            return null;
+        },
+
+        // Réinitialiser l'estimation pour en faire une nouvelle
+        resetEstimation() {
+            this.estimationResult = null;
+            this.estimationError = null;
         },
         
         // Méthode pour sauvegarder en localStorage (optionnel)

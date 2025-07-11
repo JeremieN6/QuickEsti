@@ -49,6 +49,8 @@ app.component('enterprise-functionalities', EnterpriseFunctionalities);
 app.component('enterprise-deliverables', EnterpriseDeliverables);
 app.component('enterprise-objectives', EnterpriseObjectives);
 app.component('enterprise-pricing', EnterprisePricing);
+// Results component
+app.component('estimation-results', EstimationResults);
 
 // Configuration globale
 app.config.globalProperties.$appName = 'QuickEsti';
