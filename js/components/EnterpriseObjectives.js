@@ -1,20 +1,40 @@
 // EnterpriseObjectives.js - Section 5 : Objectifs business du projet
 const EnterpriseObjectives = {
     template: `
-        <div class="enterprise-objectives bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center mb-6">
-                <span class="text-indigo-500 text-2xl mr-3">🎯</span>
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Section 5 : Objectifs business du projet
-                    </h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Définissez les objectifs business pour adapter l'estimation aux enjeux
-                    </p>
+        <div class="enterprise-objectives bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <!-- Header avec bouton toggle -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <span class="text-indigo-500 text-2xl mr-3">🎯</span>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Section 5 : Objectifs business du projet
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Définissez les objectifs business pour adapter l'estimation aux enjeux
+                        </p>
+                    </div>
                 </div>
+                <button
+                    @click="$emit('toggle')"
+                    class="flex items-center space-x-2 px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                    <span>{{ isExpanded ? 'Réduire' : 'Développer' }}</span>
+                    <svg
+                        :class="['w-4 h-4 transition-transform duration-200', isExpanded ? 'rotate-180' : '']"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
             </div>
 
-            <div class="space-y-8">
+            <!-- Contenu repliable -->
+            <div :class="['expand-transition', isExpanded ? 'expanded' : 'collapsed']">
+                <div class="p-6">
+                    <div class="space-y-8">
                 <!-- Introduction -->
                 <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
                     <p class="text-sm text-indigo-700 dark:text-indigo-300">
@@ -24,42 +44,44 @@ const EnterpriseObjectives = {
                     </p>
                 </div>
 
-                <!-- Objectif du projet -->
-                <div>
-                    <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">
-                        🚀 Quel est l'objectif de ce projet ?
-                    </h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <label v-for="objective in projectObjectives" :key="objective.id" class="flex items-start">
-                            <input 
-                                type="radio" 
-                                name="project-objective"
-                                :value="objective.id"
-                                v-model="localFormData.projectObjective"
-                                @change="updateFormData"
-                                class="w-4 h-4 mt-1 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            >
-                            <div class="ml-3">
-                                <div class="flex items-center">
-                                    <span class="text-lg mr-2">{{ objective.icon }}</span>
-                                    <span class="font-medium text-gray-900 dark:text-white">{{ objective.name }}</span>
-                                    <span v-if="objective.impact" 
-                                          :class="getImpactClass(objective.impact)"
-                                          class="ml-2 px-2 py-0.5 text-xs rounded-full">
-                                        {{ objective.impact }}
-                                    </span>
+                <!-- Grid 50/50 pour Objectif + Contexte budgétaire -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Objectif du projet -->
+                    <div>
+                        <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">
+                            🚀 Quel est l'objectif de ce projet ?
+                        </h5>
+                        <div class="space-y-3">
+                            <label v-for="objective in projectObjectives" :key="objective.id" class="flex items-start">
+                                <input
+                                    type="radio"
+                                    name="project-objective"
+                                    :value="objective.id"
+                                    v-model="localFormData.projectObjective"
+                                    @change="updateFormData"
+                                    class="w-4 h-4 mt-1 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <div class="ml-3">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-2">{{ objective.icon }}</span>
+                                        <span class="font-medium text-gray-900 dark:text-white">{{ objective.name }}</span>
+                                        <span v-if="objective.impact"
+                                              :class="getImpactClass(objective.impact)"
+                                              class="ml-2 px-2 py-0.5 text-xs rounded-full">
+                                            {{ objective.impact }}
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ objective.description }}</p>
+                                    <p v-if="objective.implications" class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                        {{ objective.implications }}
+                                    </p>
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ objective.description }}</p>
-                                <p v-if="objective.implications" class="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                    {{ objective.implications }}
-                                </p>
-                            </div>
-                        </label>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Contexte budgétaire -->
-                <div>
+                    <!-- Contexte budgétaire -->
+                    <div>
                     <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">
                         💰 Contexte budgétaire du projet
                     </h5>
@@ -147,8 +169,9 @@ const EnterpriseObjectives = {
                         </label>
                     </div>
                 </div>
+            </div>
 
-                <!-- Urgence du projet -->
+            <!-- Urgence du projet - Section séparée -->
                 <div>
                     <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
                         ⏰ Urgence et priorité du projet
@@ -156,8 +179,8 @@ const EnterpriseObjectives = {
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                         Le projet est-il urgent / prioritaire pour l'entreprise ?
                     </label>
-                    <div class="space-y-3">
-                        <label v-for="urgency in urgencyLevels" :key="urgency.id" class="flex items-start">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <label v-for="urgency in urgencyLevels" :key="urgency.id" class="flex items-start p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
                             <input 
                                 type="radio" 
                                 name="project-urgency"
@@ -226,6 +249,7 @@ const EnterpriseObjectives = {
                     </p>
                 </div>
             </div>
+            </div>
         </div>
     `,
     
@@ -233,6 +257,10 @@ const EnterpriseObjectives = {
         formData: {
             type: Object,
             default: () => ({})
+        },
+        isExpanded: {
+            type: Boolean,
+            default: false
         }
     },
     

@@ -22,6 +22,11 @@ const EstimationResults = {
                 <p class="text-blue-100 text-sm mt-1">
                     Résultats générés par IA - {{ userType === 'freelance' ? 'Profil Freelance' : 'Profil Entreprise' }}
                 </p>
+                <div class="flex items-center space-x-4 mt-2 text-xs text-blue-200" v-if="result.model || result.complexityScore">
+                    <span v-if="result.model">🤖 {{ result.model }}</span>
+                    <span v-if="result.complexityScore">📊 Score: {{ result.complexityScore }}</span>
+                    <span v-if="result.fromCache">⚡ Cache</span>
+                </div>
             </div>
 
             <!-- Contenu des résultats -->
@@ -79,6 +84,34 @@ const EstimationResults = {
                                 </p>
                             </div>
                             <span class="text-orange-500 text-2xl">{{ getComplexityIcon() }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicateurs de qualité -->
+                <div class="mb-8" v-if="showQualityIndicators()">
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">🎯</span>
+                        Qualité de l'estimation
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-2">✅</span>
+                                <span class="text-sm font-medium text-green-800 dark:text-green-200">Contexte métier détecté</span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="flex items-center">
+                                <span class="text-blue-500 mr-2">🤖</span>
+                                <span class="text-sm font-medium text-blue-800 dark:text-blue-200">{{ getModelQuality() }}</span>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
+                            <div class="flex items-center">
+                                <span class="text-purple-500 mr-2">📊</span>
+                                <span class="text-sm font-medium text-purple-800 dark:text-purple-200">Scoring avancé</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,6 +272,19 @@ const EstimationResults = {
 
         newEstimation() {
             this.$emit('new-estimation');
+        },
+
+        showQualityIndicators() {
+            return this.result.model || this.result.complexityScore;
+        },
+
+        getModelQuality() {
+            if (this.result.model === 'gpt-4') {
+                return 'Qualité premium (GPT-4)';
+            } else if (this.result.model === 'gpt-3.5-turbo') {
+                return 'Qualité optimisée (GPT-3.5)';
+            }
+            return 'IA avancée';
         }
     }
 };

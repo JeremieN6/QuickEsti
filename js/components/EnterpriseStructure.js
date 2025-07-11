@@ -1,7 +1,7 @@
 // EnterpriseStructure.js - Section 2 : Structure & organisation de l'entreprise
 const EnterpriseStructure = {
     template: `
-        <div class="enterprise-structure bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="enterprise-structure bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col h-full">
             <div class="flex items-center mb-6">
                 <span class="text-orange-500 text-2xl mr-3">👥</span>
                 <div>
@@ -14,7 +14,7 @@ const EnterpriseStructure = {
                 </div>
             </div>
 
-            <div class="space-y-8">
+            <div class="space-y-8 flex-grow">
                 <!-- Rôle de la personne qui répond -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -170,7 +170,7 @@ const EnterpriseStructure = {
             </div>
 
             <!-- Résumé de l'organisation -->
-            <div v-if="hasStructureData" class="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div v-if="hasStructureData" class="mt-6 pt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     📝 Résumé de votre organisation :
                 </h5>

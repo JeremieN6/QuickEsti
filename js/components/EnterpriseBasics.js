@@ -1,7 +1,7 @@
 // EnterpriseBasics.js - Section 1 : Informations de base entreprise
 const EnterpriseBasics = {
     template: `
-        <div class="enterprise-basics bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="enterprise-basics bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col h-full">
             <div class="flex items-center mb-6">
                 <span class="text-blue-500 text-2xl mr-3">🏢</span>
                 <div>
@@ -14,7 +14,7 @@ const EnterpriseBasics = {
                 </div>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6 flex-grow">
                 <!-- Type de projet -->
                 <div>
                     <label for="enterprise-project-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -87,8 +87,14 @@ const EnterpriseBasics = {
 
                 <!-- Technologies -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                        Technologies imposées ou recommandées
+                    <label class="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                        <span>Technologies imposées ou recommandées</span>
+                        <tooltip
+                            title="Technologies du projet"
+                            content="Spécifiez les technologies imposées par votre entreprise ou recommandées pour le projet. Cela aide à estimer la complexité technique."
+                            example="Frontend: React, Backend: Node.js, DB: PostgreSQL"
+                            position="top"
+                        ></tooltip>
                     </label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -348,7 +354,7 @@ const EnterpriseBasics = {
             </div>
 
             <!-- Résumé des données saisies -->
-            <div v-if="hasData" class="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div v-if="hasData" class="mt-6 pt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     📝 Résumé des informations saisies :
                 </h5>

@@ -1,7 +1,7 @@
 // FreelanceBasics.js - Section des informations de base pour les freelances
 const FreelanceBasics = {
     template: `
-        <div class="freelance-basics bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="freelance-basics bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col h-full">
             <div class="flex items-center mb-6">
                 <span class="text-blue-500 text-2xl mr-3">📋</span>
                 <div>
@@ -14,7 +14,7 @@ const FreelanceBasics = {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
                 <!-- Type de projet -->
                 <div>
                     <label for="project-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -70,8 +70,14 @@ const FreelanceBasics = {
 
                 <!-- Technologies -->
                 <div>
-                    <label for="technologies" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Technologies à utiliser
+                    <label for="technologies" class="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <span>Technologies à utiliser</span>
+                        <tooltip
+                            title="Technologies du projet"
+                            content="Listez les langages, frameworks et outils principaux. Cela aide l'IA à mieux estimer la complexité et les temps de développement."
+                            example="React, Node.js, PostgreSQL, Docker, AWS"
+                            position="top"
+                        ></tooltip>
                     </label>
                     <textarea 
                         id="technologies"
@@ -145,7 +151,7 @@ const FreelanceBasics = {
             </div>
 
             <!-- Résumé des données saisies -->
-            <div v-if="hasData" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div v-if="hasData" class="mt-auto pt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     📝 Résumé des informations saisies :
                 </h5>

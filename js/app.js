@@ -51,6 +51,8 @@ app.component('enterprise-objectives', EnterpriseObjectives);
 app.component('enterprise-pricing', EnterprisePricing);
 // Results component
 app.component('estimation-results', EstimationResults);
+// Tooltip component
+app.component('tooltip', Tooltip);
 
 // Configuration globale
 app.config.globalProperties.$appName = 'QuickEsti';

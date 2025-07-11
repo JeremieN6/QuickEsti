@@ -24,75 +24,109 @@ const EstimationForm = {
                 <div v-if="selectedUserType" class="mt-8">
                     <!-- Section pour Freelance -->
                     <div v-if="selectedUserType === 'freelance'" class="space-y-6">
-                        <!-- Section 1 : Informations de base -->
-                        <freelance-basics
-                            :form-data="freelanceData.basics"
-                            @update:form-data="updateFreelanceBasics"
-                        ></freelance-basics>
+                        <!-- Sections 1 et 2 côte à côte -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                            <!-- Section 1 : Informations de base -->
+                            <freelance-basics
+                                :form-data="freelanceData.basics"
+                                @update:form-data="updateFreelanceBasics"
+                            ></freelance-basics>
 
-                        <!-- Section 2 : Contraintes du freelance -->
-                        <freelance-constraints
-                            :form-data="freelanceData.constraints"
-                            :technologies="extractedTechnologies"
-                            @update:form-data="updateFreelanceConstraints"
-                        ></freelance-constraints>
+                            <!-- Section 2 : Contraintes du freelance -->
+                            <freelance-constraints
+                                :form-data="freelanceData.constraints"
+                                :technologies="extractedTechnologies"
+                                @update:form-data="updateFreelanceConstraints"
+                            ></freelance-constraints>
+                        </div>
 
                         <!-- Section 3 : Fonctionnalités additionnelles -->
-                        <freelance-features
-                            :form-data="freelanceData.features"
-                            @update:form-data="updateFreelanceFeatures"
-                        ></freelance-features>
+                        <div class="collapsible-section">
+                            <freelance-features
+                                :form-data="freelanceData.features"
+                                @update:form-data="updateFreelanceFeatures"
+                                :is-expanded="sectionsExpanded.features"
+                                @toggle="toggleSection('features')"
+                            ></freelance-features>
+                        </div>
 
                         <!-- Section 4 : Livrables & périmètre -->
-                        <freelance-deliverables
-                            :form-data="freelanceData.deliverables"
-                            @update:form-data="updateFreelanceDeliverables"
-                        ></freelance-deliverables>
+                        <div class="collapsible-section">
+                            <freelance-deliverables
+                                :form-data="freelanceData.deliverables"
+                                @update:form-data="updateFreelanceDeliverables"
+                                :is-expanded="sectionsExpanded.deliverables"
+                                @toggle="toggleSection('deliverables')"
+                            ></freelance-deliverables>
+                        </div>
 
                         <!-- Section 5 : Objectifs personnels -->
-                        <freelance-objectives
-                            :form-data="freelanceData.objectives"
-                            @update:form-data="updateFreelanceObjectives"
-                        ></freelance-objectives>
+                        <div class="collapsible-section">
+                            <freelance-objectives
+                                :form-data="freelanceData.objectives"
+                                @update:form-data="updateFreelanceObjectives"
+                                :is-expanded="sectionsExpanded.objectives"
+                                @toggle="toggleSection('objectives')"
+                            ></freelance-objectives>
+                        </div>
                     </div>
 
                     <!-- Section pour Entreprise -->
                     <div v-if="selectedUserType === 'entreprise'" class="space-y-6">
-                        <!-- Section 1 : Informations de base -->
-                        <enterprise-basics
-                            :form-data="entrepriseData.basics"
-                            @update:form-data="updateEnterpriseBasics"
-                        ></enterprise-basics>
+                        <!-- Sections 1 et 2 côte à côte -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                            <!-- Section 1 : Informations de base -->
+                            <enterprise-basics
+                                :form-data="entrepriseData.basics"
+                                @update:form-data="updateEnterpriseBasics"
+                            ></enterprise-basics>
 
-                        <!-- Section 2 : Structure & organisation -->
-                        <enterprise-structure
-                            :form-data="entrepriseData.structure"
-                            @update:form-data="updateEnterpriseStructure"
-                        ></enterprise-structure>
+                            <!-- Section 2 : Structure & organisation -->
+                            <enterprise-structure
+                                :form-data="entrepriseData.structure"
+                                @update:form-data="updateEnterpriseStructure"
+                            ></enterprise-structure>
+                        </div>
 
                         <!-- Section 3 : Fonctionnalités et périmètre fonctionnel -->
-                        <enterprise-functionalities
-                            :form-data="entrepriseData.functionalities"
-                            @update:form-data="updateEnterpriseFunctionalities"
-                        ></enterprise-functionalities>
+                        <div class="collapsible-section">
+                            <enterprise-functionalities
+                                :form-data="entrepriseData.functionalities"
+                                @update:form-data="updateEnterpriseFunctionalities"
+                                :is-expanded="sectionsExpanded.enterpriseFunctionalities"
+                                @toggle="toggleSection('enterpriseFunctionalities')"
+                            ></enterprise-functionalities>
+                        </div>
 
                         <!-- Section 4 : Livrables attendus & périmètre -->
-                        <enterprise-deliverables
-                            :form-data="entrepriseData.deliverables"
-                            @update:form-data="updateEnterpriseDeliverables"
-                        ></enterprise-deliverables>
+                        <div class="collapsible-section">
+                            <enterprise-deliverables
+                                :form-data="entrepriseData.deliverables"
+                                @update:form-data="updateEnterpriseDeliverables"
+                                :is-expanded="sectionsExpanded.enterpriseDeliverables"
+                                @toggle="toggleSection('enterpriseDeliverables')"
+                            ></enterprise-deliverables>
+                        </div>
 
                         <!-- Section 5 : Objectifs business -->
-                        <enterprise-objectives
-                            :form-data="entrepriseData.objectives"
-                            @update:form-data="updateEnterpriseObjectives"
-                        ></enterprise-objectives>
+                        <div class="collapsible-section">
+                            <enterprise-objectives
+                                :form-data="entrepriseData.objectives"
+                                @update:form-data="updateEnterpriseObjectives"
+                                :is-expanded="sectionsExpanded.enterpriseObjectives"
+                                @toggle="toggleSection('enterpriseObjectives')"
+                            ></enterprise-objectives>
+                        </div>
 
                         <!-- Section 6 : Coûts et tarification -->
-                        <enterprise-pricing
-                            :form-data="entrepriseData.pricing"
-                            @update:form-data="updateEnterprisePricing"
-                        ></enterprise-pricing>
+                        <div class="collapsible-section">
+                            <enterprise-pricing
+                                :form-data="entrepriseData.pricing"
+                                @update:form-data="updateEnterprisePricing"
+                                :is-expanded="sectionsExpanded.enterprisePricing"
+                                @toggle="toggleSection('enterprisePricing')"
+                            ></enterprise-pricing>
+                        </div>
                     </div>
                 </div>
 
@@ -142,6 +176,22 @@ const EstimationForm = {
                         Estimation intelligente powered by OpenAI
                     </p>
 
+                    <!-- Compteur d'estimations -->
+                    <div v-if="rateLimitStatus && !isGenerating" class="mt-4 text-center">
+                        <div v-if="rateLimitStatus.isDemo" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <span class="mr-1">🎯</span>
+                            {{ rateLimitStatus.bypassType }} - Estimations illimitées
+                        </div>
+                        <div v-else-if="rateLimitStatus.remaining > 0" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            <span class="mr-1">⚡</span>
+                            {{ rateLimitStatus.remaining }} estimation(s) gratuite(s) restante(s)
+                        </div>
+                        <div v-else class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                            <span class="mr-1">🚫</span>
+                            Limite atteinte - Réinitialisation le {{ formatResetDate() }}
+                        </div>
+                    </div>
+
                     <!-- Affichage des erreurs -->
                     <div v-if="estimationError" class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                         <div class="flex">
@@ -177,6 +227,16 @@ const EstimationForm = {
             isGenerating: false, // État de génération de l'estimation
             estimationError: null, // Erreur d'estimation
             estimationResult: null, // Résultat de l'estimation
+            rateLimitStatus: null, // Statut des limitations
+            sectionsExpanded: {
+                features: false,
+                deliverables: false,
+                objectives: false,
+                enterpriseFunctionalities: false,
+                enterpriseDeliverables: false,
+                enterpriseObjectives: false,
+                enterprisePricing: false
+            }, // État des sections individuelles
             freelanceData: {
                 basics: {
                     projectType: '',
@@ -461,12 +521,23 @@ const EstimationForm = {
 
                 console.log('Données envoyées pour estimation:', estimationData);
 
+                // Détecter les clés de démo dans l'URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const demoKey = urlParams.get('demo_key') || urlParams.get('key');
+
+                // Préparer les headers
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+
+                if (demoKey) {
+                    headers['X-Demo-Key'] = demoKey;
+                }
+
                 // Appel à l'API Netlify Function
                 const response = await fetch('/api/estimate', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: headers,
                     body: JSON.stringify({
                         userType: this.selectedUserType,
                         data: estimationData
@@ -481,14 +552,22 @@ const EstimationForm = {
 
                 if (result.success) {
                     this.estimationResult = result.estimation;
+                    this.rateLimitStatus = result.rateLimit;
                     console.log('Estimation reçue:', this.estimationResult);
+                    console.log('Rate limit status:', this.rateLimitStatus);
                 } else {
                     throw new Error(result.error || 'Erreur inconnue');
                 }
 
             } catch (error) {
                 console.error('Erreur lors de la génération:', error);
-                this.estimationError = error.message || 'Une erreur est survenue lors de la génération de l\'estimation';
+
+                // Gestion spéciale des erreurs de rate limit
+                if (error.message.includes('429') || error.message.includes('Limite')) {
+                    this.estimationError = 'Limite d\'estimations gratuites atteinte. Réessayez le mois prochain ou contactez-nous pour un accès premium.';
+                } else {
+                    this.estimationError = error.message || 'Une erreur est survenue lors de la génération de l\'estimation';
+                }
             } finally {
                 this.isGenerating = false;
             }
@@ -581,6 +660,42 @@ const EstimationForm = {
             this.estimationResult = null;
             this.estimationError = null;
         },
+
+        // Charger le statut des limitations
+        async loadRateLimitStatus() {
+            try {
+                // Détecter les clés de démo dans l'URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const demoKey = urlParams.get('demo_key') || urlParams.get('key');
+
+                let url = '/api/rate-limit-status';
+                if (demoKey) {
+                    url += `?demo_key=${encodeURIComponent(demoKey)}`;
+                }
+
+                const response = await fetch(url);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        this.rateLimitStatus = result.rateLimit;
+                    }
+                }
+            } catch (error) {
+                console.warn('Impossible de charger le statut des limitations:', error);
+            }
+        },
+
+        // Formater la date de réinitialisation
+        formatResetDate() {
+            if (!this.rateLimitStatus?.resetDate) return '';
+            const date = new Date(this.rateLimitStatus.resetDate);
+            return date.toLocaleDateString('fr-FR');
+        },
+
+        // Toggle des sections individuelles
+        toggleSection(sectionName) {
+            this.sectionsExpanded[sectionName] = !this.sectionsExpanded[sectionName];
+        },
         
         // Méthode pour sauvegarder en localStorage (optionnel)
         saveToLocalStorage() {
@@ -612,7 +727,10 @@ const EstimationForm = {
     mounted() {
         // Charger les données sauvegardées au montage du composant
         this.loadFromLocalStorage();
-        
+
+        // Charger le statut des limitations
+        this.loadRateLimitStatus();
+
         // Sauvegarder automatiquement les changements
         this.$watch(() => [this.selectedUserType, this.freelanceData, this.entrepriseData], () => {
             this.saveToLocalStorage();

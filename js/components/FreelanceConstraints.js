@@ -48,82 +48,97 @@ const FreelanceConstraints = {
                     </p>
                 </div>
 
-                <!-- Travail à temps plein -->
-                <div>
-                    <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
-                        ⏰ Disponibilité pour ce projet
-                    </h5>
-                    <div class="space-y-3">
-                        <label class="flex items-center">
-                            <input 
-                                type="radio" 
-                                name="fullTime"
-                                :value="true"
-                                v-model="localFormData.isFullTime"
-                                @change="updateFormData"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            >
-                            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                                <strong>Temps plein</strong> - Je peux me consacrer entièrement à ce projet
-                            </span>
-                        </label>
-                        <label class="flex items-center">
-                            <input 
-                                type="radio" 
-                                name="fullTime"
-                                :value="false"
-                                v-model="localFormData.isFullTime"
-                                @change="updateFormData"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            >
-                            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                                <strong>Temps partiel</strong> - J'ai d'autres projets en parallèle
-                            </span>
-                        </label>
+                <!-- Grid pour optimiser l'espace -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Travail à temps plein -->
+                    <div>
+                        <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
+                            ⏰ Disponibilité pour ce projet
+                        </h5>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="fullTime"
+                                    :value="true"
+                                    v-model="localFormData.isFullTime"
+                                    @change="updateFormData"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <strong>Temps plein</strong> - Je peux me consacrer entièrement à ce projet
+                                </span>
+                            </label>
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="fullTime"
+                                    :value="false"
+                                    v-model="localFormData.isFullTime"
+                                    @change="updateFormData"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <strong>Temps partiel</strong> - J'ai d'autres projets en parallèle
+                                </span>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <!-- TJM cible -->
-                <div>
-                    <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
-                        💰 TJM (Taux Journalier Moyen)
-                    </h5>
-                    <div class="space-y-4">
-                        <label class="flex items-center">
-                            <input 
-                                type="checkbox"
-                                v-model="localFormData.hasTjmTarget"
-                                @change="updateFormData"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            >
-                            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                                Je veux me baser sur un TJM cible
-                            </span>
-                        </label>
-                        
-                        <div v-if="localFormData.hasTjmTarget" class="ml-7 flex items-center space-x-3">
-                            <input 
-                                type="number"
-                                v-model="localFormData.tjmTarget"
-                                @input="updateFormData"
-                                placeholder="500"
-                                min="100"
-                                max="2000"
-                                step="50"
-                                class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                            >
-                            <span class="text-sm text-gray-600 dark:text-gray-400">€ HT / jour</span>
-                            <a href="#" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
-                                (Référence : calculateur TJM)
-                            </a>
+                    <!-- TJM cible -->
+                    <div>
+                        <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
+                            💰 TJM (Taux Journalier Moyen)
+                        </h5>
+                        <div class="space-y-4">
+                            <label class="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    v-model="localFormData.hasTjmTarget"
+                                    @change="updateFormData"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
+                                    Je veux me baser sur un TJM cible
+                                </span>
+                                <tooltip
+                                    title="TJM (Taux Journalier Moyen)"
+                                    content="Le TJM est le prix que vous facturez par jour de travail. Il dépend de votre expérience, vos compétences et votre marché."
+                                    example="Un développeur React senior : 600-800€/jour"
+                                    position="top"
+                                ></tooltip>
+                            </label>
+
+                            <div v-if="localFormData.hasTjmTarget" class="ml-7 flex items-center space-x-3">
+                                <input
+                                    type="number"
+                                    v-model="localFormData.tjmTarget"
+                                    @input="updateFormData"
+                                    placeholder="500"
+                                    min="100"
+                                    max="2000"
+                                    step="50"
+                                    class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                >
+                                <span class="text-sm text-gray-600 dark:text-gray-400">€ HT / jour</span>
+                                <a href="https://sassify.fr/calculateur-de-tjm/calculateur" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                                    (Référence : calculateur TJM)
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Marge de sécurité -->
                 <div>
-                    <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
-                        🛡️ Marge de sécurité
+                    <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3 flex items-center space-x-2">
+                        <span>🛡️ Marge de sécurité</span>
+                        <tooltip
+                            title="Marge de sécurité"
+                            content="Pourcentage ajouté à votre estimation pour gérer les imprévus, changements de scope et risques projet."
+                            example="15-25% pour un projet classique, 30-40% pour un projet complexe"
+                            position="top"
+                        ></tooltip>
                     </h5>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         Pour gérer les aléas, bugs, retours clients et autres imprévus
