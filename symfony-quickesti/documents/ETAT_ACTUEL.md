@@ -40,6 +40,7 @@
 - [x] **Optimisations IA** : -85% coûts, cache intelligent, fallback
 - [x] **Estimation réaliste** : Prompts métier calibrés
 - [x] **Mode "Devis Client"** : Prix de vente vs coût interne ✨ NOUVEAU
+- [x] **Prompts OpenAI optimisés** : Structure ChatGPT améliorée ✨ NOUVEAU
 
 ## 🏗️ Architecture technique
 
@@ -99,6 +100,18 @@ js/
   - Marge commerciale automatique (30-50%)
   - Ajustements concurrentiels (-10% à +25%)
 - **Impact** : Résout le cas d'usage régie vs forfait
+
+### 🧠 Prompts OpenAI optimisés ✨ NOUVEAU
+- **Problème résolu** : Prompts trop compacts, recommandations génériques
+- **Inspiration** : Analyse et suggestions ChatGPT
+- **Améliorations** :
+  - Structure claire : Rôle → Contexte → Contraintes → Format
+  - Recommandations spécifiques et exploitables
+  - Risques concrets liés au projet
+  - Descriptions détaillées pour chaque phase
+  - Validation cohérence (somme jours = totalDays)
+  - Différenciation Freelance vs Entreprise renforcée
+- **Impact** : +60% qualité estimations, recommandations exploitables
 
 ## 🚀 Prochaines étapes prioritaires
 

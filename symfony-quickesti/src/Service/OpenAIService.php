@@ -463,103 +463,133 @@ class OpenAIService
     {
         $estimationMode = $data['constraints']['estimationMode'] ?? 'internal';
 
+        // En-tête selon le mode
         if ($estimationMode === 'client-quote') {
-            $prompt = "Tu es un expert en pricing commercial freelance. Analyse ce projet et fournis un PRIX DE VENTE RECOMMANDÉ pour le client.\n\n";
-            $prompt .= "=== DEVIS CLIENT ===\n";
+            $prompt = "Tu es un expert senior en pricing commercial freelance. Tu dois fournir un **prix de vente recommandé réaliste et compétitif** pour le client.\n\n";
+            $prompt .= "Tu réponds en **JSON strict**, exactement dans la structure fournie ci-dessous.\n\n";
         } else {
-            $prompt = "Tu es un expert en estimation de projets web freelance. Analyse ce projet et fournis une estimation RÉALISTE de tes coûts internes.\n\n";
-            $prompt .= "=== ESTIMATION INTERNE ===\n";
+            $prompt = "Tu es un expert senior en estimation de projets web réalisés par des freelances. Tu dois fournir une estimation **réaliste, prudente et argumentée** de tes coûts internes.\n\n";
+            $prompt .= "Tu réponds en **JSON strict**, exactement dans la structure fournie ci-dessous.\n\n";
         }
 
-        // Contexte détaillé
-        $prompt .= "TYPE: " . ($data['basics']['projectType'] ?? 'Non spécifié') . "\n";
-        $prompt .= "DESCRIPTION: " . ($data['basics']['description'] ?? 'Refonte/évolution') . "\n";
-        $prompt .= "TECHNOLOGIES: " . ($data['basics']['technologies'] ?? 'Non spécifiées') . "\n";
+        // Contexte projet
+        $prompt .= "### Contexte :\n";
+        $prompt .= "- Type de projet : " . ($data['basics']['projectType'] ?? 'Non spécifié') . "\n";
+        $prompt .= "- Description : " . ($data['basics']['description'] ?? 'Refonte/évolution') . "\n";
+        $prompt .= "- Technologies : " . ($data['basics']['technologies'] ?? 'Non spécifiées') . "\n";
 
-        // Contraintes importantes
         if (isset($data['constraints'])) {
-            $prompt .= "DISPONIBILITÉ: " . ($data['constraints']['isFullTime'] ? 'Temps plein' : 'Temps partiel') . "\n";
+            $prompt .= "- Disponibilité : " . ($data['constraints']['isFullTime'] ? 'Temps plein' : 'Temps partiel') . "\n";
 
             if ($estimationMode === 'client-quote') {
-                // Mode devis client
+                // Informations client pour devis
                 if (isset($data['constraints']['clientType'])) {
-                    $prompt .= "TYPE CLIENT: " . $this->getClientTypeLabel($data['constraints']['clientType']) . "\n";
+                    $prompt .= "- Type de client : " . $this->getClientTypeLabel($data['constraints']['clientType']) . "\n";
                 }
                 if (isset($data['constraints']['clientBudgetRange'])) {
-                    $prompt .= "BUDGET CLIENT: " . $this->getBudgetRangeLabel($data['constraints']['clientBudgetRange']) . "\n";
+                    $prompt .= "- Budget indicatif : " . $this->getBudgetRangeLabel($data['constraints']['clientBudgetRange']) . "\n";
                 }
                 if (isset($data['constraints']['competitiveContext'])) {
-                    $prompt .= "CONCURRENCE: " . $this->getCompetitiveContextLabel($data['constraints']['competitiveContext']) . "\n";
+                    $prompt .= "- Contexte concurrentiel : " . $this->getCompetitiveContextLabel($data['constraints']['competitiveContext']) . "\n";
                 }
             } else {
-                // Mode estimation interne
+                // Informations freelance pour estimation interne
                 if (isset($data['constraints']['tjmTarget'])) {
-                    $prompt .= "TJM PERSONNEL: " . $data['constraints']['tjmTarget'] . "€/jour\n";
+                    $prompt .= "- TJM cible : " . $data['constraints']['tjmTarget'] . "€/jour\n";
+                }
+                if (isset($data['constraints']['securityMargin'])) {
+                    $prompt .= "- Marge de sécurité : " . $data['constraints']['securityMargin'] . "%\n";
                 }
             }
         }
 
         // Fonctionnalités
-        if (isset($data['features']['selectedFeatures'])) {
-            $prompt .= "FONCTIONNALITÉS: " . implode(', ', $data['features']['selectedFeatures']) . "\n";
+        if (isset($data['features']['selectedFeatures']) && !empty($data['features']['selectedFeatures'])) {
+            $prompt .= "- Fonctionnalités : " . implode(', ', $data['features']['selectedFeatures']) . "\n";
         }
 
-        // Livrables
+        // Objectifs
+        if (isset($data['objectives']['selectedObjectives']) && !empty($data['objectives']['selectedObjectives'])) {
+            $prompt .= "- Objectifs : " . implode(', ', $data['objectives']['selectedObjectives']) . "\n";
+        }
+
+        // Contraintes spécifiques
+        $prompt .= "\n### Contraintes :\n";
+        $prompt .= "- Tu dois intégrer un temps pour le design, les tests et le déploiement\n";
+
         if (isset($data['deliverables'])) {
             if (isset($data['deliverables']['mockupsProvided']) && $data['deliverables']['mockupsProvided'] === false) {
-                $prompt .= "MAQUETTES: À créer (ajouter temps design)\n";
+                $prompt .= "- Maquettes à créer (ajouter temps design)\n";
             }
             if (isset($data['deliverables']['specsStatus']) && $data['deliverables']['specsStatus'] === 'to-define') {
-                $prompt .= "SPÉCIFICATIONS: À définir (ajouter temps analyse)\n";
+                $prompt .= "- Spécifications à définir (ajouter temps analyse)\n";
             }
         }
 
-        $prompt .= "\n=== RÈGLES D'ESTIMATION ===\n";
-
         if ($estimationMode === 'client-quote') {
-            // Règles pour devis client
-            $prompt .= "BENCHMARKS TJM MARCHÉ:\n";
-            $prompt .= "- Startup/PME: 400-600€/jour\n";
-            $prompt .= "- Grande entreprise: 600-800€/jour\n";
-            $prompt .= "- Projet complexe: +20-30%\n";
-            $prompt .= "- Forte concurrence: -10-15%\n";
-            $prompt .= "- Peu de concurrence: +15-25%\n\n";
-
-            $prompt .= "MARGE COMMERCIALE:\n";
-            $prompt .= "- Inclure marge 30-50% sur coût réel\n";
-            $prompt .= "- Justifier la valeur ajoutée\n";
-            $prompt .= "- Positionner selon la concurrence\n\n";
-
-            $prompt .= "IMPORTANT: Fournis un PRIX DE VENTE cohérent avec le marché, pas ton coût interne !\n\n";
+            $prompt .= "- Utilise les benchmarks TJM marché selon le type de client\n";
+            $prompt .= "- Intègre une marge commerciale appropriée (30-50%)\n";
+            $prompt .= "- Ajuste selon le contexte concurrentiel\n";
         } else {
-            // Règles pour estimation interne
-            $prompt .= "- Pour WordPress: minimum 10-15j pour une refonte complète\n";
-            $prompt .= "- Responsive design: +3-5j\n";
-            $prompt .= "- Maquettes à créer: +5-7j\n";
-            $prompt .= "- Spécifications à définir: +2-3j\n";
-            $prompt .= "- Maintenance setup: +1-2j\n";
-            $prompt .= "- Tests et déploiement: +2-3j\n\n";
-
-            $prompt .= "IMPORTANT: Sois réaliste ! Un freelance expert ne peut pas faire une refonte WordPress complète en 5 jours.\n\n";
+            $prompt .= "- Sois réaliste : un projet WordPress complet ne se fait pas en 5 jours\n";
+            $prompt .= "- Intègre la marge de sécurité si spécifiée\n";
         }
 
-        $prompt .= "Réponds en JSON strict:\n";
+        // Règles spécifiques selon le mode
+        if ($estimationMode === 'client-quote') {
+            $prompt .= "\n### Benchmarks TJM marché :\n";
+            $prompt .= "- Startup/PME : 400-600€/jour\n";
+            $prompt .= "- Grande entreprise : 600-800€/jour\n";
+            $prompt .= "- Projet complexe : +20-30%\n";
+            $prompt .= "- Forte concurrence : -10-15%\n";
+            $prompt .= "- Peu de concurrence : +15-25%\n";
+            $prompt .= "- Marge commerciale standard : 30-50%\n";
+        } else {
+            $prompt .= "\n### Règles d'estimation :\n";
+            $prompt .= "- WordPress complet : minimum 10-15j\n";
+            $prompt .= "- Responsive design : +3-5j\n";
+            $prompt .= "- Maquettes à créer : +5-7j\n";
+            $prompt .= "- Spécifications à définir : +2-3j\n";
+            $prompt .= "- Tests et déploiement : +2-3j\n";
+        }
+
+        $prompt .= "\n### Structure de réponse JSON :\n";
+        $prompt .= "```json\n";
         $prompt .= json_encode([
             'estimation' => [
                 'totalDays' => 0,
                 'totalCost' => 0,
                 'confidence' => 'high|medium|low',
                 'breakdown' => [
-                    'analysis' => ['days' => 0, 'cost' => 0, 'description' => ''],
-                    'design' => ['days' => 0, 'cost' => 0, 'description' => ''],
-                    'development' => ['days' => 0, 'cost' => 0, 'description' => ''],
-                    'testing' => ['days' => 0, 'cost' => 0, 'description' => ''],
-                    'deployment' => ['days' => 0, 'cost' => 0, 'description' => '']
+                    'analysis' => ['days' => 0, 'cost' => 0, 'description' => 'Analyse des besoins et spécifications'],
+                    'design' => ['days' => 0, 'cost' => 0, 'description' => 'Conception UI/UX et maquettes'],
+                    'development' => ['days' => 0, 'cost' => 0, 'description' => 'Développement des fonctionnalités'],
+                    'testing' => ['days' => 0, 'cost' => 0, 'description' => 'Tests et corrections'],
+                    'deployment' => ['days' => 0, 'cost' => 0, 'description' => 'Mise en ligne et configuration']
                 ],
-                'recommendations' => [],
-                'risks' => []
+                'recommendations' => [
+                    'Prévoir des points de validation intermédiaires avec le client',
+                    'Documenter les livrables pour faciliter la maintenance'
+                ],
+                'risks' => [
+                    'Spécifications incomplètes pouvant allonger les délais',
+                    'Changements de dernière minute dans les besoins'
+                ]
             ]
         ], JSON_PRETTY_PRINT);
+        $prompt .= "\n```\n\n";
+
+        $prompt .= "**IMPORTANT :**\n";
+        $prompt .= "- Ne change jamais la structure du JSON\n";
+        $prompt .= "- La somme des jours de chaque phase doit correspondre à totalDays\n";
+        $prompt .= "- Si une valeur est inconnue, utilise \"description\": \"Non spécifié\" ou \"cost\": 0\n";
+        $prompt .= "- Fournis des recommandations et risques spécifiques au projet\n";
+
+        if ($estimationMode === 'client-quote') {
+            $prompt .= "- Le coût doit refléter un PRIX DE VENTE marché, pas un coût interne\n";
+        } else {
+            $prompt .= "- Le coût doit refléter tes coûts internes réels\n";
+        }
 
         return $prompt;
     }
@@ -569,39 +599,70 @@ class OpenAIService
      */
     private function buildOptimizedEnterprisePrompt(array $data): string
     {
-        $prompt = "Expert estimation entreprise. JSON strict:\n";
+        $prompt = "Tu es un consultant expert en estimation de projets web pour entreprises.\n";
+        $prompt .= "Ton objectif est de fournir une estimation structurée, fiable et exploitable par une équipe produit ou un décideur technique.\n\n";
+        $prompt .= "Tu dois répondre **uniquement en JSON**, sans aucun commentaire en dehors du format.\n\n";
 
-        // Données essentielles seulement
-        $prompt .= "PROJET: " . ($data['basics']['projectType'] ?? 'Non spécifié') . "\n";
+        // Contexte projet
+        $prompt .= "### Contexte Projet :\n";
+        $prompt .= "- Type : " . ($data['basics']['projectType'] ?? 'Non spécifié') . "\n";
 
-        if (isset($data['functionalities']['selectedFeatures'])) {
-            $prompt .= "FEATURES: " . implode(', ', $data['functionalities']['selectedFeatures']) . "\n";
+        if (isset($data['functionalities']['selectedFeatures']) && !empty($data['functionalities']['selectedFeatures'])) {
+            $prompt .= "- Fonctionnalités principales : " . implode(', ', $data['functionalities']['selectedFeatures']) . "\n";
         }
 
         if (isset($data['functionalities']['functionalComplexity'])) {
-            $prompt .= "COMPLEXITÉ: " . $data['functionalities']['functionalComplexity'] . "\n";
+            $prompt .= "- Complexité fonctionnelle : " . $data['functionalities']['functionalComplexity'] . "\n";
+        }
+
+        if (isset($data['functionalities']['scalability'])) {
+            $prompt .= "- Scalabilité requise : " . $data['functionalities']['scalability'] . "\n";
         }
 
         if (isset($data['objectives']['budgetAmount'])) {
-            $prompt .= "BUDGET: " . $data['objectives']['budgetAmount'] . "€\n";
+            $prompt .= "- Budget connu : " . $data['objectives']['budgetAmount'] . "€\n";
         }
 
-        $prompt .= "\nJSON:\n";
+        if (isset($data['objectives']['projectObjective'])) {
+            $prompt .= "- Objectif stratégique : " . $data['objectives']['projectObjective'] . "\n";
+        }
+
+        // Contraintes
+        $prompt .= "\n### Contraintes :\n";
+        $prompt .= "- L'estimation doit inclure les phases clés : conception, développement, QA, gestion\n";
+        $prompt .= "- Propose une estimation avec un niveau de confiance (\"high\", \"medium\", \"low\")\n";
+        $prompt .= "- Intègre les risques probables (techniques, humains, planning)\n";
+        $prompt .= "- Si le budget est bas par rapport à la charge, mentionne-le dans \"recommendations\"\n";
+
+        // Format JSON
+        $prompt .= "\n### Format attendu :\n";
+        $prompt .= "```json\n";
         $prompt .= json_encode([
             'estimation' => [
                 'totalDays' => 0,
                 'totalCost' => 0,
                 'confidence' => 'high|medium|low',
                 'breakdown' => [
-                    'development' => ['days' => 0, 'cost' => 0],
-                    'design' => ['days' => 0, 'cost' => 0],
-                    'testing' => ['days' => 0, 'cost' => 0],
-                    'management' => ['days' => 0, 'cost' => 0]
+                    'analysis' => ['days' => 0, 'cost' => 0, 'description' => 'Analyse des besoins et architecture'],
+                    'design' => ['days' => 0, 'cost' => 0, 'description' => 'Conception UI/UX et prototypage'],
+                    'development' => ['days' => 0, 'cost' => 0, 'description' => 'Développement des fonctionnalités'],
+                    'testing' => ['days' => 0, 'cost' => 0, 'description' => 'Tests et assurance qualité'],
+                    'management' => ['days' => 0, 'cost' => 0, 'description' => 'Gestion de projet et coordination']
                 ],
-                'recommendations' => [],
-                'risks' => []
+                'recommendations' => [
+                    'Mettre en place une méthodologie agile avec sprints de 2 semaines',
+                    'Prévoir des tests utilisateurs en cours de développement'
+                ],
+                'risks' => [
+                    'Complexité technique sous-estimée',
+                    'Changements de périmètre en cours de projet'
+                ]
             ]
-        ]);
+        ], JSON_PRETTY_PRINT);
+        $prompt .= "\n```\n\n";
+
+        $prompt .= "Tu dois t'assurer que la somme des jours de chaque phase correspond bien à totalDays.\n";
+        $prompt .= "Le JSON doit être strictement valide, sans commentaires, et directement parsable.\n";
 
         return $prompt;
     }
