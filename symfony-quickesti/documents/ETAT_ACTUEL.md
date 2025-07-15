@@ -39,6 +39,7 @@
 - [x] **EstimationCalculatorService** : Logique métier avancée
 - [x] **Optimisations IA** : -85% coûts, cache intelligent, fallback
 - [x] **Estimation réaliste** : Prompts métier calibrés
+- [x] **Mode "Devis Client"** : Prix de vente vs coût interne ✨ NOUVEAU
 
 ## 🏗️ Architecture technique
 
@@ -85,6 +86,19 @@ js/
 - ✅ Calculs dynamiques corrects
 - ✅ Responsive design validé
 - ✅ Basculement entre flux sans perte de données
+
+## ✨ Nouvelles fonctionnalités (Juillet 2025)
+
+### 🎯 Mode "Devis Client" ✨ NOUVEAU
+- **Problème résolu** : Différenciation coût interne vs prix de vente
+- **Cas d'usage** : Freelance générant des devis commerciaux cohérents
+- **Fonctionnalités** :
+  - Toggle "Estimation interne" vs "Devis client"
+  - Informations client (type, budget, concurrence)
+  - Benchmarks TJM marché par secteur
+  - Marge commerciale automatique (30-50%)
+  - Ajustements concurrentiels (-10% à +25%)
+- **Impact** : Résout le cas d'usage régie vs forfait
 
 ## 🚀 Prochaines étapes prioritaires
 

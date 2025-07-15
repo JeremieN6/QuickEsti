@@ -1,89 +1,48 @@
-# Message de commit pour la migration terminée
+# Message de commit pour la nouvelle fonctionnalité
 
 ```bash
 git add .
-git commit -m "feat: Migration complète Symfony 7 + Vue.js 3 avec IA OpenAI optimisée
+git commit -m "feat: Ajout mode 'Devis Client' pour différencier coût interne vs prix de vente
 
-🚀 MIGRATION TERMINÉE - Application 100% fonctionnelle
+🎯 NOUVELLE FONCTIONNALITÉ - Mode Devis Client
 
-✅ ARCHITECTURE MODERNE
-- Symfony 7 avec API REST complète
-- Vue.js 3 intégré via Webpack Encore
-- Tailwind CSS + Flowbite pour UI moderne
+✨ RÉSOLUTION CAS D'USAGE RÉGIE
+- Toggle 'Estimation interne' vs 'Devis client'
+- Champs client (type, budget, concurrence)
+- Benchmarks TJM marché par secteur
+- Marge commerciale automatique (30-50%)
+- Ajustements concurrentiels (-10% à +25%)
 
-🧠 INTELLIGENCE ARTIFICIELLE OPTIMISÉE
-- Service OpenAI avec sélection intelligente de modèle
-- Cache intelligent (30min) - Réduction 60% appels API
-- Prompts optimisés - Réduction 85% coûts OpenAI
-- Mode fallback robuste sans dépendance critique
+🧠 PROMPTS IA SPÉCIALISÉS
+- Mode interne: Coût personnel du freelance
+- Mode devis: Prix de vente recommandé marché
+- Benchmarks intégrés (Startup 400-600€, Entreprise 600-800€)
+- Positionnement concurrentiel intelligent
 
-📋 SECTIONS FREELANCE
-- FreelanceBasics: Type projet, technologies, pages, deadline
-- FreelanceConstraints: Compétences, TJM, temps, marge sécurité
-- FreelanceFeatures: Fonctionnalités + complexité + custom
-- FreelanceDeliverables: Périmètre intervention, maquettes
-- FreelanceObjectives: Objectifs personnels, stratégie tarifaire
+🛠️ IMPLÉMENTATION TECHNIQUE
+- FreelanceConstraints.vue: Toggle + champs conditionnels
+- OpenAIService.php: Prompts spécialisés par mode
+- Méthodes helper pour labels client/budget/concurrence
+- Rétrocompatible: Mode interne par défaut
 
-🏢 SECTIONS ENTREPRISE  
-- EnterpriseBasics: Type projet, technologies structurées, raison chiffrage
-- EnterpriseStructure: Rôle, équipe, profils, méthodologie
-- EnterpriseFunctionalities: Fonctionnalités business, scalabilité, phases
-- EnterpriseDeliverables: UI/UX, maquettes, specs, services techniques
-- EnterpriseObjectives: Objectifs business, budget, urgence
-- EnterprisePricing: Coûts par profil, marge, modèles facturation
+🎯 IMPACT UTILISATEUR
+- Résout le cas d'usage régie vs forfait
+- Prix de vente cohérents avec le marché
+- Arguments commerciaux pour justifier les prix
+- Différenciation claire coût/vente
 
-🔧 ARCHITECTURE TECHNIQUE
-- Vue.js 3 via CDN (pas de build tools)
-- Composants modulaires réutilisables
-- État centralisé dans EstimationForm
-- Calculs dynamiques (progression, complexité, coûts)
-- Validation progressive avec feedback visuel
+📊 EXEMPLE CONCRET
+- Projet WordPress e-commerce (20j)
+- Mode interne: 20j × 400€ = 8 000€ (coût)
+- Mode devis: 20j × 600€ + marge = 16 800€ (vente)
 
-🧪 QUALITÉ & TESTS
-- Guides de test complets (freelance + entreprise)
-- 0 erreur JavaScript en console
-- Interface responsive validée
-- Sauvegarde/restauration localStorage fonctionnelle
+🎯 CAS D'USAGE RÉSOLU
+- Freelance forfait: Estimation coûts ✅ (existant)
+- Freelance régie: Prix de vente ✅ (nouveau)
 
-📚 DOCUMENTATION
-- README.md mis à jour avec les deux flux
-- HISTORIQUE_CONVERSATION.md: historique complet développement
-- ETAT_ACTUEL.md: état précis du projet
-- DECISIONS_TECHNIQUES.md: choix techniques documentés
-- GUIDE_TEST.md: test flux freelance
-- GUIDE_TEST_ENTREPRISE.md: test flux entreprise
-
-🐛 CORRECTIONS
-- Fix: Erreur calculateEnterpriseCompletion non définie
-- Refactor: Consolidation logique completion dans computed property
-- Clean: Suppression code dupliqué EstimationForm.js
-
-🚀 PRÊT POUR
-- Intégration OpenAI via Netlify Functions
-- Export PDF des estimations
-- Déploiement Netlify
-- Système de pricing freemium
-
-Breaking Changes: Aucun
-Migration: Aucune action requise"
+Version: v1.1.0 - Fonctionnalité Devis Client"
 
 git push origin main
 ```
 
-## Alternative courte si préférée :
 
-```bash
-git add .
-git commit -m "feat: Flux freelance + entreprise complets avec 11 sections
-
-- ✅ 5 sections freelance (basics, constraints, features, deliverables, objectives)
-- ✅ 6 sections entreprise (basics, structure, functionalities, deliverables, objectives, pricing)
-- ✅ Barre progression dynamique + sauvegarde localStorage
-- ✅ Interface responsive + calculs temps réel
-- ✅ Documentation complète + guides de test
-- 🐛 Fix erreur calculateEnterpriseCompletion
-
-Prêt pour intégration OpenAI et déploiement Netlify"
-
-git push origin main
-```

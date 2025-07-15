@@ -461,10 +461,17 @@ class OpenAIService
      */
     private function buildOptimizedFreelancePrompt(array $data): string
     {
-        $prompt = "Tu es un expert en estimation de projets web freelance. Analyse ce projet et fournis une estimation RÉALISTE.\n\n";
+        $estimationMode = $data['constraints']['estimationMode'] ?? 'internal';
+
+        if ($estimationMode === 'client-quote') {
+            $prompt = "Tu es un expert en pricing commercial freelance. Analyse ce projet et fournis un PRIX DE VENTE RECOMMANDÉ pour le client.\n\n";
+            $prompt .= "=== DEVIS CLIENT ===\n";
+        } else {
+            $prompt = "Tu es un expert en estimation de projets web freelance. Analyse ce projet et fournis une estimation RÉALISTE de tes coûts internes.\n\n";
+            $prompt .= "=== ESTIMATION INTERNE ===\n";
+        }
 
         // Contexte détaillé
-        $prompt .= "=== PROJET FREELANCE ===\n";
         $prompt .= "TYPE: " . ($data['basics']['projectType'] ?? 'Non spécifié') . "\n";
         $prompt .= "DESCRIPTION: " . ($data['basics']['description'] ?? 'Refonte/évolution') . "\n";
         $prompt .= "TECHNOLOGIES: " . ($data['basics']['technologies'] ?? 'Non spécifiées') . "\n";
@@ -472,8 +479,23 @@ class OpenAIService
         // Contraintes importantes
         if (isset($data['constraints'])) {
             $prompt .= "DISPONIBILITÉ: " . ($data['constraints']['isFullTime'] ? 'Temps plein' : 'Temps partiel') . "\n";
-            if (isset($data['constraints']['tjmTarget'])) {
-                $prompt .= "TJM CIBLE: " . $data['constraints']['tjmTarget'] . "€/jour\n";
+
+            if ($estimationMode === 'client-quote') {
+                // Mode devis client
+                if (isset($data['constraints']['clientType'])) {
+                    $prompt .= "TYPE CLIENT: " . $this->getClientTypeLabel($data['constraints']['clientType']) . "\n";
+                }
+                if (isset($data['constraints']['clientBudgetRange'])) {
+                    $prompt .= "BUDGET CLIENT: " . $this->getBudgetRangeLabel($data['constraints']['clientBudgetRange']) . "\n";
+                }
+                if (isset($data['constraints']['competitiveContext'])) {
+                    $prompt .= "CONCURRENCE: " . $this->getCompetitiveContextLabel($data['constraints']['competitiveContext']) . "\n";
+                }
+            } else {
+                // Mode estimation interne
+                if (isset($data['constraints']['tjmTarget'])) {
+                    $prompt .= "TJM PERSONNEL: " . $data['constraints']['tjmTarget'] . "€/jour\n";
+                }
             }
         }
 
@@ -493,14 +515,33 @@ class OpenAIService
         }
 
         $prompt .= "\n=== RÈGLES D'ESTIMATION ===\n";
-        $prompt .= "- Pour WordPress: minimum 10-15j pour une refonte complète\n";
-        $prompt .= "- Responsive design: +3-5j\n";
-        $prompt .= "- Maquettes à créer: +5-7j\n";
-        $prompt .= "- Spécifications à définir: +2-3j\n";
-        $prompt .= "- Maintenance setup: +1-2j\n";
-        $prompt .= "- Tests et déploiement: +2-3j\n\n";
 
-        $prompt .= "IMPORTANT: Sois réaliste ! Un freelance expert ne peut pas faire une refonte WordPress complète en 5 jours.\n\n";
+        if ($estimationMode === 'client-quote') {
+            // Règles pour devis client
+            $prompt .= "BENCHMARKS TJM MARCHÉ:\n";
+            $prompt .= "- Startup/PME: 400-600€/jour\n";
+            $prompt .= "- Grande entreprise: 600-800€/jour\n";
+            $prompt .= "- Projet complexe: +20-30%\n";
+            $prompt .= "- Forte concurrence: -10-15%\n";
+            $prompt .= "- Peu de concurrence: +15-25%\n\n";
+
+            $prompt .= "MARGE COMMERCIALE:\n";
+            $prompt .= "- Inclure marge 30-50% sur coût réel\n";
+            $prompt .= "- Justifier la valeur ajoutée\n";
+            $prompt .= "- Positionner selon la concurrence\n\n";
+
+            $prompt .= "IMPORTANT: Fournis un PRIX DE VENTE cohérent avec le marché, pas ton coût interne !\n\n";
+        } else {
+            // Règles pour estimation interne
+            $prompt .= "- Pour WordPress: minimum 10-15j pour une refonte complète\n";
+            $prompt .= "- Responsive design: +3-5j\n";
+            $prompt .= "- Maquettes à créer: +5-7j\n";
+            $prompt .= "- Spécifications à définir: +2-3j\n";
+            $prompt .= "- Maintenance setup: +1-2j\n";
+            $prompt .= "- Tests et déploiement: +2-3j\n\n";
+
+            $prompt .= "IMPORTANT: Sois réaliste ! Un freelance expert ne peut pas faire une refonte WordPress complète en 5 jours.\n\n";
+        }
 
         $prompt .= "Réponds en JSON strict:\n";
         $prompt .= json_encode([
@@ -563,5 +604,38 @@ class OpenAIService
         ]);
 
         return $prompt;
+    }
+
+    private function getClientTypeLabel(string $value): string
+    {
+        $labels = [
+            'startup' => 'Startup / Jeune entreprise',
+            'pme' => 'PME (10-250 salariés)',
+            'grande-entreprise' => 'Grande entreprise (250+ salariés)',
+            'association' => 'Association / ONG',
+            'particulier' => 'Particulier'
+        ];
+        return $labels[$value] ?? $value;
+    }
+
+    private function getBudgetRangeLabel(string $value): string
+    {
+        $labels = [
+            'low' => '< 5 000€',
+            'medium' => '5 000€ - 15 000€',
+            'high' => '15 000€ - 50 000€',
+            'enterprise' => '50 000€+'
+        ];
+        return $labels[$value] ?? $value;
+    }
+
+    private function getCompetitiveContextLabel(string $value): string
+    {
+        $labels = [
+            'low' => 'Peu de concurrence',
+            'medium' => 'Concurrence modérée',
+            'high' => 'Forte concurrence'
+        ];
+        return $labels[$value] ?? $value;
     }
 }

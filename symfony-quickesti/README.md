@@ -22,6 +22,7 @@
 - Gestion des compétences et technologies
 - Contraintes de temps et TJM
 - Objectifs personnels (portfolio, rentabilité, etc.)
+- **Mode "Devis Client"** : Prix de vente vs coût interne ✨
 - Fonctionnalités adaptées aux projets individuels
 
 ### 🏢 **Profil Entreprise**
@@ -163,10 +164,11 @@ npm run build
 - **100% disponibilité** avec le mode fallback
 
 ### **Fonctionnalités**
-- **6 sections freelance** complètes
+- **6 sections freelance** complètes + Mode "Devis Client"
 - **6 sections entreprise** complètes
 - **13 fonctionnalités entreprise** avancées
 - **Estimation réaliste** basée sur l'expérience métier
+- **Différenciation** coût interne vs prix de vente
 
 
 
@@ -232,7 +234,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 15 juillet 2025 | v1.0.0 |
+| **Dernière mise à jour** | 15 juillet 2025 | v1.1.0 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
@@ -244,3 +246,4 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 
 **Développé avec ❤️ par l'équipe QuickEsti**
 *Migration Symfony 7 + Vue.js 3 terminée le 15 juillet 2025*
+*Mode "Devis Client" ajouté le 15 juillet 2025*
