@@ -18,6 +18,18 @@
 - **Prompts optimisés** structure ChatGPT pour +60% qualité ✨
 - **Estimation de complexité** automatique
 - **Recommandations spécifiques** et risques concrets
+- **Mode "Devis Client"** : Prix marché vs coût interne ✨
+
+### 📄 **Export et Documents** (À venir)
+**Gratuit** :
+- **PDF estimation** : 3 exports/mois par profil
+- **Freelance** : Prix de vente + TJM recommandé
+- **Entreprise** : Comparaison prestataires + rapport chiffrage
+
+**Premium** :
+- **Exports illimités** avec branding personnalisé
+- **Freelance** : Devis professionnel IA + simulation rentabilité ✨
+- **Entreprise** : Cahier des charges IA + devis technique ✨
 
 ### 💼 **Profil Freelance**
 - Gestion des compétences et technologies
@@ -232,12 +244,13 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 
 | Élément | Statut | Version |
 |---------|--------|---------|
-| **Phase** | ✅ **Migration terminée** | Phase 3 complète |
+| **Phase** | ✅ **IA intégrée** | Phase 4 complète |
 | **Backend** | ✅ Symfony 7 | Production ready |
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
-| **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 15 juillet 2025 | v1.2.0 |
+| **IA** | ✅ OpenAI optimisée | Prompts ChatGPT, +60% qualité |
+| **Prochaine étape** | 🚀 Export PDF | Phase 5 en préparation |
+| **Dernière mise à jour** | 16 juillet 2025 | v1.3.0 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅

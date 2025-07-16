@@ -81,6 +81,7 @@ Coût estimé (en fonction du tarif horaire moyen ou d’un autre modèle de tar
 L'utilisateur peut voir un résumé de l'estimation, détaillant les éléments pris en compte pour arriver à ce montant et ce temps (par exemple, nombre de pages, technologies utilisées, etc.).
 Le TJM cible
 la marge projetée, et un niveau de complexité du projet.
+Si l'utilisateur est en régie : cela lui donne le resultat, des informations par rapport à un devis qu'il pourrait envoyer à un client. 
 
 5. Options supplémentaires
 
@@ -98,7 +99,9 @@ Gratuite:
 - Détail : compare charge estimée du projet et prix suggéré, propose un TJM cible.
 - Sortie : TJM suggéré, delta avec TJM actuel, niveau de rentabilité projeté.
 
-3. Télécharger un PDF avec le résumé de l'estimation
+3. Télécharger un PDF avec le résumé de l'estimation mais avec une limitation d'estimation
+
+4. En fonction du freelance (au forfait ou en régie), l'utilisateur a un résultat différent, avec des informations pertinentes en fonction du type de freelance.
 
 
 Payante : 
@@ -121,6 +124,11 @@ Sortie :
 3. Les 2 suivantes :
 - Modifier les paramètres du projet si l'estimation ne correspond pas à ses attentes (par exemple, ajuster le nombre de pages ou ajouter une fonctionnalité avancée). (payant)
 - Modifier le TJM du ou des développeurs pour la vue entreprise pour que le montant final soit similaire au budget. (payant)
+
+4. Création d'un devis s'il est en régie
+- Objectif : permettre au freelance de créer un devis pour un client.
+- Détail : inclut temps de prod, retours client, imprévus, charges, etc.
+- Sortie : devis complet, incluant un aperçu des marges, des recommandations, etc.
 
 
 
@@ -251,7 +259,7 @@ Gratuite :
 
 1. Estimation budgétaire d’un projet tech
 - Objectif : obtenir une fourchette budgétaire réaliste pour cadrer un appel d’offres ou recruter un prestataire.
--Détail : type de projet, techno, nombre de pages, deadline, complexité.
+- Détail : type de projet, techno, nombre de pages, deadline, complexité.
 - Sortie : Fourchette basse/haute de coût en euros, durée estimée, profils requis.
 
 2. Comparaison prestataire in-house vs freelance
@@ -259,14 +267,23 @@ Gratuite :
 - Détail : prise en compte salaires moyens, productivité, coûts cachés, etc.
 - Sortie : coût comparé freelance vs CDI vs ESN.
 
-
-Payante : 
-
-1. Rapport de chiffrage détaillé (PDF/Excel téléchargeable)
+3. Rapport de chiffrage détaillé (PDF/Excel téléchargeable)
 - Objectif : documenter les estimations pour transmission ou validation interne.
 - Contenu : ventilation des coûts par poste (dev front, dev back, QA, infra), planning estimé, risques.
 
-2. Conseil IA pour choix de prestataires ou profils
+Payante : 
+
+1. Rédaction d'un cahier des charges
+- Objectif : aider à formaliser les besoins techniques et fonctionnels.
+- Détail : l’outil IA peut générer un cahier des charges technique détaillé, avec des spécifications techniques, des scénarios d'utilisation, etc.
+- Sortie : document structuré, prêt à être validé par le client ou l’équipe de développement.
+
+2. Rédaction d'un devis
+- Objectif : aider à formaliser un devis technique et commercial.
+- Détail : l’outil IA peut générer un devis complet, incluant un aperçu des marges, des recommandations, etc.
+- Sortie : devis complet, prêt à être validé par le client ou l’équipe de développement.
+
+3. Conseil IA pour choix de prestataires ou profils
 - Objectif : suggestion d’un profil type (ou stack de prestataires) selon les critères du projet.
 - Détail : l’outil IA peut générer une fiche de poste, un type de profil recherché, ou proposer des plateformes sur lesquelles chercher.
 

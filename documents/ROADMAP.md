@@ -13,6 +13,18 @@ Devenir la référence pour l'estimation de projets web avec une IA qui comprend
 **Durée réelle** : 3-4 semaines
 **Statut** : **COMPLÉTÉ**
 
+## ✅ Phase 4 : Intégration OpenAI via Symfony (TERMINÉE)
+**Objectif** : ✅ Générer des estimations intelligentes via service Symfony
+**Durée réelle** : 2 semaines
+**Statut** : **COMPLÉTÉ**
+
+### Fonctionnalités réalisées
+- ✅ **Service OpenAI Symfony** avec cache et optimisations
+- ✅ **Prompts optimisés** structure ChatGPT (+60% qualité)
+- ✅ **Mode "Devis Client"** différenciation coût interne vs prix marché
+- ✅ **Deux flux complets** Freelance (5 sections) et Entreprise (6 sections)
+- ✅ **Interface résultats** avec recommandations et risques spécifiques
+
 ### Tâches prioritaires
 - [ ] **Setup projet Symfony**
   - Créer nouveau projet Symfony 6+
@@ -40,62 +52,84 @@ Devenir la référence pour l'estimation de projets web avec une IA qui comprend
 - **Auth** : Symfony Security Bundle
 - **DB** : MySQL/PostgreSQL
 
-## 🚀 Phase 4 : Intégration OpenAI via Symfony
-**Objectif** : Générer des estimations intelligentes via service Symfony
-**Durée estimée** : 1-2 semaines
-
-### Fonctionnalités
-- [ ] **Service OpenAI Symfony**
-  - Création service `OpenAIService`
-  - Configuration clés API sécurisées
-  - Cache et optimisations
-
-- [ ] **Développement prompts**
-  - Prompt spécialisé freelance (focus TJM, rentabilité)
-  - Prompt spécialisé entreprise (focus équipe, budget, ROI)
-  - Système de templates dynamiques
-
-- [ ] **Interface résultats**
-  - Contrôleur Symfony pour résultats
-  - Composant Vue.js pour affichage
-  - Sauvegarde en base de données
-
-## 🚀 Phase 5 : Export PDF et fonctionnalités avancées
-**Objectif** : Compléter les fonctionnalités principales
+## 🚀 Phase 5 : Export PDF et Documents (EN COURS)
+**Objectif** : Système d'export PDF avec différenciation gratuit/premium
 **Durée estimée** : 2-3 semaines
 
 ### Fonctionnalités
-- [ ] **Export PDF via Symfony**
-  - Service PDF avec TCPDF ou Puppeteer
-  - Templates freelance et entreprise
-  - Génération côté serveur sécurisée
+- [ ] **Export PDF basique (Gratuit)**
+  - Service PDF avec KnpSnappyBundle
+  - Template estimation simple
+  - Limitation 3 exports/mois
+  - Logo QuickEsti visible
+
+- [ ] **Export PDF premium (Payant)**
+  - Templates personnalisables
+  - Branding client
+  - Exports illimités
+  - Génération cahier des charges
+  - Génération devis professionnel
+
+- [ ] **Différenciation par flux**
+  - Template Freelance : Focus TJM, rentabilité
+  - Template Entreprise : Focus équipe, ROI, planning
+  - Adaptation contenu selon mode (interne vs client)
+
+## 🚀 Phase 6 : Authentification et Gestion Utilisateurs
+**Objectif** : Système utilisateurs pour historique et limitations
+**Durée estimée** : 2-3 semaines
+
+### Fonctionnalités
+- [ ] **Authentification Symfony**
+  - Configuration Symfony Security
+  - Entité User avec rôles
+  - Formulaires login/register
 
 - [ ] **Gestion utilisateurs avancée**
   - Profils utilisateur complets
   - Historique des estimations
   - Dashboard personnel
+  - Système de quotas (gratuit vs premium)
 
 - [ ] **Partage et collaboration**
   - URLs de partage sécurisées
   - Export par email
   - Commentaires sur estimations
 
-## 🚀 Phase 6 : Monétisation Stripe
+## 🚀 Phase 7 : Monétisation Stripe
 **Objectif** : Lancer le modèle freemium avec Symfony
 **Durée estimée** : 2-3 semaines
 
-### Modèle freemium
-**Gratuit** :
-- 3 estimations par mois
-- Export PDF basique
-- Pas d'historique
+### Modèle freemium mis à jour
 
-**Premium (19€/mois)** :
+#### **Gratuit** :
+**Freelance** :
 - Estimations illimitées
-- Export PDF premium avec branding
-- Historique complet + analytics
-- Templates personnalisables
-- Support prioritaire
+- 3 exports PDF basiques/mois
+- Estimation rapide prix de vente
+- Calcul TJM recommandé
+
+**Entreprise** :
+- Estimations illimitées
+- 3 exports PDF basiques/mois
+- Estimation budgétaire projet tech
+- Comparaison prestataire in-house vs freelance
+- Rapport de chiffrage détaillé (PDF/Excel)
+
+#### **Premium (29€/mois)** :
+**Freelance** :
+- Exports PDF illimités + branding
+- **Génération devis professionnel IA** ✨
+- Simulation rentabilité projet
+- Calcul tarif optimal selon objectif revenu
+- Modification paramètres projet
+
+**Entreprise** :
+- Exports PDF illimités + branding
+- **Génération cahier des charges IA** ✨
+- **Génération devis technique/commercial** ✨
+- Conseil IA choix prestataires/profils
+- Historique + analytics + support prioritaire
 
 ### Implémentation Symfony
 - [ ] **Stripe Bundle Symfony**
@@ -237,6 +271,6 @@ Devenir la référence pour l'estimation de projets web avec une IA qui comprend
 
 ---
 
-**Créé le** : Juillet 2024  
-**Dernière mise à jour** : Fin de conversation  
-**Status** : 🎯 Prêt pour Phase 4
+**Créé le** : Juillet 2024
+**Dernière mise à jour** : 16 juillet 2025
+**Status** : 🎯 Prêt pour Phase 5 - Export PDF et Documents

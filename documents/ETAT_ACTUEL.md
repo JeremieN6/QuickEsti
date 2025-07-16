@@ -131,6 +131,14 @@ js/
   - Différenciation Freelance vs Entreprise renforcée
 - **Impact** : +60% qualité estimations, recommandations exploitables
 
+### 📄 Spécifications Export/Documents mises à jour ✨ NOUVEAU
+- **Problème résolu** : Clarification fonctionnalités gratuit vs premium
+- **Freelance gratuit** : PDF estimation + prix de vente + TJM recommandé
+- **Freelance premium** : Devis professionnel IA + simulation rentabilité
+- **Entreprise gratuit** : PDF estimation + comparaison prestataires + rapport chiffrage
+- **Entreprise premium** : Cahier des charges IA + devis technique/commercial
+- **Impact** : Différenciation claire par profil utilisateur
+
 ## 🚀 Prochaines étapes prioritaires
 
 ### 1. Migration vers Symfony (Prochaine étape logique)

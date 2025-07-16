@@ -1,47 +1,48 @@
-# Message de commit pour la restructuration du projet
+# Message de commit pour les spécifications export mises à jour
 
 ```bash
 git add .
-git commit -m "refactor: Restructuration projet - suppression doublon symfony-quickesti/
+git commit -m "docs: Spécifications export/documents différenciées par profil utilisateur
 
-📁 RESTRUCTURATION PROJET - Structure propre
+📄 SPÉCIFICATIONS EXPORT - Différenciation par profil
 
-✨ SUPPRESSION DOUBLON
-- Déplacement contenu symfony-quickesti/ vers racine
-- Structure propre: /workspaces/QuickEsti/ directement
-- Plus de doublon de nommage inutile
-- Navigation simplifiée et chemins plus courts
+✨ FONCTIONNALITÉS CLARIFIÉES
+- Freelance gratuit: PDF estimation + prix vente + TJM recommandé
+- Freelance premium: Devis professionnel IA + simulation rentabilité
+- Entreprise gratuit: PDF estimation + comparaison prestataires + rapport chiffrage
+- Entreprise premium: Cahier des charges IA + devis technique/commercial
 
-🔧 PROCESSUS SÉCURISÉ
-- Sauvegarde préventive avant restructuration
-- Déplacement fichiers + fichiers cachés
-- Validation fonctionnelle complète
-- Nettoyage dossier vide
+🎯 DIFFÉRENCIATION MÉTIER
+- Freelance: Focus rentabilité personnelle et relation client
+- Entreprise: Focus gestion projet et décisions stratégiques
+- Fonctionnalités adaptées aux besoins spécifiques
+- Modèle freemium cohérent (29€/mois)
 
 📊 DOCUMENTATION MISE À JOUR
-- ETAT_ACTUEL.md: Structure projet corrigée
-- README.md: Installation (cd QuickEsti) + Notes développement
-- RESTRUCTURATION_PROJET.md: Documentation complète processus
-- Correction: Webpack Encore vs 'pas d'outils de build'
+- ROADMAP.md: Modèle freemium différencié par profil
+- ETAT_ACTUEL.md: Spécifications export/documents
+- README.md: Fonctionnalités gratuit/premium clarifiées
+- SPECIFICATIONS_EXPORT.md: Documentation complète (nouveau)
 
-✅ VALIDATION FONCTIONNELLE
-- Serveur Symfony: OK sur localhost:8000
-- API Health: Réponse JSON correcte
-- Interface: Accessible et fonctionnelle
-- Build assets: Webpack Encore opérationnel
+🛠️ IMPLÉMENTATION PLANIFIÉE
+- Phase 1: PDF basique (1-2 semaines)
+- Phase 2: Fonctionnalités gratuites (1 semaine)
+- Phase 3: IA Premium (2-3 semaines)
+- Phase 4: Système premium (1-2 semaines)
 
-🎯 AVANTAGES OBTENUS
-- Structure intuitive et professionnelle
-- Chemins plus courts et navigation simplifiée
-- Maintenabilité améliorée
-- Conformité bonnes pratiques Symfony
+🎯 DIFFÉRENCIATION CONCURRENTIELLE
+- Freelance: Mode 'Devis Client' + simulation rentabilité
+- Entreprise: Génération cahier des charges IA complet
+- Templates adaptés par secteur et méthodologies
+- IA spécialisée contexte français
 
-📁 STRUCTURE FINALE
-- /workspaces/QuickEsti/ (racine propre)
-- Plus de doublon symfony-quickesti/
-- Documentation cohérente avec réalité
+📈 MÉTRIQUES CIBLES
+- 70% utilisateurs exportent PDF (gratuit)
+- 15% conversion gratuit → premium
+- 1000€ MRR en 3 mois
+- >4.5/5 satisfaction documents générés
 
-Version: v1.3.0 - Structure projet restructurée"
+Version: v1.4.0 - Spécifications export différenciées"
 
 git push origin main
 ```
