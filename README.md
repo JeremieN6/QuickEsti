@@ -65,7 +65,7 @@
 ```bash
 # Cloner le projet
 git clone <repository-url>
-cd symfony-quickesti
+cd QuickEsti
 
 # Installer les dépendances PHP
 composer install
@@ -210,10 +210,11 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## �📝 Notes de développement
 
-- Pas d'outils de build (Webpack, Vite) - tout en HTML/CSS/JS simple
-- Vue.js via CDN pour simplicité de déploiement
-- Composants modulaires pour faciliter l'extension
-- Code documenté et structure claire
+- **Webpack Encore** pour le build et l'optimisation des assets
+- **Vue.js 3** intégré via Webpack avec compilation optimisée
+- **Tailwind CSS** avec PostCSS pour le styling moderne
+- **Composants modulaires** pour faciliter l'extension
+- **Code documenté** et structure claire
 
 ## 🤝 Contribution
 
@@ -250,3 +251,4 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 *Migration Symfony 7 + Vue.js 3 terminée le 15 juillet 2025*
 *Mode "Devis Client" ajouté le 15 juillet 2025*
 *Prompts OpenAI optimisés le 15 juillet 2025*
+*Structure projet restructurée le 16 juillet 2025*

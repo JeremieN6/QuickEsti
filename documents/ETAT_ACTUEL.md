@@ -41,11 +41,29 @@
 - [x] **Estimation réaliste** : Prompts métier calibrés
 - [x] **Mode "Devis Client"** : Prix de vente vs coût interne ✨ NOUVEAU
 - [x] **Prompts OpenAI optimisés** : Structure ChatGPT améliorée ✨ NOUVEAU
+- [x] **Structure projet restructurée** : Plus de doublon symfony-quickesti/ ✨ NOUVEAU
+
+## 📁 Structure du projet (restructurée)
+
+```
+/workspaces/QuickEsti/      # Racine du projet (plus de doublon)
+├── src/                    # Code source Symfony
+├── assets/                 # Assets Vue.js (Webpack Encore)
+├── public/                 # Point d'entrée web
+├── config/                 # Configuration Symfony
+├── templates/              # Templates Twig
+├── documents/              # Documentation projet
+├── migrations/             # Migrations base de données
+├── tests/                  # Tests unitaires
+├── composer.json           # Dépendances PHP
+├── package.json            # Dépendances JavaScript
+└── webpack.config.js       # Configuration Webpack Encore
+```
 
 ## 🏗️ Architecture technique
 
-### Frontend (Actuel - MVP)
-- **Vue.js 3** via CDN (temporaire pour MVP)
+### Frontend (Actuel - Production)
+- **Vue.js 3** intégré via Webpack Encore
 - **Tailwind CSS** pour le styling
 - **Flowbite** pour les composants UI
 - **Composants modulaires** : 1 composant par section
