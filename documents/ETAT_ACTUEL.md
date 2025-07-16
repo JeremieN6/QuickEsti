@@ -42,6 +42,7 @@
 - [x] **Mode "Devis Client"** : Prix de vente vs coût interne ✨ NOUVEAU
 - [x] **Prompts OpenAI optimisés** : Structure ChatGPT améliorée ✨ NOUVEAU
 - [x] **Structure projet restructurée** : Plus de doublon symfony-quickesti/ ✨ NOUVEAU
+- [x] **Logique Forfait vs Régie** : Différenciation métier freelance ✨ NOUVEAU
 
 ## 📁 Structure du projet (restructurée)
 
@@ -131,13 +132,17 @@ js/
   - Différenciation Freelance vs Entreprise renforcée
 - **Impact** : +60% qualité estimations, recommandations exploitables
 
-### 📄 Spécifications Export/Documents mises à jour ✨ NOUVEAU
-- **Problème résolu** : Clarification fonctionnalités gratuit vs premium
-- **Freelance gratuit** : PDF estimation + prix de vente + TJM recommandé
-- **Freelance premium** : Devis professionnel IA + simulation rentabilité
-- **Entreprise gratuit** : PDF estimation + comparaison prestataires + rapport chiffrage
-- **Entreprise premium** : Cahier des charges IA + devis technique/commercial
-- **Impact** : Différenciation claire par profil utilisateur
+### 🎯 Logique Forfait vs Régie implémentée ✨ NOUVEAU
+- **Problème résolu** : Confusion entre types de freelance et besoins
+- **Forfait** : Payé au temps → TJM visible, estimation coût interne
+- **Régie** : Payé au résultat → Infos client, prix de vente marché
+- **Restructuration** :
+  - Section 2 : "Type de freelance" au lieu de "Type d'estimation"
+  - Section 6 : Conditionnelle (seulement en régie)
+  - TJM : Conditionnel (seulement en forfait)
+  - Champs client : Déplacés de section 2 vers section 6
+- **Service OpenAI** : Adapté pour freelanceType vs estimationMode
+- **Impact** : Logique métier cohérente et intuitive
 
 ## 🚀 Prochaines étapes prioritaires
 

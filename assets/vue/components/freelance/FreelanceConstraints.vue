@@ -16,36 +16,36 @@
       <!-- Mode d'estimation -->
       <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
         <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
-          🎯 Type d'estimation
+          🎯 Type de freelance
         </h5>
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Choisissez si vous estimez vos coûts internes ou le prix de vente à proposer au client
+          Choisissez votre mode de travail avec le client
         </p>
         <div class="space-y-3">
           <label class="flex items-center">
             <input
               type="radio"
-              name="estimationMode"
-              value="internal"
-              v-model="localFormData.estimationMode"
+              name="freelanceType"
+              value="forfait"
+              v-model="localFormData.freelanceType"
               @change="updateFormData"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             >
             <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-              <strong>Estimation interne</strong> - Mon coût projet (temps × TJM personnel)
+              <strong>Forfait</strong> - Payé au temps passé (estimation coût interne)
             </span>
           </label>
           <label class="flex items-center">
             <input
               type="radio"
-              name="estimationMode"
-              value="client-quote"
-              v-model="localFormData.estimationMode"
+              name="freelanceType"
+              value="regie"
+              v-model="localFormData.freelanceType"
               @change="updateFormData"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             >
             <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-              <strong>Devis client</strong> - Prix de vente recommandé (benchmark marché)
+              <strong>Régie</strong> - Payé au résultat (prix de vente client)
             </span>
           </label>
         </div>
@@ -121,8 +121,8 @@
           </div>
         </div>
 
-        <!-- TJM cible -->
-        <div>
+        <!-- TJM cible (seulement pour forfait) -->
+        <div v-if="localFormData.freelanceType === 'forfait'">
           <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
             💰 TJM (Taux Journalier Moyen)
           </h5>
@@ -189,98 +189,7 @@
         </div>
       </div>
 
-      <!-- Informations client (mode devis uniquement) -->
-      <div v-if="localFormData.estimationMode === 'client-quote'" class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-        <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">
-          🏢 Informations sur le client
-        </h5>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Type de client -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Type de client
-            </label>
-            <select
-              v-model="localFormData.clientType"
-              @change="updateFormData"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            >
-              <option value="">Sélectionnez le type de client</option>
-              <option value="startup">Startup / Jeune entreprise</option>
-              <option value="pme">PME (10-250 salariés)</option>
-              <option value="grande-entreprise">Grande entreprise (250+ salariés)</option>
-              <option value="association">Association / ONG</option>
-              <option value="particulier">Particulier</option>
-            </select>
-          </div>
 
-          <!-- Budget indicatif -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Budget indicatif du client
-            </label>
-            <select
-              v-model="localFormData.clientBudgetRange"
-              @change="updateFormData"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            >
-              <option value="">Budget non communiqué</option>
-              <option value="low">&lt; 5 000€</option>
-              <option value="medium">5 000€ - 15 000€</option>
-              <option value="high">15 000€ - 50 000€</option>
-              <option value="enterprise">50 000€+</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Contexte concurrentiel -->
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Contexte concurrentiel
-          </label>
-          <div class="space-y-2">
-            <label class="flex items-center">
-              <input
-                type="radio"
-                name="competitive"
-                value="low"
-                v-model="localFormData.competitiveContext"
-                @change="updateFormData"
-                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
-              >
-              <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                Peu de concurrence - Client me fait confiance
-              </span>
-            </label>
-            <label class="flex items-center">
-              <input
-                type="radio"
-                name="competitive"
-                value="medium"
-                v-model="localFormData.competitiveContext"
-                @change="updateFormData"
-                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
-              >
-              <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                Concurrence modérée - Quelques devis en parallèle
-              </span>
-            </label>
-            <label class="flex items-center">
-              <input
-                type="radio"
-                name="competitive"
-                value="high"
-                v-model="localFormData.competitiveContext"
-                @change="updateFormData"
-                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
-              >
-              <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                Forte concurrence - Appel d'offres ou nombreux devis
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
 
       <!-- Résumé des contraintes -->
       <div v-if="hasConstraintData" class="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -288,8 +197,8 @@
           📝 Résumé de vos contraintes :
         </h5>
         <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <p v-if="localFormData.estimationMode">
-            <strong>Mode :</strong> {{ localFormData.estimationMode === 'internal' ? 'Estimation interne' : 'Devis client' }}
+          <p v-if="localFormData.freelanceType">
+            <strong>Type :</strong> {{ localFormData.freelanceType === 'forfait' ? 'Freelance forfait' : 'Freelance régie' }}
           </p>
           <p v-if="localFormData.isFullTime !== null">
             <strong>Disponibilité :</strong> {{ localFormData.isFullTime ? 'Temps plein' : 'Temps partiel' }}
@@ -300,16 +209,7 @@
           <p v-if="localFormData.securityMargin">
             <strong>Marge de sécurité :</strong> {{ localFormData.securityMargin }}%
           </p>
-          <!-- Informations client pour mode devis -->
-          <p v-if="localFormData.estimationMode === 'client-quote' && localFormData.clientType">
-            <strong>Type de client :</strong> {{ getClientTypeLabel(localFormData.clientType) }}
-          </p>
-          <p v-if="localFormData.estimationMode === 'client-quote' && localFormData.clientBudgetRange">
-            <strong>Budget client :</strong> {{ getBudgetRangeLabel(localFormData.clientBudgetRange) }}
-          </p>
-          <p v-if="localFormData.estimationMode === 'client-quote' && localFormData.competitiveContext">
-            <strong>Concurrence :</strong> {{ getCompetitiveContextLabel(localFormData.competitiveContext) }}
-          </p>
+
         </div>
       </div>
     </div>
@@ -338,7 +238,7 @@ export default {
     formData: {
       type: Object,
       default: () => ({
-        estimationMode: 'internal', // 'internal' ou 'client-quote'
+        freelanceType: 'forfait', // 'forfait' ou 'regie'
         skillLevels: {},
         isFullTime: null,
         hasTjmTarget: false,
@@ -347,11 +247,7 @@ export default {
         workingDaysTarget: null,
         hasMarginTarget: false,
         marginTarget: null,
-        securityMargin: '',
-        // Champs pour mode devis client
-        clientType: '',
-        clientBudgetRange: '',
-        competitiveContext: ''
+        securityMargin: ''
       })
     },
     technologies: {
@@ -424,35 +320,7 @@ export default {
       });
     },
 
-    getClientTypeLabel(value) {
-      const labels = {
-        'startup': 'Startup / Jeune entreprise',
-        'pme': 'PME (10-250 salariés)',
-        'grande-entreprise': 'Grande entreprise (250+ salariés)',
-        'association': 'Association / ONG',
-        'particulier': 'Particulier'
-      };
-      return labels[value] || value;
-    },
 
-    getBudgetRangeLabel(value) {
-      const labels = {
-        'low': '< 5 000€',
-        'medium': '5 000€ - 15 000€',
-        'high': '15 000€ - 50 000€',
-        'enterprise': '50 000€+'
-      };
-      return labels[value] || value;
-    },
-
-    getCompetitiveContextLabel(value) {
-      const labels = {
-        'low': 'Peu de concurrence',
-        'medium': 'Concurrence modérée',
-        'high': 'Forte concurrence'
-      };
-      return labels[value] || value;
-    }
   },
   watch: {
     formData: {

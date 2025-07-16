@@ -461,10 +461,10 @@ class OpenAIService
      */
     private function buildOptimizedFreelancePrompt(array $data): string
     {
-        $estimationMode = $data['constraints']['estimationMode'] ?? 'internal';
+        $freelanceType = $data['constraints']['freelanceType'] ?? 'forfait';
 
-        // En-tête selon le mode
-        if ($estimationMode === 'client-quote') {
+        // En-tête selon le type de freelance
+        if ($freelanceType === 'regie') {
             $prompt = "Tu es un expert senior en pricing commercial freelance. Tu dois fournir un **prix de vente recommandé réaliste et compétitif** pour le client.\n\n";
             $prompt .= "Tu réponds en **JSON strict**, exactement dans la structure fournie ci-dessous.\n\n";
         } else {
@@ -481,19 +481,19 @@ class OpenAIService
         if (isset($data['constraints'])) {
             $prompt .= "- Disponibilité : " . ($data['constraints']['isFullTime'] ? 'Temps plein' : 'Temps partiel') . "\n";
 
-            if ($estimationMode === 'client-quote') {
-                // Informations client pour devis
-                if (isset($data['constraints']['clientType'])) {
-                    $prompt .= "- Type de client : " . $this->getClientTypeLabel($data['constraints']['clientType']) . "\n";
+            if ($freelanceType === 'regie') {
+                // Informations client pour devis (depuis clientInfo maintenant)
+                if (isset($data['clientInfo']['clientType'])) {
+                    $prompt .= "- Type de client : " . $this->getClientTypeLabel($data['clientInfo']['clientType']) . "\n";
                 }
-                if (isset($data['constraints']['clientBudgetRange'])) {
-                    $prompt .= "- Budget indicatif : " . $this->getBudgetRangeLabel($data['constraints']['clientBudgetRange']) . "\n";
+                if (isset($data['clientInfo']['clientBudgetRange'])) {
+                    $prompt .= "- Budget indicatif : " . $this->getBudgetRangeLabel($data['clientInfo']['clientBudgetRange']) . "\n";
                 }
-                if (isset($data['constraints']['competitiveContext'])) {
-                    $prompt .= "- Contexte concurrentiel : " . $this->getCompetitiveContextLabel($data['constraints']['competitiveContext']) . "\n";
+                if (isset($data['clientInfo']['competitiveContext'])) {
+                    $prompt .= "- Contexte concurrentiel : " . $this->getCompetitiveContextLabel($data['clientInfo']['competitiveContext']) . "\n";
                 }
             } else {
-                // Informations freelance pour estimation interne
+                // Informations freelance pour estimation interne (forfait)
                 if (isset($data['constraints']['tjmTarget'])) {
                     $prompt .= "- TJM cible : " . $data['constraints']['tjmTarget'] . "€/jour\n";
                 }
@@ -535,8 +535,8 @@ class OpenAIService
             $prompt .= "- Intègre la marge de sécurité si spécifiée\n";
         }
 
-        // Règles spécifiques selon le mode
-        if ($estimationMode === 'client-quote') {
+        // Règles spécifiques selon le type de freelance
+        if ($freelanceType === 'regie') {
             $prompt .= "\n### Benchmarks TJM marché :\n";
             $prompt .= "- Startup/PME : 400-600€/jour\n";
             $prompt .= "- Grande entreprise : 600-800€/jour\n";
@@ -585,7 +585,7 @@ class OpenAIService
         $prompt .= "- Si une valeur est inconnue, utilise \"description\": \"Non spécifié\" ou \"cost\": 0\n";
         $prompt .= "- Fournis des recommandations et risques spécifiques au projet\n";
 
-        if ($estimationMode === 'client-quote') {
+        if ($freelanceType === 'regie') {
             $prompt .= "- Le coût doit refléter un PRIX DE VENTE marché, pas un coût interne\n";
         } else {
             $prompt .= "- Le coût doit refléter tes coûts internes réels\n";

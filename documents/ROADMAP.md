@@ -22,7 +22,8 @@ Devenir la référence pour l'estimation de projets web avec une IA qui comprend
 - ✅ **Service OpenAI Symfony** avec cache et optimisations
 - ✅ **Prompts optimisés** structure ChatGPT (+60% qualité)
 - ✅ **Mode "Devis Client"** différenciation coût interne vs prix marché
-- ✅ **Deux flux complets** Freelance (5 sections) et Entreprise (6 sections)
+- ✅ **Logique Forfait vs Régie** restructuration métier freelance
+- ✅ **Deux flux complets** Freelance (6 sections) et Entreprise (6 sections)
 - ✅ **Interface résultats** avec recommandations et risques spécifiques
 
 ### Tâches prioritaires

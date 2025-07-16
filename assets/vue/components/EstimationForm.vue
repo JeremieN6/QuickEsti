@@ -55,6 +55,13 @@
             :form-data="freelanceData.objectives"
             @update:form-data="updateFreelanceObjectives"
           />
+
+          <!-- Section 6 : Informations Client (seulement en régie) -->
+          <FreelanceClientInfo
+            :freelance-type="freelanceData.constraints.freelanceType"
+            :form-data="freelanceData.clientInfo"
+            @update:form-data="updateFreelanceClientInfo"
+          />
         </div>
 
         <!-- Section pour Entreprise -->
@@ -159,6 +166,7 @@ import FreelanceConstraints from './freelance/FreelanceConstraints.vue'
 import FreelanceFeatures from './freelance/FreelanceFeatures.vue'
 import FreelanceDeliverables from './freelance/FreelanceDeliverables.vue'
 import FreelanceObjectives from './freelance/FreelanceObjectives.vue'
+import FreelanceClientInfo from './freelance/FreelanceClientInfo.vue'
 import EnterpriseBasics from './enterprise/EnterpriseBasics.vue'
 import EnterpriseStructure from './enterprise/EnterpriseStructure.vue'
 import EnterpriseFunctionalities from './enterprise/EnterpriseFunctionalities.vue'
@@ -176,6 +184,7 @@ export default {
     FreelanceFeatures,
     FreelanceDeliverables,
     FreelanceObjectives,
+    FreelanceClientInfo,
     EnterpriseBasics,
     EnterpriseStructure,
     EnterpriseFunctionalities,
@@ -201,6 +210,7 @@ export default {
           deadlineDays: null
         },
         constraints: {
+          freelanceType: 'forfait',
           skillLevels: {},
           isFullTime: null,
           hasTjmTarget: false,
@@ -228,6 +238,20 @@ export default {
           primaryObjective: '',
           clientType: '',
           currentSituation: ''
+        },
+        clientInfo: {
+          enabled: false,
+          projectName: '',
+          clientName: '',
+          contactEmail: '',
+          companyName: '',
+          projectDescription: '',
+          clientType: '',
+          clientBudgetRange: '',
+          competitiveContext: '',
+          validityDays: 30,
+          paymentTerms: '',
+          warranty: 3
         }
       },
       entrepriseData: {
@@ -337,6 +361,10 @@ export default {
     },
     updateFreelanceObjectives(data) {
       this.freelanceData.objectives = { ...this.freelanceData.objectives, ...data };
+      this.saveData();
+    },
+    updateFreelanceClientInfo(data) {
+      this.freelanceData.clientInfo = { ...this.freelanceData.clientInfo, ...data };
       this.saveData();
     },
     

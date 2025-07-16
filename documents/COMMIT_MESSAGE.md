@@ -1,48 +1,50 @@
-# Message de commit pour les spécifications export mises à jour
+# Message de commit pour la logique Forfait vs Régie
 
 ```bash
 git add .
-git commit -m "docs: Spécifications export/documents différenciées par profil utilisateur
+git commit -m "feat: Implémentation logique Forfait vs Régie pour freelances
 
-📄 SPÉCIFICATIONS EXPORT - Différenciation par profil
+🎯 LOGIQUE MÉTIER FREELANCE - Forfait vs Régie
 
-✨ FONCTIONNALITÉS CLARIFIÉES
-- Freelance gratuit: PDF estimation + prix vente + TJM recommandé
-- Freelance premium: Devis professionnel IA + simulation rentabilité
-- Entreprise gratuit: PDF estimation + comparaison prestataires + rapport chiffrage
-- Entreprise premium: Cahier des charges IA + devis technique/commercial
+✨ RESTRUCTURATION INTERFACE
+- Section 2: 'Type de freelance' au lieu de 'Type d'estimation'
+- Forfait: Payé au temps → TJM visible, estimation coût interne
+- Régie: Payé au résultat → Infos client, prix de vente marché
+- Section 6: Conditionnelle (seulement en régie)
+- TJM: Conditionnel (seulement en forfait)
 
-🎯 DIFFÉRENCIATION MÉTIER
-- Freelance: Focus rentabilité personnelle et relation client
-- Entreprise: Focus gestion projet et décisions stratégiques
-- Fonctionnalités adaptées aux besoins spécifiques
-- Modèle freemium cohérent (29€/mois)
+🔧 MODIFICATIONS TECHNIQUES
+- FreelanceConstraints.vue: Suppression champs client, TJM conditionnel
+- FreelanceClientInfo.vue: Nouveau composant conditionnel
+- EstimationForm.vue: Gestion freelanceType + clientInfo
+- OpenAIService.php: Adaptation freelanceType vs estimationMode
+- Prompts différenciés selon mode de travail
 
-📊 DOCUMENTATION MISE À JOUR
-- ROADMAP.md: Modèle freemium différencié par profil
-- ETAT_ACTUEL.md: Spécifications export/documents
-- README.md: Fonctionnalités gratuit/premium clarifiées
-- SPECIFICATIONS_EXPORT.md: Documentation complète (nouveau)
+📊 EXPÉRIENCE UTILISATEUR AMÉLIORÉE
+- Parcours Forfait: TJM visible, section 6 masquée
+- Parcours Régie: TJM masqué, section 6 infos client
+- Logique intuitive: Champs adaptés au contexte
+- Terminologie claire: Plus de confusion estimation/devis
 
-🛠️ IMPLÉMENTATION PLANIFIÉE
-- Phase 1: PDF basique (1-2 semaines)
-- Phase 2: Fonctionnalités gratuites (1 semaine)
-- Phase 3: IA Premium (2-3 semaines)
-- Phase 4: Système premium (1-2 semaines)
+🧠 IA ADAPTÉE AU CONTEXTE
+- Prompts Forfait: Focus coût interne + TJM personnel
+- Prompts Régie: Focus prix marché + benchmarks sectoriels
+- Données pertinentes: Seulement les infos utiles selon mode
+- Estimations précises: Adaptées au mode de travail
 
-🎯 DIFFÉRENCIATION CONCURRENTIELLE
-- Freelance: Mode 'Devis Client' + simulation rentabilité
-- Entreprise: Génération cahier des charges IA complet
-- Templates adaptés par secteur et méthodologies
-- IA spécialisée contexte français
+📊 DOCUMENTATION COMPLÈTE
+- ETAT_ACTUEL.md: Nouvelle section logique Forfait/Régie
+- ROADMAP.md: Fonctionnalités réalisées mises à jour
+- README.md: Différenciation métier freelance
+- LOGIQUE_FORFAIT_REGIE.md: Documentation technique complète
 
-📈 MÉTRIQUES CIBLES
-- 70% utilisateurs exportent PDF (gratuit)
-- 15% conversion gratuit → premium
-- 1000€ MRR en 3 mois
-- >4.5/5 satisfaction documents générés
+🎯 IMPACT MÉTIER
+- Clarté conceptuelle: Séparation nette Forfait vs Régie
+- Interface adaptée: Conditionnalité selon besoin
+- Estimations précises: Coût interne vs Prix marché
+- Évolutivité: Architecture extensible et maintenable
 
-Version: v1.4.0 - Spécifications export différenciées"
+Version: v1.4.0 - Logique Forfait vs Régie implémentée"
 
 git push origin main
 ```
