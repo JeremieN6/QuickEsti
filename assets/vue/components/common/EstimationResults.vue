@@ -36,6 +36,24 @@
         </div>
       </div>
 
+      <!-- Actions d'export -->
+      <div class="mt-6 flex justify-center">
+        <button
+          @click="exportToPDF"
+          :disabled="isExporting"
+          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          <svg v-if="!isExporting" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <svg v-else class="w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ isExporting ? 'Génération...' : 'Télécharger PDF' }}
+        </button>
+      </div>
+
       <!-- Détails supplémentaires -->
       <div v-if="result.estimation.breakdown" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Répartition détaillée</h5>
@@ -88,7 +106,16 @@ export default {
     userType: {
       type: String,
       default: ''
+    },
+    formData: {
+      type: Object,
+      default: () => ({})
     }
+  },
+  data() {
+    return {
+      isExporting: false
+    };
   },
   methods: {
     formatPrice(price) {
@@ -195,6 +222,64 @@ export default {
         'integration': 'Intégration'
       };
       return labels[key] || key;
+    },
+
+    async exportToPDF() {
+      if (!this.result || !this.formData) {
+        alert('Données manquantes pour l\'export PDF');
+        return;
+      }
+
+      this.isExporting = true;
+
+      try {
+        // Prépare les données pour l'export
+        const exportData = {
+          userType: this.userType,
+          formData: this.formData,
+          estimation: this.result.estimation,
+          metadata: this.result.metadata || {}
+        };
+
+        // Appel à l'API d'export PDF
+        const response = await fetch('/api/estimation/export-pdf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(exportData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la génération du PDF');
+        }
+
+        // Télécharge le PDF
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+
+        // Génère un nom de fichier basé sur le type de freelance
+        const freelanceType = this.formData.constraints?.freelanceType || 'forfait';
+        const projectType = this.formData.basics?.projectType || 'projet';
+        const date = new Date().toISOString().split('T')[0];
+        const prefix = freelanceType === 'regie' ? 'devis' : 'estimation';
+
+        a.download = `${prefix}-${projectType.replace(/[^a-zA-Z0-9]/g, '-')}-${date}.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+      } catch (error) {
+        console.error('Erreur export PDF:', error);
+        alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+      } finally {
+        this.isExporting = false;
+      }
     }
   }
 }

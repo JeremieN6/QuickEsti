@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Service\EstimationCalculatorService;
+use App\Service\DomPDFService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Psr\Log\LoggerInterface;
 
@@ -13,6 +15,7 @@ class EstimationController extends AbstractController
 {
     public function __construct(
         private EstimationCalculatorService $estimationCalculator,
+        private DomPDFService $pdfService,
         private LoggerInterface $logger
     ) {}
 
@@ -143,5 +146,83 @@ class EstimationController extends AbstractController
             'timestamp' => date('c'),
             'version' => '1.0'
         ]);
+    }
+
+    #[Route('/api/estimation/export-pdf', name: 'api_estimation_export_pdf', methods: ['POST'])]
+    public function exportPDF(Request $request): Response
+    {
+        try {
+            // Récupération des données
+            $data = json_decode($request->getContent(), true);
+
+            if (!$data) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Données invalides'
+                ], 400);
+            }
+
+            // Validation des données requises
+            if (!isset($data['userType']) || !isset($data['formData']) || !isset($data['estimation'])) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Données manquantes (userType, formData, estimation requis)'
+                ], 400);
+            }
+
+            $userType = $data['userType'];
+
+            // Normalisation du type d'utilisateur (accepte entreprise/enterprise)
+            $normalizedUserType = strtolower($userType);
+            if ($normalizedUserType === 'entreprise') {
+                $normalizedUserType = 'enterprise';
+                // Normaliser aussi dans les données pour la suite
+                $data['userType'] = 'enterprise';
+            }
+
+            // Génération du PDF selon le type d'utilisateur
+            if ($normalizedUserType === 'freelance') {
+                $pdfContent = $this->pdfService->generateFreelancePDF($data);
+            } elseif ($normalizedUserType === 'enterprise') {
+                $pdfContent = $this->pdfService->generateEnterprisePDF($data);
+            } else {
+                $this->logger->error('Type utilisateur non supporté', [
+                    'userType' => $userType,
+                    'normalizedUserType' => $normalizedUserType
+                ]);
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Type d\'utilisateur non supporté: ' . $userType
+                ], 400);
+            }
+
+            // Génération du nom de fichier
+            $filename = $this->pdfService->generateFilename($data['formData']);
+
+            // Retour du PDF
+            $response = new Response($pdfContent);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            $response->headers->set('Content-Length', strlen($pdfContent));
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur génération PDF', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'userType' => $data['userType'] ?? 'unknown',
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Erreur lors de la génération du PDF: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

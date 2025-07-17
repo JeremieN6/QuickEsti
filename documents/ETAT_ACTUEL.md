@@ -43,6 +43,25 @@
 - [x] **Prompts OpenAI optimisés** : Structure ChatGPT améliorée ✨ NOUVEAU
 - [x] **Structure projet restructurée** : Plus de doublon symfony-quickesti/ ✨ NOUVEAU
 - [x] **Logique Forfait vs Régie** : Différenciation métier freelance ✨ NOUVEAU
+- [x] **Export PDF** : Templates Freelance et Entreprise avec DomPDF ✨ NOUVEAU
+- [x] **Traduction automatique** : Phases et objectifs en français ✨ NOUVEAU
+- [x] **Branding PDF** : Logo QuickEsti et mise en page professionnelle ✨ NOUVEAU
+
+## 📊 Export PDF (Implémenté)
+
+### ✅ Fonctionnalités Complètes
+- **Templates PDF** : Freelance (forfait/régie) et Entreprise avec timeline
+- **Service DomPDF** : Génération complète avec Twig et traductions
+- **Branding** : Logo QuickEsti, couleurs cohérentes, footer professionnel
+- **Traduction** : Objectifs et phases automatiquement en français
+- **Endpoint API** : `/api/estimation/export-pdf` robuste
+- **Gestion d'erreurs** : Support userType "entreprise"/"enterprise"
+- **Mise en page** : Timeline limitée, tableau pleine largeur
+- **Nommage** : Format "estimation-[type]-quickesti-[date].pdf"
+
+### 🔄 Prochaines Étapes
+- Graphiques et visualisations (charts, jauges, diagrammes)
+- Optimisations visuelles avancées
 
 ## 📁 Structure du projet (restructurée)
 

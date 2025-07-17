@@ -151,6 +151,7 @@
           v-if="estimationResult"
           :result="estimationResult"
           :user-type="selectedUserType"
+          :form-data="getCurrentFormData()"
           class="mt-8"
         />
       </div>
@@ -486,6 +487,16 @@ export default {
       } finally {
         this.isGenerating = false;
       }
+    },
+
+    getCurrentFormData() {
+      // Retourne les données du formulaire selon le type d'utilisateur
+      if (this.selectedUserType === 'freelance') {
+        return this.freelanceData;
+      } else if (this.selectedUserType === 'entreprise') {
+        return this.entrepriseData;
+      }
+      return {};
     }
   },
   

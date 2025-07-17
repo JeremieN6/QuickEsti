@@ -1,0 +1,287 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block content %}
+    <!-- Header -->
+    <div class="header">
+        <div class="header-logo">QUICKESTI</div>
+        <h1>{{ title }}</h1>
+        <div class="subtitle">Export d'estimation pour entreprise/agence - Projet : {{ project.type }}</div>
+        <div class="meta">
+            <strong>Généré le :</strong> {{ generatedAt|date('d/m/Y à H:i') }}
+        </div>
+    </div>
+
+    <!-- Informations client -->
+    {% if client.companyName or client.contactName %}
+    <div class="section">
+        <h2 class="section-title" data-icon="1">Informations Client</h2>
+        <div class="grid">
+            {% if client.companyName %}
+            <div class="card">
+                <div class="card-title">Entreprise</div>
+                <p class="text-lg font-bold">{{ client.companyName }}</p>
+                {% if client.sector %}<p class="text-sm text-gray-600">Secteur : {{ client.sector }}</p>{% endif %}
+            </div>
+            {% endif %}
+            
+            {% if client.contactName %}
+            <div class="card">
+                <div class="card-title">Contact Principal</div>
+                <p><strong>{{ client.contactName }}</strong></p>
+                {% if client.contactEmail %}<p class="text-sm">{{ client.contactEmail }}</p>{% endif %}
+                {% if client.contactPhone %}<p class="text-sm">{{ client.contactPhone }}</p>{% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if client.projectName %}
+        <div class="card grid-full">
+            <div class="card-title">Projet</div>
+            <p class="text-lg font-bold">{{ client.projectName }}</p>
+            {% if client.projectDescription %}
+            <p class="text-sm mt-2">{{ client.projectDescription }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Résumé exécutif -->
+    <div class="section">
+        <h2 class="section-title" data-icon="2">Résumé Exécutif</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Type de Projet</div>
+                <p>{{ project.type }}</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Technologies</div>
+                <p>{{ project.technologies }}</p>
+            </div>
+        </div>
+        
+        {% if project.description %}
+        <div class="card grid-full">
+            <div class="card-title">Description du Projet</div>
+            <p>{{ project.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Équipe et ressources -->
+    <div class="section">
+        <h2 class="section-title" data-icon="3">Équipe et Ressources</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Durée Estimée</div>
+                <p class="text-lg font-bold">{{ estimation.totalDays }} jours</p>
+                <p class="text-sm text-gray-600">{{ (estimation.totalDays / 5)|round(1) }} semaines</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Équipe Recommandée</div>
+                <ul class="text-sm">
+                    <li>• Chef de projet technique</li>
+                    <li>• Développeur(s) senior</li>
+                    {% if estimation.totalDays > 30 %}
+                    <li>• Designer UX/UI</li>
+                    <li>• Testeur QA</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card grid-full">
+            <div class="card-title">Méthodologie</div>
+            <p>Développement agile avec sprints de 2 semaines, livraisons itératives et validation continue avec vos équipes.</p>
+        </div>
+    </div>
+
+    <!-- Fonctionnalités -->
+    {% if features|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="4">Fonctionnalités Incluses</h2>
+        <div class="grid">
+            {% for feature in features %}
+            <div class="card">
+                <p>{{ feature }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Proposition commerciale -->
+    <div class="section">
+        <h2 class="section-title" data-icon="5">Proposition Commerciale</h2>
+        
+        {% if estimation.breakdown is defined and estimation.breakdown %}
+        <div class="breakdown-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Durée</th>
+                        <th>Coût HT</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for phase, details in estimation.breakdown %}
+                    <tr>
+                        <td>{{ phase|title }}</td>
+                        <td>{{ details.days }} j</td>
+                        <td>{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                        <td>{{ details.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>{{ estimation.totalDays }} j</strong></td>
+                        <td><strong>{{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT</strong></td>
+                        <td><strong>TVA 20% : {{ (estimation.totalCost * 0.2)|number_format(0, ',', ' ') }}€</strong></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>TOTAL TTC</strong></td>
+                        <td><strong>{{ (estimation.totalCost * 1.2)|number_format(0, ',', ' ') }}€</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% else %}
+        <div class="card grid-full">
+            <div class="card-title">Estimation Globale</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Durée Totale</div>
+                    <p class="text-lg font-bold">{{ estimation.totalDays }} jours</p>
+                    <p class="text-sm text-gray-600">{{ (estimation.totalDays / 5)|round(1) }} semaines</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Coût Total</div>
+                    <p class="text-lg font-bold">{{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT</p>
+                    <p class="text-sm">TVA 20% : {{ (estimation.totalCost * 0.2)|number_format(0, ',', ' ') }}€</p>
+                    <p class="text-lg font-bold">{{ (estimation.totalCost * 1.2)|number_format(0, ',', ' ') }}€ TTC</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Modalités de Paiement</div>
+                <ul class="text-sm">
+                    <li>• 30% à la signature</li>
+                    <li>• 40% à mi-parcours</li>
+                    <li>• 30% à la livraison</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Garanties</div>
+                <ul class="text-sm">
+                    <li>• Garantie 6 mois</li>
+                    <li>• Support technique inclus</li>
+                    <li>• Formation équipe</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planning prévisionnel -->
+    {% if estimation.breakdown is defined and estimation.breakdown %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Planning Prévisionnel</h2>
+        <div class="timeline">
+            {% set weekCount = 0 %}
+            {% for phase, details in estimation.breakdown %}
+                {% set phaseWeeks = (details.days / 5)|round(0, 'ceil') %}
+                <div class="timeline-item">
+                    <div class="timeline-marker">{{ loop.index }}</div>
+                    <div class="timeline-content">
+                        <h4>{{ phase|title }}</h4>
+                        <p>Semaine {{ weekCount + 1 }} à {{ weekCount + phaseWeeks }}</p>
+                        <p class="text-sm">{{ details.description }}</p>
+                    </div>
+                </div>
+                {% set weekCount = weekCount + phaseWeeks %}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Planning Prévisionnel</h2>
+        <div class="card grid-full">
+            <div class="card-title">Durée Estimée</div>
+            <p>Le projet est estimé à <strong>{{ estimation.totalDays }} jours</strong> soit environ <strong>{{ (estimation.totalDays / 5)|round(1) }} semaines</strong> de développement.</p>
+            <p class="text-sm mt-2">Le planning détaillé sera établi lors de la phase d'analyse fonctionnelle.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommandations -->
+    {% if recommendations|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="7">Recommandations Stratégiques</h2>
+        {% for recommendation in recommendations %}
+        <div class="highlight">
+            <p>{{ recommendation }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Risques et mitigation -->
+    {% if risks|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="8">Analyse des Risques</h2>
+        {% for risk in risks %}
+        <div class="highlight highlight-warning">
+            <p><strong>Risque :</strong> {{ risk }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Objectifs business -->
+    {% if objectives|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="9">Objectifs Business</h2>
+        <div class="grid">
+            {% for objective in objectives %}
+            <div class="card">
+                <p>{{ objective }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Conditions générales -->
+    <div class="section">
+        <h2 class="section-title" data-icon="10">Conditions Générales</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Validité du Devis</div>
+                <p>30 jours à compter de la date d'émission</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Délai de Réalisation</div>
+                <p>{{ (estimation.totalDays / 5)|round(1) }} semaines après validation</p>
+            </div>
+        </div>
+        
+        <div class="card grid-full">
+            <div class="card-title">Conditions Particulières</div>
+            <ul class="text-sm">
+                <li>• Les spécifications détaillées seront validées avant le début du développement</li>
+                <li>• Toute modification du cahier des charges fera l'objet d'un avenant</li>
+                <li>• Le code source sera livré à la fin du projet</li>
+                <li>• Formation de vos équipes incluse dans le forfait</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

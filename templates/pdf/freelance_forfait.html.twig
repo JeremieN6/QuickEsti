@@ -1,0 +1,188 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block title %}{{ title }} - {{ project.type }}{% endblock %}
+
+{% block content %}
+    <!-- Header -->
+    <div class="header">
+        <div class="header-logo">QUICKESTI</div>
+        <h1>{{ title }}</h1>
+        <div class="subtitle">{{ project.type }} - Mode Forfait</div>
+        <div class="meta">
+            <strong>Généré le :</strong> {{ generatedAt|date('d/m/Y à H:i') }}
+        </div>
+    </div>
+
+    <!-- Résumé du projet -->
+    <div class="section">
+        <h2 class="section-title" data-icon="1">Résumé du Projet</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Type de Projet</div>
+                <p>{{ project.type }}</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Technologies</div>
+                <p>{{ project.technologies ?: 'Non spécifiées' }}</p>
+            </div>
+        </div>
+        
+        {% if project.description %}
+        <div class="card grid-full">
+            <div class="card-title">Description</div>
+            <p>{{ project.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Contraintes et paramètres -->
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="2">Paramètres d'Estimation</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Mode de Travail</div>
+                <p><span class="badge badge-info">Freelance Forfait</span></p>
+                <p class="text-sm mt-2">Payé au temps passé (TJM × jours)</p>
+            </div>
+            
+            {% if constraints.tjmTarget %}
+            <div class="card">
+                <div class="card-title">TJM Cible</div>
+                <p class="text-lg font-bold">{{ constraints.tjmTarget }}€ HT/jour</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Disponibilité</div>
+                <p>{{ constraints.isFullTime ? 'Temps plein' : 'Temps partiel' }}</p>
+            </div>
+            
+            {% if constraints.securityMargin %}
+            <div class="card">
+                <div class="card-title">Marge de Sécurité</div>
+                <p>{{ constraints.securityMargin }}%</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Fonctionnalités -->
+    {% if features|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="3">Fonctionnalités Incluses</h2>
+        <ul class="list">
+            {% for feature in features %}
+                <li>{{ feature }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Estimation détaillée -->
+    <div class="section">
+        <h2 class="section-title" data-icon="4">Estimation Détaillée</h2>
+        
+        <div class="highlight highlight-success">
+            <div class="grid">
+                <div>
+                    <strong>Durée totale :</strong> {{ estimation.totalDays }} jours
+                </div>
+                <div class="text-right">
+                    <strong>Coût total :</strong> {{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="badge badge-{{ estimation.confidence == 'high' ? 'success' : (estimation.confidence == 'medium' ? 'warning' : 'info') }}">
+                    Confiance : {{ estimation.confidence == 'high' ? 'Élevée' : (estimation.confidence == 'medium' ? 'Moyenne' : 'Faible') }}
+                </span>
+            </div>
+        </div>
+
+        {% if breakdown|length > 0 %}
+        <table class="breakdown-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Description</th>
+                    <th class="text-center">Jours</th>
+                    <th class="text-right">Coût HT</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in breakdown %}
+                    <tr>
+                        <td class="font-bold">{{ phase|title }}</td>
+                        <td>{{ details.description ?: 'Phase de ' ~ phase }}</td>
+                        <td class="text-center">{{ details.days }}</td>
+                        <td class="text-right">{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="2" class="font-bold">TOTAL</td>
+                    <td class="text-center font-bold">{{ estimation.totalDays }}</td>
+                    <td class="text-right font-bold">{{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <!-- Recommandations -->
+    {% if recommendations|length > 0 %}
+    <div class="section">
+        <h2 class="section-title" data-icon="5">Recommandations</h2>
+        <ul class="list recommendations">
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Risques -->
+    {% if risks|length > 0 %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Risques Identifiés</h2>
+        <ul class="list risks">
+            {% for risk in risks %}
+                <li>{{ risk }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Objectifs -->
+    {% if objectives|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="7">Objectifs du Projet</h2>
+        <ul class="list">
+            {% for objective in objectives %}
+                <li>{{ objective }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Notes importantes -->
+    <div class="section">
+        <h2 class="section-title" data-icon="8">Notes Importantes</h2>
+        <div class="highlight highlight-warning">
+            <p><strong>Mode Forfait :</strong> Cette estimation représente vos coûts internes pour réaliser le projet. Elle vous aide à :</p>
+            <ul class="list mt-2">
+                <li>Évaluer la rentabilité du projet</li>
+                <li>Fixer un prix de vente approprié</li>
+                <li>Planifier votre charge de travail</li>
+                <li>Négocier avec le client en connaissance de cause</li>
+            </ul>
+        </div>
+        
+        <div class="highlight">
+            <p><strong>Validité :</strong> Cette estimation est valable 30 jours à compter de sa génération.</p>
+            <p><strong>Précision :</strong> L'estimation est basée sur les informations fournies et peut varier selon les spécifications finales du projet.</p>
+        </div>
+    </div>
+
+
+{% endblock %}

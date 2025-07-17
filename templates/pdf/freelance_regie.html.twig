@@ -1,0 +1,265 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block title %}{{ title }} - {{ project.type }}{% endblock %}
+
+{% block content %}
+    <!-- Header -->
+    <div class="header">
+        <div class="header-logo">QUICKESTI</div>
+        <h1>{{ title }}</h1>
+        <div class="subtitle">{{ project.type }} - Mode Régie</div>
+        <div class="meta">
+            <strong>Généré le :</strong> {{ generatedAt|date('d/m/Y à H:i') }}
+        </div>
+    </div>
+
+    <!-- Informations client -->
+    {% if client.projectName or client.clientName %}
+    <div class="section">
+        <h2 class="section-title" data-icon="1">Informations Client</h2>
+        <div class="grid">
+            {% if client.projectName %}
+            <div class="card">
+                <div class="card-title">Nom du Projet</div>
+                <p>{{ client.projectName }}</p>
+            </div>
+            {% endif %}
+            
+            {% if client.clientName %}
+            <div class="card">
+                <div class="card-title">Contact Client</div>
+                <p>{{ client.clientName }}</p>
+                {% if client.contactEmail %}
+                    <p class="text-sm">{{ client.contactEmail }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="grid">
+            {% if client.companyName %}
+            <div class="card">
+                <div class="card-title">Entreprise</div>
+                <p>{{ client.companyName }}</p>
+                {% if client.type %}
+                    <p class="text-sm">{{ client.type }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if client.budget %}
+            <div class="card">
+                <div class="card-title">Budget Indicatif</div>
+                <p>{{ client.budget }}</p>
+                {% if client.competition %}
+                    <p class="text-sm">{{ client.competition }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if client.description %}
+        <div class="card grid-full">
+            <div class="card-title">Description du Projet</div>
+            <p>{{ client.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Résumé du projet -->
+    <div class="section">
+        <h2 class="section-title" data-icon="2">Résumé Technique</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Type de Projet</div>
+                <p>{{ project.type }}</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Technologies</div>
+                <p>{{ project.technologies ?: 'Non spécifiées' }}</p>
+            </div>
+        </div>
+        
+        {% if project.description %}
+        <div class="card grid-full">
+            <div class="card-title">Spécifications Techniques</div>
+            <p>{{ project.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Paramètres commerciaux -->
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="3">Paramètres Commerciaux</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Mode de Travail</div>
+                <p><span class="badge badge-success">Freelance Régie</span></p>
+                <p class="text-sm mt-2">Payé au résultat (prix fixe négocié)</p>
+            </div>
+            
+            {% if client.validity %}
+            <div class="card">
+                <div class="card-title">Validité du Devis</div>
+                <p>{{ client.validity }} jours</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="grid">
+            {% if client.paymentTerms %}
+            <div class="card">
+                <div class="card-title">Conditions de Paiement</div>
+                <p>{{ client.paymentTerms }}</p>
+            </div>
+            {% endif %}
+            
+            {% if client.warranty %}
+            <div class="card">
+                <div class="card-title">Garantie</div>
+                <p>{{ client.warranty }} mois</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Fonctionnalités -->
+    {% if features|length > 0 %}
+    <div class="section">
+        <h2 class="section-title" data-icon="4">Fonctionnalités Incluses</h2>
+        <ul class="list">
+            {% for feature in features %}
+                <li>{{ feature }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Devis commercial -->
+    <div class="section">
+        <h2 class="section-title" data-icon="5">Proposition Commerciale</h2>
+        
+        <div class="highlight highlight-success">
+            <div class="grid">
+                <div>
+                    <strong>Durée estimée :</strong> {{ estimation.totalDays }} jours
+                </div>
+                <div class="text-right">
+                    <strong>Prix proposé :</strong> {{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="badge badge-{{ estimation.confidence == 'high' ? 'success' : (estimation.confidence == 'medium' ? 'warning' : 'info') }}">
+                    Confiance : {{ estimation.confidence == 'high' ? 'Élevée' : (estimation.confidence == 'medium' ? 'Moyenne' : 'Faible') }}
+                </span>
+            </div>
+        </div>
+
+        {% if breakdown|length > 0 %}
+        <table class="breakdown-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Description</th>
+                    <th class="text-center">Durée</th>
+                    <th class="text-right">Prix HT</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in breakdown %}
+                    <tr>
+                        <td class="font-bold">{{ phase|title }}</td>
+                        <td>{{ details.description ?: 'Phase de ' ~ phase }}</td>
+                        <td class="text-center">{{ details.days }} j</td>
+                        <td class="text-right">{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="2" class="font-bold">TOTAL HT</td>
+                    <td class="text-center font-bold">{{ estimation.totalDays }} j</td>
+                    <td class="text-right font-bold">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" class="font-bold">TVA (20%)</td>
+                    <td class="text-right font-bold">{{ (estimation.totalCost * 0.2)|number_format(0, ',', ' ') }}€</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" class="font-bold">TOTAL TTC</td>
+                    <td class="text-right font-bold">{{ (estimation.totalCost * 1.2)|number_format(0, ',', ' ') }}€</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <!-- Recommandations -->
+    {% if recommendations|length > 0 %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Recommandations</h2>
+        <ul class="list recommendations">
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Risques -->
+    {% if risks|length > 0 %}
+    <div class="section">
+        <h2 class="section-title" data-icon="7">Risques Identifiés</h2>
+        <ul class="list risks">
+            {% for risk in risks %}
+                <li>{{ risk }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Objectifs -->
+    {% if objectives|length > 0 %}
+    <div class="section compact-section">
+        <h2 class="section-title" data-icon="8">Objectifs du Projet</h2>
+        <ul class="list">
+            {% for objective in objectives %}
+                <li>{{ objective }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Conditions générales -->
+    <div class="section">
+        <h2 class="section-title" data-icon="9">Conditions Générales</h2>
+        
+        <div class="highlight">
+            <p><strong>Validité :</strong> Ce devis est valable {{ client.validity ?: 30 }} jours à compter de sa date d'émission.</p>
+            <p><strong>Paiement :</strong> {{ client.paymentTerms ?: 'Selon conditions convenues' }}</p>
+            <p><strong>Garantie :</strong> {{ client.warranty ?: 3 }} mois sur les développements réalisés</p>
+        </div>
+        
+        <div class="highlight highlight-warning">
+            <p><strong>Mode Régie :</strong> Ce devis représente un prix de vente marché pour le projet décrit. Il inclut :</p>
+            <ul class="list mt-2">
+                <li>Analyse et conception détaillée</li>
+                <li>Développement selon spécifications</li>
+                <li>Tests et validation</li>
+                <li>Livraison et mise en production</li>
+                <li>Support et garantie</li>
+            </ul>
+        </div>
+        
+        <div class="highlight highlight-warning">
+            <p><strong>Conditions :</strong></p>
+            <ul class="list mt-2">
+                <li>Prix basé sur les spécifications fournies</li>
+                <li>Toute modification peut impacter le prix et les délais</li>
+                <li>Paiement selon échéancier convenu</li>
+                <li>Propriété intellectuelle transférée à la livraison</li>
+            </ul>
+        </div>
+    </div>
+
+
+{% endblock %}
