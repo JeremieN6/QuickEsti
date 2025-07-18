@@ -2,6 +2,40 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [2.0.0] - 2025-07-18
+
+### 🔐 Système d'Authentification Complet
+- **Entité Users** : Création avec tous les champs (email, password, role, isVerified, resetToken, stripeId, createdAt)
+- **Inscription/Connexion** : UsersAuthenticator avec Symfony Security Bundle
+- **Vérification email** : Système JWT avec SendMailService et templates Twig
+- **Réinitialisation mot de passe** : Tokens sécurisés avec formulaires dédiés
+- **Repository Users** : Méthodes findOneByEmail et findOneByResetToken
+
+### 💳 Intégration Stripe
+- **Package Stripe PHP v17.4** : Installation et configuration
+- **Entité Plan** : name, slug, stripeId, price, createdAt, paymentLink
+- **Entité Subscription** : Relations avec Users et Plan, gestion périodes et statut
+- **Entité Invoice** : Facturation liée aux subscriptions
+- **Configuration API** : Clés Stripe dans .env.local et services.yaml
+
+### 🗄️ Base de Données
+- **Migrations complètes** : Toutes les entités créées et migrées
+- **Relations Doctrine** : ManyToOne entre Users/Subscription/Plan
+- **Champs nullable** : Structure flexible pour évolutions futures
+- **Types Doctrine** : DateTimeInterface et Types::DATETIME_MUTABLE
+
+### 📧 Services Email
+- **SendMailService** : Service réutilisable avec TemplatedEmail
+- **JWTService** : Génération et validation de tokens sécurisés
+- **Templates email** : register.html.twig et password_reset.html.twig
+- **Configuration messenger** : Envoi synchrone pour développement
+
+### 🛠️ Configuration Technique
+- **Services.yaml** : Paramètres JWT et Stripe configurés
+- **Formulaires Tailwind** : ResetPasswordRequestFormType et ResetPasswordFormType
+- **Routes sécurisées** : Vérification tokens et redirections appropriées
+- **Correction PHPUnit** : Compatibilité PHP 8.2 (v10.5 au lieu de v12.2)
+
 ## [1.5.0] - 2025-07-18
 
 ### ✨ Export PDF Optimisé
