@@ -6,8 +6,8 @@
     <!-- Header -->
     <div class="header">
         <div class="header-logo">QUICKESTI</div>
-        <h1>{{ title }}</h1>
-        <div class="subtitle">{{ project.type }} - Mode Forfait</div>
+        <h1>Récapitulatif d'Estimation</h1>
+        <div class="subtitle">Export Estimation - {{ project.type }}</div>
         <div class="meta">
             <strong>Généré le :</strong> {{ generatedAt|date('d/m/Y à H:i') }}
         </div>
@@ -19,18 +19,18 @@
         <div class="grid">
             <div class="card">
                 <div class="card-title">Type de Projet</div>
-                <p>{{ project.type }}</p>
+                <p>{{ formData.basics.projectType|default('Application web') }}</p>
             </div>
             <div class="card">
                 <div class="card-title">Technologies</div>
-                <p>{{ project.technologies ?: 'Non spécifiées' }}</p>
+                <p>{{ formData.basics.technologies|default('Non spécifiées') }}</p>
             </div>
         </div>
         
-        {% if project.description %}
+        {% if formData.basics.description is defined and formData.basics.description %}
         <div class="card grid-full">
             <div class="card-title">Description</div>
-            <p>{{ project.description }}</p>
+            <p>{{ formData.basics.description }}</p>
         </div>
         {% endif %}
     </div>
@@ -45,7 +45,7 @@
                 <p class="text-sm mt-2">Payé au temps passé (TJM × jours)</p>
             </div>
             
-            {% if constraints.tjmTarget %}
+            {% if constraints and constraints.tjmTarget %}
             <div class="card">
                 <div class="card-title">TJM Cible</div>
                 <p class="text-lg font-bold">{{ constraints.tjmTarget }}€ HT/jour</p>
@@ -56,10 +56,10 @@
         <div class="grid">
             <div class="card">
                 <div class="card-title">Disponibilité</div>
-                <p>{{ constraints.isFullTime ? 'Temps plein' : 'Temps partiel' }}</p>
+                <p>{{ (constraints and constraints.isFullTime) ? 'Temps plein' : 'Temps partiel' }}</p>
             </div>
             
-            {% if constraints.securityMargin %}
+            {% if constraints and constraints.securityMargin %}
             <div class="card">
                 <div class="card-title">Marge de Sécurité</div>
                 <p>{{ constraints.securityMargin }}%</p>
@@ -93,11 +93,15 @@
                     <strong>Coût total :</strong> {{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT
                 </div>
             </div>
+            {% if indicators and indicators.confidence %}
             <div class="mt-4">
-                <span class="badge badge-{{ estimation.confidence == 'high' ? 'success' : (estimation.confidence == 'medium' ? 'warning' : 'info') }}">
-                    Confiance : {{ estimation.confidence == 'high' ? 'Élevée' : (estimation.confidence == 'medium' ? 'Moyenne' : 'Faible') }}
-                </span>
+                <div class="confidence-gauge {{ indicators.confidence.class }}">
+                    {# <div class="confidence-icon" style="color: #00AA00;">{{ indicators.confidence.icon }}</div> #}
+                    <span style="color: #000000;">{{ indicators.confidence.label }}</span>
+                </div>
+                <p class="text-xs" style="color: #64748b; margin-top: 5px;">{{ indicators.confidence.description }}</p>
             </div>
+            {% endif %}
         </div>
 
         {% if breakdown|length > 0 %}
@@ -114,7 +118,7 @@
                 {% for phase, details in breakdown %}
                     <tr>
                         <td class="font-bold">{{ phase|title }}</td>
-                        <td>{{ details.description ?: 'Phase de ' ~ phase }}</td>
+                        <td>{{ details.description|default('Phase de ' ~ phase) }}</td>
                         <td class="text-center">{{ details.days }}</td>
                         <td class="text-right">{{ details.cost|number_format(0, ',', ' ') }}€</td>
                     </tr>
@@ -129,34 +133,217 @@
         {% endif %}
     </div>
 
+    <!-- Métriques de Performance -->
+    {% if estimation.breakdown %}
+    <div class="section">
+        <h2 class="section-title" data-icon="5">Métriques de Performance</h2>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Tarif Journalier Moyen</div>
+                <div class="metric-value">{{ (estimation.totalCost / estimation.totalDays)|number_format(0, ',', ' ') }}€/jour</div>
+                <p class="text-sm">TJM effectif pour ce projet</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Complexité Projet</div>
+                <div class="metric-value">
+                    {% if estimation.totalDays <= 20 %}Faible{% elseif estimation.totalDays <= 40 %}Moyenne{% else %}Élevée{% endif %}
+                </div>
+                <p class="text-sm">Basée sur la durée ({{ estimation.totalDays }} jours)</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Rentabilité</div>
+                <div class="metric-value">{{ ((estimation.totalCost - (estimation.totalCost * 0.3)) / estimation.totalCost * 100)|number_format(0) }}%</div>
+                <p class="text-sm">Marge nette estimée (après charges)</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Charge Hebdomadaire</div>
+                <div class="metric-value">{{ (estimation.totalDays / (estimation.totalDays / 5))|number_format(1) }} j/sem</div>
+                <p class="text-sm">Rythme de travail moyen</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Planning Prévisionnel -->
+    {% if estimation.breakdown %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Planning Prévisionnel</h2>
+
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Phase</th>
+                    <th style="text-align: center; padding: 8px;">Durée (jours)</th>
+                    <th style="text-align: right; padding: 8px;">Coût (€)</th>
+                    <th style="text-align: right; padding: 8px;">Répartition (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in estimation.breakdown %}
+                {% set percentage = (details.cost / estimation.totalCost * 100) %}
+                <tr>
+                    <td style="padding: 8px;">
+                        <strong>{{ phase }}</strong>
+                    </td>
+                    <td style="text-align: center; padding: 8px; font-weight: bold;">{{ details.days }}j</td>
+                    <td style="text-align: right; padding: 8px;">{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                    <td style="text-align: right; padding: 8px;">
+                        <span style="font-weight: bold; color: #667eea;">{{ percentage|number_format(0) }}%</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="background: #f8fafc; font-weight: bold;">
+                    <td style="padding: 8px;"><strong>TOTAL</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ estimation.totalDays }}j</td>
+                    <td style="text-align: right; padding: 8px;">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</td>
+                    <td style="text-align: right; padding: 8px;">100%</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="card grid-full" style="margin-top: 20px;">
+            <div class="card-title">Répartition Type (Exemple)</div>
+            <div class="grid">
+                <div>
+                    <p><strong>Développement :</strong> 60%</p>
+                    <p><strong>Design :</strong> 20%</p>
+                </div>
+                <div>
+                    <p><strong>Tests + Déploiement :</strong> 20%</p>
+                    <p><strong>Durée totale :</strong> {{ (estimation.totalDays / 5)|number_format(1) }} semaines</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+
+    <!-- Planning prévisionnel -->
+    {% if charts and charts.gantt and charts.gantt.phases %}
+    <div class="section">
+        <h2 class="section-title" data-icon="7">Planning Prévisionnel</h2>
+
+        <div class="gantt-timeline">
+            <div class="gantt-header">
+                <div class="gantt-phase-label">Phase</div>
+                <div class="gantt-timeline-area">
+                    <div class="gantt-weeks">
+                        {% for week in charts.gantt.weeks %}
+                        <div class="gantt-week">{{ week }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div style="width: 80px; text-align: center;">Durée</div>
+            </div>
+
+            {% for phase in charts.gantt.phases %}
+            <div class="gantt-row">
+                <div class="gantt-phase-name">{{ phase.name }}</div>
+                <div class="gantt-bar-area">
+                    <div class="gantt-bar" style="left: '{{ phase.startPercent }}%';
+                        width: '{{ phase.widthPercent }}%';
+                        background: linear-gradient(90deg, '{{ phase.color }}', '{{ phase.color }}'dd);
+                    ">
+                        {{ phase.weeks }}sem
+                    </div>
+                    {% if loop.last %}
+                    <div class="gantt-milestone" style="right: -6px;" title="Livraison finale"></div>
+                    {% endif %}
+                </div>
+                <div class="gantt-duration">{{ phase.days }}j</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card grid-full" style="margin-top: 20px;">
+            <div class="card-title">Informations Planning</div>
+            <div class="grid">
+                <div>
+                    <p><strong>Durée totale :</strong> {{ charts.gantt.totalDays }} jours ({{ charts.gantt.totalWeeks }} semaines)</p>
+                    <p><strong>Jalons :</strong> Livraison finale prévue semaine {{ charts.gantt.totalWeeks }}</p>
+                </div>
+                <div>
+                    <p><strong>Méthodologie :</strong> Développement agile par phases</p>
+                    <p><strong>Flexibilité :</strong> Planning ajustable selon les retours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Analyses avancées -->
+    {% if comparisons %}
+    <div class="section">
+        <h2 class="section-title" data-icon="8">Analyses avancées</h2>
+
+        <!-- Métriques de performance -->
+        <h3 style="font-size: 12px; margin: 20px 0 10px 0; color: #374151;">Métriques de Performance</h3>
+        <div class="metrics-grid">
+            {% for metric in comparisons.metrics %}
+            <div class="metric-card">
+                <div class="metric-value">{{ metric.value }}</div>
+                <div class="metric-label">{{ metric.label }}</div>
+                <div class="metric-trend">{{ metric.trend }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Recommandations -->
     {% if recommendations|length > 0 %}
     <div class="section">
-        <h2 class="section-title" data-icon="5">Recommandations</h2>
+        <h2 class="section-title" data-icon="9">Recommandations</h2>
+        {% if indicators and indicators.recommendationBadges %}
+        <div style="margin-bottom: 15px;">
+            {% for badge in indicators.recommendationBadges %}
+            <div class="status-badge {{ badge.class }}" style="display: block; margin: 8px 0; padding: 8px 12px;">
+                <strong>{{ badge.type }}:</strong> {{ badge.text }}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         <ul class="list recommendations">
             {% for recommendation in recommendations %}
                 <li>{{ recommendation }}</li>
             {% endfor %}
         </ul>
+        {% endif %}
     </div>
     {% endif %}
 
     <!-- Risques -->
     {% if risks|length > 0 %}
     <div class="section">
-        <h2 class="section-title" data-icon="6">Risques Identifiés</h2>
+        <h2 class="section-title" data-icon="10">Risques Identifiés</h2>
+        {% if indicators and indicators.riskBadges %}
+        <div style="margin-bottom: 15px;">
+            {% for badge in indicators.riskBadges %}
+            <div class="status-badge {{ badge.class }}" style="display: block; margin: 8px 0; padding: 8px 12px;">
+                <strong>{{ badge.type }}:</strong> {{ badge.text }}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         <ul class="list risks">
             {% for risk in risks %}
                 <li>{{ risk }}</li>
             {% endfor %}
         </ul>
+        {% endif %}
     </div>
     {% endif %}
 
     <!-- Objectifs -->
     {% if objectives|length > 0 %}
     <div class="section compact-section">
-        <h2 class="section-title" data-icon="7">Objectifs du Projet</h2>
+        <h2 class="section-title" data-icon="11">Objectifs du Projet</h2>
         <ul class="list">
             {% for objective in objectives %}
                 <li>{{ objective }}</li>
@@ -167,7 +354,7 @@
 
     <!-- Notes importantes -->
     <div class="section">
-        <h2 class="section-title" data-icon="8">Notes Importantes</h2>
+        <h2 class="section-title" data-icon="12">Notes Importantes</h2>
         <div class="highlight highlight-warning">
             <p><strong>Mode Forfait :</strong> Cette estimation représente vos coûts internes pour réaliser le projet. Elle vous aide à :</p>
             <ul class="list mt-2">

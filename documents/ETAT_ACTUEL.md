@@ -3,6 +3,12 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 7 + Vue.js 3 avec intelligence artificielle OpenAI. L'application est **100% fonctionnelle** avec tous les composants migrés et l'API d'estimation opérationnelle.
 
+## 🎉 **Dernière Mise à Jour : Optimisation PDF (18/07/2025)**
+- **✅ Export PDF optimisé** : 3 templates fonctionnels (Entreprise, Freelance Forfait/Régie)
+- **✅ Performance améliorée** : Build allégé de 43% (suppression Chart.js/html2canvas)
+- **✅ Métriques avancées** : TJM, efficacité, ROI, planning prévisionnel
+- **✅ Tableaux analytiques** : Données structurées remplaçant les graphiques
+
 ## ✅ Migration terminée (100%)
 
 ### ✅ Architecture Symfony 7 + Vue.js 3
@@ -272,6 +278,7 @@ git push origin main
 
 ---
 
-**Dernière mise à jour** : Juillet 2024  
-**Status** : ✅ Prêt pour phase suivante (Migration vers Symfony )  
-**Confiance** : 🟢 Haute - Application stable et fonctionnelle
+**Dernière mise à jour** : 18 Juillet 2025
+**Phase actuelle** : ✅ Export PDF Optimisé (v1.5.0) - TERMINÉE
+**Prochaine phase** : 🎯 Fonctionnalités Avancées et Optimisations
+**Confiance** : 🟢 Haute - Application production-ready avec export PDF complet

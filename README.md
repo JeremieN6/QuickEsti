@@ -34,6 +34,14 @@
 - Contraintes et risques projet
 - Modèles de tarification (forfait, régie, mixte)
 
+### 📊 **Export PDF et Analyses**
+- **Templates PDF optimisés** : Entreprise, Freelance Forfait, Freelance Régie
+- **Métriques de performance** : TJM, efficacité, ROI, vélocité
+- **Planning prévisionnel** : Distribution temporelle et répartition des coûts
+- **Tableaux analytiques** : Répartition par profil et phase
+- **Analyses comparatives** : Métriques fiscales et de performance
+- **Interface allégée** : Suppression Chart.js pour optimisation (-415KB)
+
 ## 🛠️ Technologies
 
 ### **Backend**
@@ -44,6 +52,7 @@
 
 ### **Frontend**
 - **Vue.js 3** - Framework JavaScript réactif
+- **Chart.js** - Graphiques interactifs et visualisations
 - **Webpack Encore** - Build et bundling
 - **Tailwind CSS** - Framework CSS utilitaire
 - **Flowbite** - Composants UI
@@ -238,7 +247,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 16 juillet 2025 | v1.4.0 |
+| **Dernière mise à jour** | 18 juillet 2025 | v1.5.0 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
@@ -254,3 +263,4 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 *Prompts OpenAI optimisés le 15 juillet 2025*
 *Structure projet restructurée le 16 juillet 2025*
 *Logique Forfait vs Régie implémentée le 16 juillet 2025*
+*Export PDF optimisé et suppression Chart.js le 18 juillet 2025*

@@ -369,6 +369,444 @@
             margin: 2px 0;
         }
         
+        /* Charts et graphiques - Version DomPDF compatible */
+        .chart-container {
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .chart-table td {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .chart-color-box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .progress-bar {
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .chart-legend {
+            margin: 15px 0;
+        }
+
+        .legend-item {
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .legend-label {
+            font-weight: 500;
+        }
+
+        .legend-value {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        /* Barres horizontales - Version DomPDF compatible */
+        .bar-chart {
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .bar-item {
+            margin: 12px 0;
+            width: 100%;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .bar-container {
+            height: 20px;
+            background: #e2e8f0;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .bar-fill {
+            height: 18px;
+            background: #667eea;
+            border: none;
+        }
+
+        /* Timeline Gantt améliorée */
+        .gantt-timeline {
+            margin: 20px 0;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .gantt-header {
+            display: flex;
+            margin-bottom: 15px;
+            font-size: 11px;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .gantt-phase-label {
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .gantt-timeline-area {
+            flex: 1;
+            position: relative;
+        }
+
+        .gantt-weeks {
+            display: flex;
+            height: 20px;
+            margin-bottom: 5px;
+        }
+
+        .gantt-week {
+            flex: 1;
+            text-align: center;
+            font-size: 10px;
+            color: #94a3b8;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            min-height: 30px;
+        }
+
+        .gantt-phase-name {
+            width: 120px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .gantt-bar-area {
+            flex: 1;
+            height: 24px;
+            position: relative;
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .gantt-bar {
+            height: 100%;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .gantt-milestone {
+            position: absolute;
+            top: -2px;
+            width: 12px;
+            height: 12px;
+            background: #f59e0b;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .gantt-duration {
+            margin-left: 10px;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Indicateurs visuels */
+        .confidence-gauge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .confidence-high {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .confidence-medium {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .confidence-low {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .confidence-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        /* Badges de statut */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin: 2px 4px 2px 0;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Icônes de section */
+        .section-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Barres de progression */
+        .progress-indicator {
+            margin: 15px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-critical {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .progress-important {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .progress-normal {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        /* Graphiques de comparaison */
+        .comparison-charts {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .donut-chart {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(
+                #667eea 0deg 288deg,
+                #f59e0b 288deg 360deg
+            );
+        }
+
+        .donut-chart::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .donut-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .donut-label {
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        .efficiency-chart {
+            flex: 1;
+        }
+
+        .efficiency-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .efficiency-phase {
+            width: 100px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .efficiency-bar {
+            flex: 1;
+            height: 16px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .efficiency-fill {
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .efficiency-value {
+            font-size: 10px;
+            font-weight: 600;
+            color: #374151;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* Métriques de performance */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-trend {
+            font-size: 9px;
+            color: #10b981;
+            margin-top: 2px;
+        }
+
         /* Print optimizations */
         @media print {
             .header {

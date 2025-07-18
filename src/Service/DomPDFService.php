@@ -21,7 +21,8 @@ class DomPDFService
     public function generateFreelancePDF(array $estimationData): string
     {
         // Détermine le template selon le type de freelance
-        $freelanceType = $estimationData['formData']['constraints']['freelanceType'] ?? 'forfait';
+        $freelanceType = $estimationData['formData']['pricing']['type'] ??
+                        $estimationData['formData']['constraints']['freelanceType'] ?? 'forfait';
         
         if ($freelanceType === 'regie') {
             $template = 'pdf/freelance_regie.html.twig';
@@ -84,26 +85,40 @@ class DomPDFService
         $formData = $estimationData['formData'] ?? [];
         $estimation = $estimationData['estimation'] ?? [];
         
-        $freelanceType = $formData['constraints']['freelanceType'] ?? 'forfait';
+        $freelanceType = $formData['pricing']['type'] ??
+                        $formData['constraints']['freelanceType'] ?? 'forfait';
         
+        // Traduction des phases si breakdown existe
+        $translatedBreakdown = null;
+        if (isset($estimation['breakdown'])) {
+            $translatedBreakdown = $this->translatePhases($estimation['breakdown']);
+        }
+
         return [
-            'title' => $freelanceType === 'regie' ? 'Devis Commercial' : 'Estimation de Coûts',
+            'title' => 'Récapitulatif d\'Estimation',
             'freelanceType' => $freelanceType,
             'generatedAt' => new \DateTime(),
+            'formData' => $formData, // Ajout de formData pour les templates
             'project' => [
                 'type' => $this->getProjectTypeLabel($formData['basics'] ?? []),
                 'description' => $formData['basics']['description'] ?? '',
-                'technologies' => $formData['basics']['technologies'] ?? '',
+                'technologies' => $this->formatTechnologies($formData['basics']['technologies'] ?? []),
             ],
             'client' => $this->getClientInfo($formData),
             'constraints' => $formData['constraints'] ?? [],
             'features' => $formData['features']['selectedFeatures'] ?? [],
             'objectives' => $this->translateObjectives($formData['objectives']['selectedObjectives'] ?? []),
-            'estimation' => $estimation,
-            'breakdown' => $estimation['breakdown'] ?? [],
+            'estimation' => array_merge($estimation, [
+                'breakdown' => $translatedBreakdown
+            ]),
+            'breakdown' => $translatedBreakdown,
             'recommendations' => $estimation['recommendations'] ?? [],
             'risks' => $estimation['risks'] ?? [],
             'metadata' => $estimationData['metadata'] ?? [],
+            'charts' => $translatedBreakdown ? $this->prepareChartData($translatedBreakdown) : null,
+            'indicators' => $this->prepareIndicators($estimation, $formData),
+            'comparisons' => $this->prepareComparisonData($estimation),
+            'chartImages' => $estimationData['chartImages'] ?? null,
         ];
     }
 
@@ -148,6 +163,10 @@ class DomPDFService
             'estimation' => array_merge($estimation, [
                 'breakdown' => isset($estimation['breakdown']) ? $this->translatePhases($estimation['breakdown']) : null
             ]),
+            'charts' => isset($estimation['breakdown']) ? $this->prepareChartData($this->translatePhases($estimation['breakdown'])) : null,
+            'indicators' => $this->prepareIndicators($estimation, $formData),
+            'comparisons' => $this->prepareComparisonData($estimation),
+            'chartImages' => $estimationData['chartImages'] ?? null,
             'features' => $formData['functionalities']['selectedFeatures'] ?? [],
             'recommendations' => $estimation['recommendations'] ?? [],
             'risks' => $estimation['risks'] ?? [],
@@ -178,7 +197,20 @@ class DomPDFService
             ];
         }
         
-        return [];
+        // Valeurs par défaut pour éviter les erreurs de template
+        return [
+            'projectName' => '',
+            'clientName' => '',
+            'companyName' => '',
+            'contactEmail' => '',
+            'description' => '',
+            'type' => '',
+            'budget' => '',
+            'competition' => '',
+            'validity' => 30,
+            'paymentTerms' => '',
+            'warranty' => 3,
+        ];
     }
 
     /**
@@ -256,6 +288,359 @@ class DomPDFService
         }
 
         return $translatedBreakdown;
+    }
+
+    /**
+     * Prépare les données pour les graphiques (pie chart et bar chart)
+     */
+    private function prepareChartData(array $breakdown): array
+    {
+        if (empty($breakdown)) {
+            return ['pie' => [], 'bars' => []];
+        }
+
+        $colors = [
+            '#667eea', // Bleu principal QuickEsti
+            '#764ba2', // Violet
+            '#f093fb', // Rose
+            '#f5576c', // Rouge
+            '#4facfe', // Bleu clair
+            '#43e97b'  // Vert
+        ];
+
+        $totalCost = array_sum(array_column($breakdown, 'cost'));
+        $maxDays = max(array_column($breakdown, 'days'));
+
+        $pieData = [];
+        $barData = [];
+        $colorIndex = 0;
+
+        foreach ($breakdown as $phase => $details) {
+            $percentage = $totalCost > 0 ? round(($details['cost'] / $totalCost) * 100, 1) : 0;
+            $barWidth = $maxDays > 0 ? round(($details['days'] / $maxDays) * 100, 1) : 0;
+
+            $color = $colors[$colorIndex % count($colors)];
+
+            $pieData[] = [
+                'label' => $phase,
+                'value' => $details['cost'],
+                'percentage' => $percentage,
+                'color' => $color,
+                'progressBar' => $this->generateProgressBar($percentage)
+            ];
+
+            $barData[] = [
+                'label' => $phase,
+                'days' => $details['days'],
+                'width' => $barWidth,
+                'color' => $color,
+                'progressBar' => $this->generateProgressBar($barWidth)
+            ];
+
+            $colorIndex++;
+        }
+
+        return [
+            'pie' => $pieData,
+            'bars' => $barData,
+            'gantt' => $this->prepareGanttData($breakdown),
+            'totalCost' => $totalCost,
+            'maxDays' => $maxDays
+        ];
+    }
+
+    /**
+     * Prépare les données pour le diagramme de Gantt
+     */
+    private function prepareGanttData(array $breakdown): array
+    {
+        if (empty($breakdown)) {
+            return ['phases' => [], 'totalWeeks' => 0, 'weeks' => []];
+        }
+
+        $colors = [
+            '#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#43e97b'
+        ];
+
+        $totalDays = array_sum(array_column($breakdown, 'days'));
+        $totalWeeks = max(1, ceil($totalDays / 5));
+
+        $phases = [];
+        $currentWeek = 0;
+        $colorIndex = 0;
+
+        foreach ($breakdown as $phase => $details) {
+            $phaseDays = $details['days'];
+            $phaseWeeks = ceil($phaseDays / 5);
+            $startWeek = $currentWeek;
+            $endWeek = $currentWeek + $phaseWeeks;
+
+            // Calcul de la position et largeur en pourcentage
+            $startPercent = ($startWeek / $totalWeeks) * 100;
+            $widthPercent = ($phaseWeeks / $totalWeeks) * 100;
+
+            $phases[] = [
+                'name' => $phase,
+                'days' => $phaseDays,
+                'weeks' => $phaseWeeks,
+                'startWeek' => $startWeek + 1,
+                'endWeek' => $endWeek,
+                'startPercent' => $startPercent,
+                'widthPercent' => $widthPercent,
+                'color' => $colors[$colorIndex % count($colors)],
+                'description' => $details['description'] ?? ''
+            ];
+
+            $currentWeek += $phaseWeeks;
+            $colorIndex++;
+        }
+
+        // Génération des semaines pour l'en-tête
+        $weeks = [];
+        for ($i = 1; $i <= $totalWeeks; $i++) {
+            $weeks[] = "S{$i}";
+        }
+
+        return [
+            'phases' => $phases,
+            'totalWeeks' => $totalWeeks,
+            'weeks' => $weeks,
+            'totalDays' => $totalDays
+        ];
+    }
+
+    /**
+     * Prépare les indicateurs visuels (confiance, badges, progression)
+     */
+    private function prepareIndicators(array $estimation, array $formData): array
+    {
+        $confidence = $estimation['confidence'] ?? 'medium';
+
+        // Configuration de la jauge de confiance
+        $confidenceConfig = [
+            'high' => [
+                'label' => 'Confiance Élevée',
+                'class' => 'confidence-high',
+                'icon' => '✓',
+                'description' => 'Estimation fiable basée sur des données précises'
+            ],
+            'medium' => [
+                'label' => 'Confiance Modérée',
+                'class' => 'confidence-medium',
+                'icon' => '~',
+                'description' => 'Estimation probable avec quelques incertitudes'
+            ],
+            'low' => [
+                'label' => 'Confiance Faible',
+                'class' => 'confidence-low',
+                'icon' => '!',
+                'description' => 'Estimation approximative nécessitant plus d\'analyse'
+            ]
+        ];
+
+        // Badges pour recommandations
+        $recommendationBadges = [];
+        foreach ($estimation['recommendations'] ?? [] as $recommendation) {
+            $recommendationBadges[] = [
+                'text' => $recommendation,
+                'type' => $this->getRecommendationBadgeType($recommendation),
+                'class' => $this->getRecommendationBadgeClass($recommendation)
+            ];
+        }
+
+        // Badges pour risques
+        $riskBadges = [];
+        foreach ($estimation['risks'] ?? [] as $risk) {
+            $riskBadges[] = [
+                'text' => $risk,
+                'type' => $this->getRiskBadgeType($risk),
+                'class' => $this->getRiskBadgeClass($risk)
+            ];
+        }
+
+        return [
+            'confidence' => $confidenceConfig[$confidence] ?? $confidenceConfig['medium'],
+            'recommendationBadges' => $recommendationBadges,
+            'riskBadges' => $riskBadges
+        ];
+    }
+
+    private function getRecommendationBadgeType(string $recommendation): string
+    {
+        $recommendation = strtolower($recommendation);
+        if (strpos($recommendation, 'sécurité') !== false || strpos($recommendation, 'backup') !== false) {
+            return 'Sécurité';
+        }
+        if (strpos($recommendation, 'performance') !== false || strpos($recommendation, 'optimisation') !== false) {
+            return 'Performance';
+        }
+        if (strpos($recommendation, 'architecture') !== false || strpos($recommendation, 'microservice') !== false) {
+            return 'Architecture';
+        }
+        return 'Conseil';
+    }
+
+    private function getRecommendationBadgeClass(string $recommendation): string
+    {
+        $type = $this->getRecommendationBadgeType($recommendation);
+        return match($type) {
+            'Sécurité' => 'badge-danger',
+            'Performance' => 'badge-warning',
+            'Architecture' => 'badge-info',
+            default => 'badge-success'
+        };
+    }
+
+    private function getRiskBadgeType(string $risk): string
+    {
+        $risk = strtolower($risk);
+        if (strpos($risk, 'critique') !== false || strpos($risk, 'bloquant') !== false) {
+            return 'Critique';
+        }
+        if (strpos($risk, 'délai') !== false || strpos($risk, 'planning') !== false) {
+            return 'Planning';
+        }
+        if (strpos($risk, 'technique') !== false || strpos($risk, 'complexité') !== false) {
+            return 'Technique';
+        }
+        return 'Attention';
+    }
+
+    private function getRiskBadgeClass(string $risk): string
+    {
+        $type = $this->getRiskBadgeType($risk);
+        return match($type) {
+            'Critique' => 'badge-danger',
+            'Planning' => 'badge-warning',
+            'Technique' => 'badge-info',
+            default => 'badge-warning'
+        };
+    }
+
+    /**
+     * Prépare les données de comparaison (donut HT/TVA, efficacité, métriques)
+     */
+    private function prepareComparisonData(array $estimation): array
+    {
+        $totalCost = $estimation['totalCost'] ?? 0;
+        $totalDays = $estimation['totalDays'] ?? 1;
+        $breakdown = $estimation['breakdown'] ?? [];
+
+        // Donut chart HT/TVA/TTC
+        $htAmount = $totalCost;
+        $tvaAmount = $totalCost * 0.2;
+        $ttcAmount = $totalCost * 1.2;
+
+        $htPercent = 83.33; // 100/1.2
+        $tvaPercent = 16.67; // 20/1.2
+
+        $donutData = [
+            'ht' => [
+                'amount' => $htAmount,
+                'percent' => $htPercent,
+                'color' => '#667eea',
+                'progressBar' => $this->generateProgressBar($htPercent)
+            ],
+            'tva' => [
+                'amount' => $tvaAmount,
+                'percent' => $tvaPercent,
+                'color' => '#f59e0b',
+                'progressBar' => $this->generateProgressBar($tvaPercent)
+            ],
+            'ttc' => [
+                'amount' => $ttcAmount
+            ]
+        ];
+
+        // Efficacité par phase (coût par jour)
+        $efficiencyData = [];
+        $maxEfficiency = 0;
+
+        if (!empty($breakdown)) {
+            foreach ($breakdown as $phase => $details) {
+                $days = $details['days'] ?? 1;
+                $cost = $details['cost'] ?? 0;
+                $efficiency = $days > 0 ? $cost / $days : 0;
+
+                $efficiencyData[] = [
+                    'phase' => $phase,
+                    'efficiency' => $efficiency,
+                    'days' => $days,
+                    'cost' => $cost
+                ];
+
+                $maxEfficiency = max($maxEfficiency, $efficiency);
+            }
+
+            // Calcul des pourcentages pour les barres
+            foreach ($efficiencyData as &$item) {
+                $item['percent'] = $maxEfficiency > 0 ? ($item['efficiency'] / $maxEfficiency) * 100 : 0;
+                $item['progressBar'] = $this->generateProgressBar($item['percent']);
+            }
+        }
+
+        // Métriques de performance
+        $avgCostPerDay = $totalDays > 0 ? $totalCost / $totalDays : 0;
+        $projectWeeks = ceil($totalDays / 5);
+        $avgCostPerWeek = $projectWeeks > 0 ? $totalCost / $projectWeeks : 0;
+
+        $metrics = [
+            [
+                'value' => number_format($avgCostPerDay, 0, ',', ' ') . '€',
+                'label' => 'Coût moyen / jour',
+                'trend' => 'Optimisé'
+            ],
+            [
+                'value' => $projectWeeks . ' sem',
+                'label' => 'Durée totale',
+                'trend' => 'Planifié'
+            ],
+            [
+                'value' => number_format($avgCostPerWeek, 0, ',', ' ') . '€',
+                'label' => 'Coût moyen / semaine',
+                'trend' => 'Contrôlé'
+            ]
+        ];
+
+        return [
+            'donut' => $donutData,
+            'efficiency' => $efficiencyData,
+            'metrics' => $metrics,
+            'maxEfficiency' => $maxEfficiency
+        ];
+    }
+
+    /**
+     * Génère une barre de progression avec des caractères Unicode
+     */
+    private function generateProgressBar(float $percentage, int $maxLength = 20): string
+    {
+        $filledLength = (int) round(($percentage / 100) * $maxLength);
+        $emptyLength = $maxLength - $filledLength;
+
+        return str_repeat('█', $filledLength) . str_repeat('░', $emptyLength);
+    }
+
+    /**
+     * Formate les technologies en string pour l'affichage
+     */
+    private function formatTechnologies($technologies): string
+    {
+        if (is_string($technologies)) {
+            return $technologies;
+        }
+
+        if (is_array($technologies)) {
+            $formatted = [];
+            foreach ($technologies as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $formatted[] = ucfirst($key) . ': ' . $value;
+                }
+            }
+            return implode(', ', $formatted);
+        }
+
+        return '';
     }
 
     /**

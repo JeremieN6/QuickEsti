@@ -36,6 +36,8 @@
         </div>
       </div>
 
+
+
       <!-- Actions d'export -->
       <div class="mt-6 flex justify-center">
         <button
@@ -233,6 +235,7 @@ export default {
       this.isExporting = true;
 
       try {
+
         // Prépare les données pour l'export
         const exportData = {
           userType: this.userType,

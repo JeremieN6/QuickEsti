@@ -48,7 +48,7 @@
 
     <!-- Résumé exécutif -->
     <div class="section">
-        <h2 class="section-title" data-icon="2">Résumé Exécutif</h2>
+        <h2 class="section-title" data-icon="1">Résumé Exécutif</h2>
         <div class="grid">
             <div class="card">
                 <div class="card-title">Type de Projet</div>
@@ -70,7 +70,7 @@
 
     <!-- Équipe et ressources -->
     <div class="section">
-        <h2 class="section-title" data-icon="3">Équipe et Ressources</h2>
+        <h2 class="section-title" data-icon="2">Équipe et Ressources</h2>
         <div class="grid">
             <div class="card">
                 <div class="card-title">Durée Estimée</div>
@@ -100,7 +100,7 @@
     <!-- Fonctionnalités -->
     {% if features|length > 0 %}
     <div class="section compact-section">
-        <h2 class="section-title" data-icon="4">Fonctionnalités Incluses</h2>
+        <h2 class="section-title" data-icon="3">Fonctionnalités Incluses</h2>
         <div class="grid">
             {% for feature in features %}
             <div class="card">
@@ -113,11 +113,11 @@
 
     <!-- Proposition commerciale -->
     <div class="section">
-        <h2 class="section-title" data-icon="5">Proposition Commerciale</h2>
+        <h2 class="section-title" data-icon="4">Proposition Commerciale</h2>
         
         {% if estimation.breakdown is defined and estimation.breakdown %}
-        <div class="breakdown-table">
-            <table>
+        <div>
+            <table class="breakdown-table">
                 <thead>
                     <tr>
                         <th>Phase</th>
@@ -132,7 +132,7 @@
                         <td>{{ phase|title }}</td>
                         <td>{{ details.days }} j</td>
                         <td>{{ details.cost|number_format(0, ',', ' ') }}€</td>
-                        <td>{{ details.description }}</td>
+                        <td>{{ details.description|default('Phase de développement') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -164,6 +164,14 @@
                     <p class="text-lg font-bold">{{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT</p>
                     <p class="text-sm">TVA 20% : {{ (estimation.totalCost * 0.2)|number_format(0, ',', ' ') }}€</p>
                     <p class="text-lg font-bold">{{ (estimation.totalCost * 1.2)|number_format(0, ',', ' ') }}€ TTC</p>
+
+                    {% if indicators and indicators.confidence %}
+                    <div class="confidence-gauge {{ indicators.confidence.class }}">
+                        <div class="confidence-icon">{{ indicators.confidence.icon }}</div>
+                        <span>{{ indicators.confidence.label }}</span>
+                    </div>
+                    <p class="text-xs" style="color: #64748b; margin-top: 5px;">{{ indicators.confidence.description }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -190,29 +198,39 @@
         </div>
     </div>
 
-    <!-- Planning prévisionnel -->
-    {% if estimation.breakdown is defined and estimation.breakdown %}
+        <!-- Planning prévisionnel -->
+    {% if estimation.breakdown %}
     <div class="section">
-        <h2 class="section-title" data-icon="6">Planning Prévisionnel</h2>
-        <div class="timeline">
-            {% set weekCount = 0 %}
-            {% for phase, details in estimation.breakdown %}
-                {% set phaseWeeks = (details.days / 5)|round(0, 'ceil') %}
-                <div class="timeline-item">
-                    <div class="timeline-marker">{{ loop.index }}</div>
-                    <div class="timeline-content">
-                        <h4>{{ phase|title }}</h4>
-                        <p>Semaine {{ weekCount + 1 }} à {{ weekCount + phaseWeeks }}</p>
-                        <p class="text-sm">{{ details.description }}</p>
-                    </div>
-                </div>
-                {% set weekCount = weekCount + phaseWeeks %}
-            {% endfor %}
+        <h2 class="section-title" data-icon="5">Planning Prévisionnel</h2>
+
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Phase</th>
+                    <th style="text-align: center; padding: 8px;">Durée (jours)</th>
+                    <th style="text-align: right; padding: 8px;">Coût (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in estimation.breakdown %}
+                <tr>
+                    <td style="padding: 8px;">
+                        <strong>{{ phase }}</strong>
+                    </td>
+                    <td style="text-align: center; padding: 8px; font-weight: bold;">{{ details.days }}j</td>
+                    <td style="text-align: right; padding: 8px;">{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="card grid-full" style="margin-top: 20px;">
+            <div class="card-title">Informations Planning</div>
+            <p><strong>Durée totale :</strong> {{ estimation.totalDays }} jours</p>
+            <p><strong>Méthodologie :</strong> Développement agile par phases</p>
+            <p><strong>Flexibilité :</strong> Planning ajustable selon les retours</p>
         </div>
-    </div>
-    {% else %}
-    <div class="section">
-        <h2 class="section-title" data-icon="6">Planning Prévisionnel</h2>
+
         <div class="card grid-full">
             <div class="card-title">Durée Estimée</div>
             <p>Le projet est estimé à <strong>{{ estimation.totalDays }} jours</strong> soit environ <strong>{{ (estimation.totalDays / 5)|round(1) }} semaines</strong> de développement.</p>
@@ -221,27 +239,228 @@
     </div>
     {% endif %}
 
+    <!-- Équipe Projet -->
+    {% if estimation.breakdown %}
+    <div class="section">
+        <h2 class="section-title" data-icon="6">Équipe Projet</h2>
+
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Fonction</th>
+                    <th style="text-align: center; padding: 8px;">Nombre</th>
+                    <th style="text-align: center; padding: 8px;">Type</th>
+                    <th style="text-align: right; padding: 8px;">Charge (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 8px;">
+                        <span class="chart-color-box" style="background-color: #667eea;"></span>
+                        <strong>Développeur Senior</strong>
+                    </td>
+                    <td style="text-align: center; padding: 8px;">2</td>
+                    <td style="text-align: center; padding: 8px;">
+                        <span style="background: #e1f5fe; color: #0277bd; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Interne</span>
+                    </td>
+                    <td style="text-align: right; padding: 8px; font-weight: bold;">60%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px;">
+                        <span class="chart-color-box" style="background-color: #764ba2;"></span>
+                        <strong>Designer UI/UX</strong>
+                    </td>
+                    <td style="text-align: center; padding: 8px;">1</td>
+                    <td style="text-align: center; padding: 8px;">
+                        <span style="background: #fff3e0; color: #f57c00; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Freelance</span>
+                    </td>
+                    <td style="text-align: right; padding: 8px; font-weight: bold;">25%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px;">
+                        <span class="chart-color-box" style="background-color: #f093fb;"></span>
+                        <strong>Chef de Projet</strong>
+                    </td>
+                    <td style="text-align: center; padding: 8px;">1</td>
+                    <td style="text-align: center; padding: 8px;">
+                        <span style="background: #e1f5fe; color: #0277bd; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Interne</span>
+                    </td>
+                    <td style="text-align: right; padding: 8px; font-weight: bold;">15%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="card grid-full" style="margin-top: 20px;">
+            <div class="card-title">Configuration Équipe</div>
+            <div class="grid">
+                <div>
+                    <p><strong>Équipe totale :</strong> 4 collaborateurs</p>
+                    <p><strong>Ressources internes :</strong> 3 personnes (75%)</p>
+                </div>
+                <div>
+                    <p><strong>Ressources externes :</strong> 1 personne (25%)</p>
+                    <p><strong>Charge moyenne :</strong> 33% par collaborateur</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Métriques de Performance -->
+    {% if estimation.breakdown %}
+    <div class="section">
+        <h2 class="section-title" data-icon="7">Métriques de Performance</h2>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Efficacité Projet</div>
+                <div class="metric-value">{{ (estimation.totalCost / estimation.totalDays)|number_format(0, ',', ' ') }}€/jour</div>
+                <p class="text-sm">Coût moyen par jour de développement</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Complexité</div>
+                <div class="metric-value">
+                    {% if estimation.totalDays <= 30 %}Faible{% elseif estimation.totalDays <= 60 %}Moyenne{% else %}Élevée{% endif %}
+                </div>
+                <p class="text-sm">Basée sur la durée estimée ({{ estimation.totalDays }} jours)</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">ROI Estimé</div>
+                <div class="metric-value">{{ ((estimation.totalCost * 2.5) / estimation.totalCost * 100)|number_format(0) }}%</div>
+                <p class="text-sm">Retour sur investissement projeté</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Vélocité Équipe</div>
+                <div class="metric-value">{{ (estimation.totalDays / 4)|number_format(1) }} j/pers</div>
+                <p class="text-sm">Charge moyenne par collaborateur</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Analyses avancées -->
+    {% if comparisons %}
+    <div class="section">
+        <h2 class="section-title" data-icon="8">Analyses avancées</h2>
+
+        <!-- Analyse par profil -->
+        <h3 style="font-size: 14px; margin: 20px 0 10px 0; color: #374151;">Répartition par Profil et Phase</h3>
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Phase</th>
+                    <th style="text-align: right; padding: 8px;">Développeur</th>
+                    <th style="text-align: right; padding: 8px;">Designer</th>
+                    <th style="text-align: right; padding: 8px;">Chef de projet</th>
+                    <th style="text-align: right; padding: 8px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in estimation.breakdown %}
+                {% set phaseName = phase|lower %}
+                {% if 'développement' in phaseName %}
+                    {% set devPercent = 80 %}
+                    {% set designPercent = 15 %}
+                    {% set pmPercent = 5 %}
+                {% elseif 'conception' in phaseName or 'design' in phaseName %}
+                    {% set devPercent = 30 %}
+                    {% set designPercent = 60 %}
+                    {% set pmPercent = 10 %}
+                {% elseif 'management' in phaseName or 'gestion' in phaseName %}
+                    {% set devPercent = 20 %}
+                    {% set designPercent = 10 %}
+                    {% set pmPercent = 70 %}
+                {% elseif 'test' in phaseName %}
+                    {% set devPercent = 70 %}
+                    {% set designPercent = 20 %}
+                    {% set pmPercent = 10 %}
+                {% else %}
+                    {% set devPercent = 60 %}
+                    {% set designPercent = 30 %}
+                    {% set pmPercent = 10 %}
+                {% endif %}
+                <tr>
+                    <td style="padding: 8px;">
+                        <strong>{{ phase }}</strong>
+                    </td>
+                    <td style="text-align: right; padding: 8px;">
+                        <span style="color: #667eea;">{{ ((details.cost * devPercent / 100))|number_format(0, ',', ' ') }}€</span>
+                        <small style="color: #666;">({{ devPercent }}%)</small>
+                    </td>
+                    <td style="text-align: right; padding: 8px;">
+                        <span style="color: #764ba2;">{{ ((details.cost * designPercent / 100))|number_format(0, ',', ' ') }}€</span>
+                        <small style="color: #666;">({{ designPercent }}%)</small>
+                    </td>
+                    <td style="text-align: right; padding: 8px;">
+                        <span style="color: #f093fb;">{{ ((details.cost * pmPercent / 100))|number_format(0, ',', ' ') }}€</span>
+                        <small style="color: #666;">({{ pmPercent }}%)</small>
+                    </td>
+                    <td style="text-align: right; padding: 8px; font-weight: bold;">
+                        {{ details.cost|number_format(0, ',', ' ') }}€
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Métriques de performance -->
+        <h3 style="font-size: 12px; margin: 20px 0 10px 0; color: #374151;">Métriques de Performance</h3>
+        <div class="metrics-grid">
+            {% for metric in comparisons.metrics %}
+            <div class="metric-card">
+                <div class="metric-value">{{ metric.value }}</div>
+                <div class="metric-label">{{ metric.label }}</div>
+                <div class="metric-trend">{{ metric.trend }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Recommandations -->
     {% if recommendations|length > 0 %}
     <div class="section compact-section">
-        <h2 class="section-title" data-icon="7">Recommandations Stratégiques</h2>
+        <h2 class="section-title" data-icon="💡">Recommandations Stratégiques</h2>
+        {% if indicators and indicators.recommendationBadges %}
+        <div style="margin-bottom: 15px;">
+            {% for badge in indicators.recommendationBadges %}
+            <div class="status-badge {{ badge.class }}" style="display: block; margin: 8px 0; padding: 8px 12px;">
+                <strong>{{ badge.type }}:</strong> {{ badge.text }}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         {% for recommendation in recommendations %}
         <div class="highlight">
             <p>{{ recommendation }}</p>
         </div>
         {% endfor %}
+        {% endif %}
     </div>
     {% endif %}
 
     <!-- Risques et mitigation -->
     {% if risks|length > 0 %}
     <div class="section compact-section">
-        <h2 class="section-title" data-icon="8">Analyse des Risques</h2>
+        <h2 class="section-title" data-icon="⚠️">Analyse des Risques</h2>
+        {% if indicators and indicators.riskBadges %}
+        <div style="margin-bottom: 15px;">
+            {% for badge in indicators.riskBadges %}
+            <div class="status-badge {{ badge.class }}" style="display: block; margin: 8px 0; padding: 8px 12px;">
+                <strong>{{ badge.type }}:</strong> {{ badge.text }}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         {% for risk in risks %}
         <div class="highlight highlight-warning">
             <p><strong>Risque :</strong> {{ risk }}</p>
         </div>
         {% endfor %}
+        {% endif %}
     </div>
     {% endif %}
 
@@ -258,30 +477,4 @@
         </div>
     </div>
     {% endif %}
-
-    <!-- Conditions générales -->
-    <div class="section">
-        <h2 class="section-title" data-icon="10">Conditions Générales</h2>
-        <div class="grid">
-            <div class="card">
-                <div class="card-title">Validité du Devis</div>
-                <p>30 jours à compter de la date d'émission</p>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">Délai de Réalisation</div>
-                <p>{{ (estimation.totalDays / 5)|round(1) }} semaines après validation</p>
-            </div>
-        </div>
-        
-        <div class="card grid-full">
-            <div class="card-title">Conditions Particulières</div>
-            <ul class="text-sm">
-                <li>• Les spécifications détaillées seront validées avant le début du développement</li>
-                <li>• Toute modification du cahier des charges fera l'objet d'un avenant</li>
-                <li>• Le code source sera livré à la fin du projet</li>
-                <li>• Formation de vos équipes incluse dans le forfait</li>
-            </ul>
-        </div>
-    </div>
 {% endblock %}

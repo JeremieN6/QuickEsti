@@ -6,64 +6,26 @@
     <!-- Header -->
     <div class="header">
         <div class="header-logo">QUICKESTI</div>
-        <h1>{{ title }}</h1>
-        <div class="subtitle">{{ project.type }} - Mode Régie</div>
-        <div class="meta">
-            <strong>Généré le :</strong> {{ generatedAt|date('d/m/Y à H:i') }}
-        </div>
+        <h1>Récapitulatif d'Estimation</h1>
+        <div class="subtitle">Export Estimation - {{ project.type }}</div>
+        <div class="date">{{ generatedAt|date('d/m/Y H:i') }}</div>
     </div>
 
-    <!-- Informations client -->
-    {% if client.projectName or client.clientName %}
+    <!-- Informations projet -->
+    {% if formData and formData.basics %}
     <div class="section">
-        <h2 class="section-title" data-icon="1">Informations Client</h2>
+        <h2 class="section-title" data-icon="1">Informations Projet</h2>
         <div class="grid">
-            {% if client.projectName %}
             <div class="card">
-                <div class="card-title">Nom du Projet</div>
-                <p>{{ client.projectName }}</p>
+                <div class="card-title">Type de Projet</div>
+                <p>{{ formData.basics.projectType|default('Application web') }}</p>
             </div>
-            {% endif %}
             
-            {% if client.clientName %}
             <div class="card">
-                <div class="card-title">Contact Client</div>
-                <p>{{ client.clientName }}</p>
-                {% if client.contactEmail %}
-                    <p class="text-sm">{{ client.contactEmail }}</p>
-                {% endif %}
+                <div class="card-title">Description</div>
+                <p>{{ formData.basics.description|default('Mission de développement') }}</p>
             </div>
-            {% endif %}
         </div>
-        
-        <div class="grid">
-            {% if client.companyName %}
-            <div class="card">
-                <div class="card-title">Entreprise</div>
-                <p>{{ client.companyName }}</p>
-                {% if client.type %}
-                    <p class="text-sm">{{ client.type }}</p>
-                {% endif %}
-            </div>
-            {% endif %}
-            
-            {% if client.budget %}
-            <div class="card">
-                <div class="card-title">Budget Indicatif</div>
-                <p>{{ client.budget }}</p>
-                {% if client.competition %}
-                    <p class="text-sm">{{ client.competition }}</p>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-        
-        {% if client.description %}
-        <div class="card grid-full">
-            <div class="card-title">Description du Projet</div>
-            <p>{{ client.description }}</p>
-        </div>
-        {% endif %}
     </div>
     {% endif %}
 
@@ -75,9 +37,10 @@
                 <div class="card-title">Type de Projet</div>
                 <p>{{ project.type }}</p>
             </div>
+            
             <div class="card">
                 <div class="card-title">Technologies</div>
-                <p>{{ project.technologies ?: 'Non spécifiées' }}</p>
+                <p>{{ project.technologies|default('Non spécifiées') }}</p>
             </div>
         </div>
         
@@ -94,31 +57,20 @@
         <h2 class="section-title" data-icon="3">Paramètres Commerciaux</h2>
         <div class="grid">
             <div class="card">
-                <div class="card-title">Mode de Travail</div>
-                <p><span class="badge badge-success">Freelance Régie</span></p>
-                <p class="text-sm mt-2">Payé au résultat (prix fixe négocié)</p>
+                <div class="card-title">Mode de Facturation</div>
+                <p><span class="badge badge-info">Freelance régie</span></p>
+                <p class="text-sm mt-2">Payé au résultat</p>
             </div>
             
-            {% if client.validity %}
             <div class="card">
-                <div class="card-title">Validité du Devis</div>
-                <p>{{ client.validity }} jours</p>
+                <div class="card-title">Disponibilité</div>
+                <p>{{ (constraints and constraints.isFullTime) ? 'Temps plein' : 'Temps partiel' }}</p>
             </div>
-            {% endif %}
-        </div>
-        
-        <div class="grid">
-            {% if client.paymentTerms %}
-            <div class="card">
-                <div class="card-title">Conditions de Paiement</div>
-                <p>{{ client.paymentTerms }}</p>
-            </div>
-            {% endif %}
             
-            {% if client.warranty %}
+            {% if constraints and constraints.securityMargin %}
             <div class="card">
-                <div class="card-title">Garantie</div>
-                <p>{{ client.warranty }} mois</p>
+                <div class="card-title">Marge de Sécurité</div>
+                <p>{{ constraints.securityMargin }}%</p>
             </div>
             {% endif %}
         </div>
@@ -126,7 +78,7 @@
 
     <!-- Fonctionnalités -->
     {% if features|length > 0 %}
-    <div class="section">
+    <div class="section compact-section">
         <h2 class="section-title" data-icon="4">Fonctionnalités Incluses</h2>
         <ul class="list">
             {% for feature in features %}
@@ -138,21 +90,25 @@
 
     <!-- Devis commercial -->
     <div class="section">
-        <h2 class="section-title" data-icon="5">Proposition Commerciale</h2>
+        <h2 class="section-title" data-icon="5">Proposition</h2>
         
-        <div class="highlight highlight-success">
-            <div class="grid">
-                <div>
-                    <strong>Durée estimée :</strong> {{ estimation.totalDays }} jours
-                </div>
-                <div class="text-right">
-                    <strong>Prix proposé :</strong> {{ estimation.totalCost|number_format(0, ',', ' ') }}€ HT
-                </div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Durée Estimée</div>
+                <div class="metric-value">{{ estimation.totalDays }} jours</div>
+                <p class="text-sm">{{ (estimation.totalDays / 5)|round(1) }} semaines de travail</p>
             </div>
-            <div class="mt-4">
-                <span class="badge badge-{{ estimation.confidence == 'high' ? 'success' : (estimation.confidence == 'medium' ? 'warning' : 'info') }}">
-                    Confiance : {{ estimation.confidence == 'high' ? 'Élevée' : (estimation.confidence == 'medium' ? 'Moyenne' : 'Faible') }}
-                </span>
+            
+            <div class="card">
+                <div class="card-title">Coût Total</div>
+                <div class="metric-value">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</div>
+                <p class="text-sm">Hors taxes</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Niveau de Confiance</div>s
+                    <span>{{ indicators.confidence.label }}</span>
+                <p class="text-xs" style="color: #64748b; margin-top: 5px;">{{ indicators.confidence.description }}</p>
             </div>
         </div>
 
@@ -162,25 +118,27 @@
                 <tr>
                     <th>Phase</th>
                     <th>Description</th>
-                    <th class="text-center">Durée</th>
-                    <th class="text-right">Prix HT</th>
+                    <th>Durée</th>
+                    <th>Coût HT</th>
                 </tr>
             </thead>
             <tbody>
                 {% for phase, details in breakdown %}
-                    <tr>
-                        <td class="font-bold">{{ phase|title }}</td>
-                        <td>{{ details.description ?: 'Phase de ' ~ phase }}</td>
-                        <td class="text-center">{{ details.days }} j</td>
-                        <td class="text-right">{{ details.cost|number_format(0, ',', ' ') }}€</td>
-                    </tr>
+                <tr>
+                    <td class="font-bold">{{ phase }}</td>
+                    <td>{{ details.description|default('Phase de ' ~ phase) }}</td>
+                    <td class="text-center">{{ details.days }} jour{{ details.days > 1 ? 's' : '' }}</td>
+                    <td class="text-right font-bold">{{ details.cost|number_format(0, ',', ' ') }}€</td>
+                </tr>
                 {% endfor %}
+            </tbody>
+            <tbody>
                 <tr class="total-row">
-                    <td colspan="2" class="font-bold">TOTAL HT</td>
-                    <td class="text-center font-bold">{{ estimation.totalDays }} j</td>
+                    <td colspan="2" class="font-bold">SOUS-TOTAL HT</td>
+                    <td class="text-center font-bold">{{ estimation.totalDays }} jours</td>
                     <td class="text-right font-bold">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</td>
                 </tr>
-                <tr class="total-row">
+                <tr>
                     <td colspan="3" class="font-bold">TVA (20%)</td>
                     <td class="text-right font-bold">{{ (estimation.totalCost * 0.2)|number_format(0, ',', ' ') }}€</td>
                 </tr>
@@ -193,73 +151,149 @@
         {% endif %}
     </div>
 
-    <!-- Recommandations -->
-    {% if recommendations|length > 0 %}
+    <!-- Métriques de Performance -->
+    {% if estimation.breakdown %}
     <div class="section">
-        <h2 class="section-title" data-icon="6">Recommandations</h2>
-        <ul class="list recommendations">
-            {% for recommendation in recommendations %}
-                <li>{{ recommendation }}</li>
-            {% endfor %}
-        </ul>
+        <h2 class="section-title" data-icon="6">Métriques de Performance</h2>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">TJM Effectif</div>
+                <div class="metric-value">{{ (estimation.totalCost / estimation.totalDays)|number_format(0, ',', ' ') }}€/jour</div>
+                <p class="text-sm">Tarif journalier moyen</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Durée Mission</div>
+                <div class="metric-value">{{ (estimation.totalDays / 5)|number_format(1) }} sem</div>
+                <p class="text-sm">{{ estimation.totalDays }} jours de mission</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Charge Mensuelle</div>
+                <div class="metric-value">{{ (estimation.totalDays / (estimation.totalDays / 22))|number_format(0) }} j/mois</div>
+                <p class="text-sm">Rythme de travail moyen</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">CA Prévisionnel</div>
+                <div class="metric-value">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</div>
+                <p class="text-sm">Chiffre d'affaires total</p>
+            </div>
+        </div>
     </div>
     {% endif %}
 
-    <!-- Risques -->
-    {% if risks|length > 0 %}
+    <!-- Planning Prévisionnel -->
+    {% if estimation.breakdown %}
     <div class="section">
-        <h2 class="section-title" data-icon="7">Risques Identifiés</h2>
-        <ul class="list risks">
-            {% for risk in risks %}
-                <li>{{ risk }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+        <h2 class="section-title" data-icon="7">Planning Prévisionnel</h2>
 
-    <!-- Objectifs -->
-    {% if objectives|length > 0 %}
-    <div class="section compact-section">
-        <h2 class="section-title" data-icon="8">Objectifs du Projet</h2>
-        <ul class="list">
-            {% for objective in objectives %}
-                <li>{{ objective }}</li>
-            {% endfor %}
-        </ul>
+        <!-- Distribution temporelle -->
+        <h3 style="font-size: 14px; margin-bottom: 10px; color: #374151;">Distribution Temporelle</h3>
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Période</th>
+                    <th style="text-align: center; padding: 8px;">Semaines</th>
+                    <th style="text-align: center; padding: 8px;">Jours</th>
+                    <th style="text-align: right; padding: 8px;">Charge (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set totalWeeks = (estimation.totalDays / 5)|round %}
+                {% set phase1Weeks = (totalWeeks * 0.3)|round %}
+                {% set phase2Weeks = (totalWeeks * 0.5)|round %}
+                {% set phase3Weeks = totalWeeks - phase1Weeks - phase2Weeks %}
+                
+                <tr>
+                    <td style="padding: 8px;"><strong>Phase 1 - Démarrage</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ phase1Weeks }}</td>
+                    <td style="text-align: center; padding: 8px;">{{ phase1Weeks * 5 }}</td>
+                    <td style="text-align: right; padding: 8px;">30%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px;"><strong>Phase 2 - Développement</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ phase2Weeks }}</td>
+                    <td style="text-align: center; padding: 8px;">{{ phase2Weeks * 5 }}</td>
+                    <td style="text-align: right; padding: 8px;">50%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px;"><strong>Phase 3 - Finalisation</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ phase3Weeks }}</td>
+                    <td style="text-align: center; padding: 8px;">{{ phase3Weeks * 5 }}</td>
+                    <td style="text-align: right; padding: 8px;">20%</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="background: #f8fafc; font-weight: bold;">
+                    <td style="padding: 8px;"><strong>TOTAL</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ totalWeeks }}</td>
+                    <td style="text-align: center; padding: 8px;">{{ estimation.totalDays }}</td>
+                    <td style="text-align: right; padding: 8px;">100%</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Coût total du projet -->
+        <h3 style="font-size: 14px; margin: 20px 0 10px 0; color: #374151;">Coût Total du Projet</h3>
+        <table class="chart-table">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="text-align: left; padding: 8px;">Type de Tâche</th>
+                    <th style="text-align: center; padding: 8px;">Jours</th>
+                    <th style="text-align: right; padding: 8px;">TJM (€)</th>
+                    <th style="text-align: right; padding: 8px;">Montant (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase, details in estimation.breakdown %}
+                <tr>
+                    <td style="padding: 8px;"><strong>{{ phase }}</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ details.days }}</td>
+                    <td style="text-align: right; padding: 8px;">{{ (details.cost / details.days)|number_format(0, ',', ' ') }}</td>
+                    <td style="text-align: right; padding: 8px;">{{ details.cost|number_format(0, ',', ' ') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="background: #f8fafc; font-weight: bold;">
+                    <td style="padding: 8px;"><strong>TOTAL MISSION</strong></td>
+                    <td style="text-align: center; padding: 8px;">{{ estimation.totalDays }}</td>
+                    <td style="text-align: right; padding: 8px;">{{ (estimation.totalCost / estimation.totalDays)|number_format(0, ',', ' ') }}</td>
+                    <td style="text-align: right; padding: 8px;">{{ estimation.totalCost|number_format(0, ',', ' ') }}</td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
     {% endif %}
 
     <!-- Conditions générales -->
     <div class="section">
-        <h2 class="section-title" data-icon="9">Conditions Générales</h2>
-        
-        <div class="highlight">
-            <p><strong>Validité :</strong> Ce devis est valable {{ client.validity ?: 30 }} jours à compter de sa date d'émission.</p>
-            <p><strong>Paiement :</strong> {{ client.paymentTerms ?: 'Selon conditions convenues' }}</p>
-            <p><strong>Garantie :</strong> {{ client.warranty ?: 3 }} mois sur les développements réalisés</p>
-        </div>
+        <h2 class="section-title" data-icon="8">Conditions Générales</h2>
         
         <div class="highlight highlight-warning">
             <p><strong>Mode Régie :</strong> Ce devis représente un prix de vente marché pour le projet décrit. Il inclut :</p>
             <ul class="list mt-2">
-                <li>Analyse et conception détaillée</li>
                 <li>Développement selon spécifications</li>
                 <li>Tests et validation</li>
-                <li>Livraison et mise en production</li>
-                <li>Support et garantie</li>
+                <li>Documentation technique</li>
+                <li>Support pendant la période de garantie</li>
             </ul>
         </div>
         
-        <div class="highlight highlight-warning">
-            <p><strong>Conditions :</strong></p>
-            <ul class="list mt-2">
-                <li>Prix basé sur les spécifications fournies</li>
-                <li>Toute modification peut impacter le prix et les délais</li>
+        <div class="highlight">
+            <p><strong>Conditions particulières :</strong></p>
+            <ul class="list">
                 <li>Paiement selon échéancier convenu</li>
                 <li>Propriété intellectuelle transférée à la livraison</li>
             </ul>
         </div>
-    </div>
 
+        <div class="highlight">
+            <p><strong>Validité :</strong> Cette estimation est valable 30 jours à compter de sa date d'émission.</p>
+            <p><strong>Paiement :</strong> Selon conditions convenues avec le client</p>
+        </div>
+    </div>
 
 {% endblock %}

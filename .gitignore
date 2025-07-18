@@ -28,6 +28,13 @@
 /air-fryer-calculator
 ###> remove doc project ###
 
+###> test files ###
+test-*.pdf
+test_*.json
+test*.pdf
+test*.json
+###< test files ###
+
 ###> remove guide test file ###
 # /docs
 # /docs/*

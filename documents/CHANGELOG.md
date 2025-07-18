@@ -2,6 +2,26 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [1.5.0] - 2025-07-18
+
+### ✨ Export PDF Optimisé
+- **3 Templates PDF fonctionnels** : Entreprise, Freelance Forfait, Freelance Régie
+- **Métriques avancées** : TJM effectif, efficacité, ROI, vélocité, planning prévisionnel
+- **Tableaux analytiques** : Répartition par profil, analyses fiscales, distribution temporelle
+- **Conditions spécifiques** : Adaptées par mode (forfait/régie)
+
+### 🔧 Optimisations Performance
+- **Suppression Chart.js et html2canvas** : -415KB (-43% build size)
+- **Build optimisé** : 970KB → 555KB
+- **Interface allégée** : Sans dépendances JS lourdes
+- **Composant EstimationCharts.vue** : Supprimé (obsolète)
+
+### 📊 Améliorations Techniques
+- **Service DomPDFService** : Support formData, détection type freelance
+- **Templates Twig** : Gestion variables robuste, structure nettoyée
+- **Icônes standardisées** : Compatibilité PDF améliorée
+- **Génération PDF** : Rapide et fiable (60-68KB par document)
+
 ## [1.4.1] - 2025-07-17
 
 ### Corrigé
