@@ -465,10 +465,10 @@ class OpenAIService
 
         // En-tête selon le type de freelance
         if ($freelanceType === 'regie') {
-            $prompt = "Tu es un expert senior en pricing commercial freelance. Tu dois fournir un **prix de vente recommandé réaliste et compétitif** pour le client.\n\n";
+            $prompt = "Tu es un expert senior en estimation de projets web réalisés par des freelances en RÉGIE. Tu dois fournir une estimation **réaliste et argumentée** basée sur un TJM et le temps nécessaire.\n\n";
             $prompt .= "Tu réponds en **JSON strict**, exactement dans la structure fournie ci-dessous.\n\n";
         } else {
-            $prompt = "Tu es un expert senior en estimation de projets web réalisés par des freelances. Tu dois fournir une estimation **réaliste, prudente et argumentée** de tes coûts internes.\n\n";
+            $prompt = "Tu es un expert senior en pricing commercial freelance FORFAIT. Tu dois fournir un **prix de vente fixe recommandé réaliste et compétitif** pour le client.\n\n";
             $prompt .= "Tu réponds en **JSON strict**, exactement dans la structure fournie ci-dessous.\n\n";
         }
 
@@ -481,8 +481,8 @@ class OpenAIService
         if (isset($data['constraints'])) {
             $prompt .= "- Disponibilité : " . ($data['constraints']['isFullTime'] ? 'Temps plein' : 'Temps partiel') . "\n";
 
-            if ($freelanceType === 'regie') {
-                // Informations client pour devis (depuis clientInfo maintenant)
+            if ($freelanceType === 'forfait') {
+                // Informations client pour devis forfait (prix fixe négocié)
                 if (isset($data['clientInfo']['clientType'])) {
                     $prompt .= "- Type de client : " . $this->getClientTypeLabel($data['clientInfo']['clientType']) . "\n";
                 }
@@ -493,7 +493,7 @@ class OpenAIService
                     $prompt .= "- Contexte concurrentiel : " . $this->getCompetitiveContextLabel($data['clientInfo']['competitiveContext']) . "\n";
                 }
             } else {
-                // Informations freelance pour estimation interne (forfait)
+                // Informations freelance pour estimation régie (TJM interne)
                 if (isset($data['constraints']['tjmTarget'])) {
                     $prompt .= "- TJM cible : " . $data['constraints']['tjmTarget'] . "€/jour\n";
                 }
@@ -526,8 +526,8 @@ class OpenAIService
             }
         }
 
-        if ($estimationMode === 'client-quote') {
-            $prompt .= "- Utilise les benchmarks TJM marché selon le type de client\n";
+        if ($freelanceType === 'forfait') {
+            $prompt .= "- Utilise les benchmarks prix marché selon le type de client\n";
             $prompt .= "- Intègre une marge commerciale appropriée (30-50%)\n";
             $prompt .= "- Ajuste selon le contexte concurrentiel\n";
         } else {
@@ -537,20 +537,20 @@ class OpenAIService
 
         // Règles spécifiques selon le type de freelance
         if ($freelanceType === 'regie') {
-            $prompt .= "\n### Benchmarks TJM marché :\n";
+            $prompt .= "\n### Facturation RÉGIE (TJM × temps) :\n";
+            $prompt .= "- Base-toi sur un TJM réaliste pour le marché\n";
             $prompt .= "- Startup/PME : 400-600€/jour\n";
             $prompt .= "- Grande entreprise : 600-800€/jour\n";
-            $prompt .= "- Projet complexe : +20-30%\n";
-            $prompt .= "- Forte concurrence : -10-15%\n";
-            $prompt .= "- Peu de concurrence : +15-25%\n";
-            $prompt .= "- Marge commerciale standard : 30-50%\n";
+            $prompt .= "- Calcule le temps nécessaire précisément\n";
+            $prompt .= "- Facturation transparente : TJM × jours\n";
+            $prompt .= "- Le client paie le temps passé\n";
         } else {
-            $prompt .= "\n### Règles d'estimation :\n";
-            $prompt .= "- WordPress complet : minimum 10-15j\n";
-            $prompt .= "- Responsive design : +3-5j\n";
-            $prompt .= "- Maquettes à créer : +5-7j\n";
-            $prompt .= "- Spécifications à définir : +2-3j\n";
-            $prompt .= "- Tests et déploiement : +2-3j\n";
+            $prompt .= "\n### Prix FORFAIT (prix fixe marché) :\n";
+            $prompt .= "- WordPress complet : 8k-15k€ selon complexité\n";
+            $prompt .= "- E-commerce : 10k-25k€ selon fonctionnalités\n";
+            $prompt .= "- Application web : 15k-50k€ selon envergure\n";
+            $prompt .= "- Prix fixe négocié, indépendant du temps\n";
+            $prompt .= "- Intègre marge commerciale (30-50%)\n";
         }
 
         $prompt .= "\n### Structure de réponse JSON :\n";
@@ -574,6 +574,18 @@ class OpenAIService
                 'risks' => [
                     'Spécifications incomplètes pouvant allonger les délais',
                     'Changements de dernière minute dans les besoins'
+                ],
+                'freelanceAnalysis' => [
+                    'type' => 'tjm_justification|profitability_analysis',
+                    'title' => 'Justification TJM|Analyse Rentabilité',
+                    'summary' => 'Résumé de l\'analyse',
+                    'details' => [
+                        'factor1' => 'Premier facteur d\'analyse',
+                        'factor2' => 'Deuxième facteur d\'analyse',
+                        'factor3' => 'Troisième facteur d\'analyse'
+                    ],
+                    'conclusion' => 'Conclusion finale',
+                    'status' => 'justified|profitable|risky|unprofitable'
                 ]
             ]
         ], JSON_PRETTY_PRINT);
@@ -586,9 +598,35 @@ class OpenAIService
         $prompt .= "- Fournis des recommandations et risques spécifiques au projet\n";
 
         if ($freelanceType === 'regie') {
-            $prompt .= "- Le coût doit refléter un PRIX DE VENTE marché, pas un coût interne\n";
+            $prompt .= "- Le coût doit refléter TJM × temps, facturation transparente\n";
+            $prompt .= "\n### ANALYSE SPÉCIFIQUE RÉGIE - Justification TJM :\n";
+            $prompt .= "Dans freelanceAnalysis, fournis une justification détaillée du TJM :\n";
+            $prompt .= "- type: 'tjm_justification'\n";
+            $prompt .= "- title: 'Justification de votre TJM'\n";
+            $prompt .= "- summary: Une phrase résumant pourquoi le TJM est justifié\n";
+            $prompt .= "- details: {\n";
+            $prompt .= "    'complexity': 'Complexité technique : [niveau] - [explication courte]',\n";
+            $prompt .= "    'technologies': 'Technologies : [type] - [justification]',\n";
+            $prompt .= "    'experience': 'Expérience requise : [niveau] - [pourquoi]',\n";
+            $prompt .= "    'market': 'Marché : [fourchette TJM] pour ce profil'\n";
+            $prompt .= "  }\n";
+            $prompt .= "- conclusion: 'Votre TJM de [X]€/jour est [statut] car [raison principale]'\n";
+            $prompt .= "- status: 'justified|undervalued|overvalued'\n";
         } else {
-            $prompt .= "- Le coût doit refléter tes coûts internes réels\n";
+            $prompt .= "- Le coût doit refléter un PRIX DE VENTE FORFAIT marché compétitif\n";
+            $prompt .= "\n### ANALYSE SPÉCIFIQUE FORFAIT - Rentabilité :\n";
+            $prompt .= "Dans freelanceAnalysis, fournis une analyse effort vs rentabilité :\n";
+            $prompt .= "- type: 'profitability_analysis'\n";
+            $prompt .= "- title: 'Analyse Effort vs Rentabilité'\n";
+            $prompt .= "- summary: Une phrase résumant la rentabilité du projet\n";
+            $prompt .= "- details: {\n";
+            $prompt .= "    'effort': 'Effort estimé : [X] jours de travail effectif',\n";
+            $prompt .= "    'price': 'Prix forfait : [X]€ négocié avec le client',\n";
+            $prompt .= "    'tjm_implicit': 'TJM implicite : [X]€/jour ([prix]/[jours])',\n";
+            $prompt .= "    'margin': 'Marge sécurité : [X]% incluse dans le prix'\n";
+            $prompt .= "  }\n";
+            $prompt .= "- conclusion: 'Ce projet est [statut] avec un TJM implicite de [X]€/jour [explication]'\n";
+            $prompt .= "- status: 'profitable|risky|unprofitable'\n";
         }
 
         return $prompt;

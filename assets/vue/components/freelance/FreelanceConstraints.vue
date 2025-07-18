@@ -32,7 +32,7 @@
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             >
             <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-              <strong>Forfait</strong> - Payé au temps passé (estimation coût interne)
+              <strong>Forfait</strong> - Payé au résultat (prix fixe négocié)
             </span>
           </label>
           <label class="flex items-center">
@@ -45,7 +45,7 @@
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             >
             <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-              <strong>Régie</strong> - Payé au résultat (prix de vente client)
+              <strong>Régie</strong> - Payé au temps passé (TJM × jours)
             </span>
           </label>
         </div>
@@ -121,8 +121,8 @@
           </div>
         </div>
 
-        <!-- TJM cible (seulement pour forfait) -->
-        <div v-if="localFormData.freelanceType === 'forfait'">
+        <!-- TJM cible (seulement pour régie) -->
+        <div v-if="localFormData.freelanceType === 'regie'">
           <h5 class="text-md font-medium text-gray-900 dark:text-white mb-3">
             💰 TJM (Taux Journalier Moyen)
           </h5>

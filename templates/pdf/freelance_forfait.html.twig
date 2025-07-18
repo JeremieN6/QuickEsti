@@ -42,15 +42,14 @@
             <div class="card">
                 <div class="card-title">Mode de Travail</div>
                 <p><span class="badge badge-info">Freelance Forfait</span></p>
-                <p class="text-sm mt-2">Payé au temps passé (TJM × jours)</p>
+                <p class="text-sm mt-2">Prix fixe négocié, indépendant du temps</p>
             </div>
             
-            {% if constraints and constraints.tjmTarget %}
             <div class="card">
-                <div class="card-title">TJM Cible</div>
-                <p class="text-lg font-bold">{{ constraints.tjmTarget }}€ HT/jour</p>
+                <div class="card-title">Type de Facturation</div>
+                <p class="text-lg font-bold">Prix Forfait</p>
+                <p class="text-sm">Montant fixe convenu</p>
             </div>
-            {% endif %}
         </div>
         
         <div class="grid">
@@ -140,9 +139,9 @@
 
         <div class="grid">
             <div class="card">
-                <div class="card-title">Tarif Journalier Moyen</div>
-                <div class="metric-value">{{ (estimation.totalCost / estimation.totalDays)|number_format(0, ',', ' ') }}€/jour</div>
-                <p class="text-sm">TJM effectif pour ce projet</p>
+                <div class="card-title">Prix Forfait Total</div>
+                <div class="metric-value">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</div>
+                <p class="text-sm">Montant fixe négocié</p>
             </div>
 
             <div class="card">
@@ -163,6 +162,42 @@
                 <div class="card-title">Charge Hebdomadaire</div>
                 <div class="metric-value">{{ (estimation.totalDays / (estimation.totalDays / 5))|number_format(1) }} j/sem</div>
                 <p class="text-sm">Rythme de travail moyen</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Analyse Rentabilité Forfait -->
+    {% if estimation.freelanceAnalysis and estimation.freelanceAnalysis.type == 'profitability_analysis' %}
+    <div class="section">
+        <div class="highlight highlight-success">
+            <h3 style="font-size: 16px; margin-bottom: 15px; color: #065f46; display: flex; align-items: center;">
+                <span style="margin-right: 8px;">⚖️</span>
+                {{ estimation.freelanceAnalysis.title }}
+            </h3>
+            <p style="margin-bottom: 20px; color: #047857; font-size: 14px;">{{ estimation.freelanceAnalysis.summary }}</p>
+
+            <!-- Étiquettes colorées -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                {% for key, detail in estimation.freelanceAnalysis.details %}
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px;">
+                    <div style="font-size: 10px; font-weight: bold; color: #16a34a; text-transform: uppercase; margin-bottom: 5px;">
+                        {% if key == 'effort' %}EFFORT ESTIMÉ
+                        {% elseif key == 'price' %}PRIX FORFAIT
+                        {% elseif key == 'tjm_implicit' %}TJM IMPLICITE
+                        {% elseif key == 'margin' %}MARGE SÉCURITÉ
+                        {% else %}{{ key|upper }}{% endif %}
+                    </div>
+                    <div style="font-size: 13px; color: #065f46; font-weight: 500;">{{ detail }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Conclusion mise en avant -->
+            <div style="padding: 15px; background: rgba(255,255,255,0.8); border-left: 4px solid #10b981; border-radius: 6px;">
+                <div style="font-size: 15px; font-weight: bold; color: #065f46;">
+                    {{ estimation.freelanceAnalysis.conclusion }}
+                </div>
             </div>
         </div>
     </div>
@@ -220,46 +255,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    {% endif %}
-    </div>
-
-    <!-- Planning prévisionnel -->
-    {% if charts and charts.gantt and charts.gantt.phases %}
-    <div class="section">
-        <h2 class="section-title" data-icon="7">Planning Prévisionnel</h2>
-
-        <div class="gantt-timeline">
-            <div class="gantt-header">
-                <div class="gantt-phase-label">Phase</div>
-                <div class="gantt-timeline-area">
-                    <div class="gantt-weeks">
-                        {% for week in charts.gantt.weeks %}
-                        <div class="gantt-week">{{ week }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div style="width: 80px; text-align: center;">Durée</div>
-            </div>
-
-            {% for phase in charts.gantt.phases %}
-            <div class="gantt-row">
-                <div class="gantt-phase-name">{{ phase.name }}</div>
-                <div class="gantt-bar-area">
-                    <div class="gantt-bar" style="left: '{{ phase.startPercent }}%';
-                        width: '{{ phase.widthPercent }}%';
-                        background: linear-gradient(90deg, '{{ phase.color }}', '{{ phase.color }}'dd);
-                    ">
-                        {{ phase.weeks }}sem
-                    </div>
-                    {% if loop.last %}
-                    <div class="gantt-milestone" style="right: -6px;" title="Livraison finale"></div>
-                    {% endif %}
-                </div>
-                <div class="gantt-duration">{{ phase.days }}j</div>
-            </div>
-            {% endfor %}
-        </div>
 
         <div class="card grid-full" style="margin-top: 20px;">
             <div class="card-title">Informations Planning</div>
@@ -276,11 +271,12 @@
         </div>
     </div>
     {% endif %}
+    </div>
 
     <!-- Analyses avancées -->
     {% if comparisons %}
     <div class="section">
-        <h2 class="section-title" data-icon="8">Analyses avancées</h2>
+        <h2 class="section-title" data-icon="7">Analyses avancées</h2>
 
         <!-- Métriques de performance -->
         <h3 style="font-size: 12px; margin: 20px 0 10px 0; color: #374151;">Métriques de Performance</h3>
@@ -299,7 +295,7 @@
     <!-- Recommandations -->
     {% if recommendations|length > 0 %}
     <div class="section">
-        <h2 class="section-title" data-icon="9">Recommandations</h2>
+        <h2 class="section-title" data-icon="8">Recommandations</h2>
         {% if indicators and indicators.recommendationBadges %}
         <div style="margin-bottom: 15px;">
             {% for badge in indicators.recommendationBadges %}
@@ -321,7 +317,7 @@
     <!-- Risques -->
     {% if risks|length > 0 %}
     <div class="section">
-        <h2 class="section-title" data-icon="10">Risques Identifiés</h2>
+        <h2 class="section-title" data-icon="9">Risques Identifiés</h2>
         {% if indicators and indicators.riskBadges %}
         <div style="margin-bottom: 15px;">
             {% for badge in indicators.riskBadges %}
@@ -343,7 +339,7 @@
     <!-- Objectifs -->
     {% if objectives|length > 0 %}
     <div class="section compact-section">
-        <h2 class="section-title" data-icon="11">Objectifs du Projet</h2>
+        <h2 class="section-title" data-icon="10">Objectifs du Projet</h2>
         <ul class="list">
             {% for objective in objectives %}
                 <li>{{ objective }}</li>
@@ -354,7 +350,7 @@
 
     <!-- Notes importantes -->
     <div class="section">
-        <h2 class="section-title" data-icon="12">Notes Importantes</h2>
+        <h2 class="section-title" data-icon="11">Notes Importantes</h2>
         <div class="highlight highlight-warning">
             <p><strong>Mode Forfait :</strong> Cette estimation représente vos coûts internes pour réaliser le projet. Elle vous aide à :</p>
             <ul class="list mt-2">

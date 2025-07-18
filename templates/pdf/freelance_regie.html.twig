@@ -59,7 +59,7 @@
             <div class="card">
                 <div class="card-title">Mode de Facturation</div>
                 <p><span class="badge badge-info">Freelance régie</span></p>
-                <p class="text-sm mt-2">Payé au résultat</p>
+                <p class="text-sm mt-2">Payé au temps passé (TJM × jours)</p>
             </div>
             
             <div class="card">
@@ -106,7 +106,7 @@
             </div>
 
             <div class="card">
-                <div class="card-title">Niveau de Confiance</div>s
+                <div class="card-title">Niveau de Confiance</div>
                     <span>{{ indicators.confidence.label }}</span>
                 <p class="text-xs" style="color: #64748b; margin-top: 5px;">{{ indicators.confidence.description }}</p>
             </div>
@@ -179,6 +179,42 @@
                 <div class="card-title">CA Prévisionnel</div>
                 <div class="metric-value">{{ estimation.totalCost|number_format(0, ',', ' ') }}€</div>
                 <p class="text-sm">Chiffre d'affaires total</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Justification TJM Régie -->
+    {% if estimation.freelanceAnalysis and estimation.freelanceAnalysis.type == 'tjm_justification' %}
+    <div class="section">
+        <div class="highlight highlight-info">
+            <h3 style="font-size: 16px; margin-bottom: 15px; color: #1e40af; display: flex; align-items: center;">
+                <span style="margin-right: 8px;">📈</span>
+                {{ estimation.freelanceAnalysis.title }}
+            </h3>
+            <p style="margin-bottom: 20px; color: #1d4ed8; font-size: 14px;">{{ estimation.freelanceAnalysis.summary }}</p>
+
+            <!-- Étiquettes colorées -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                {% for key, detail in estimation.freelanceAnalysis.details %}
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px;">
+                    <div style="font-size: 10px; font-weight: bold; color: #2563eb; text-transform: uppercase; margin-bottom: 5px;">
+                        {% if key == 'complexity' %}COMPLEXITÉ TECHNIQUE
+                        {% elseif key == 'technologies' %}TECHNOLOGIES
+                        {% elseif key == 'experience' %}EXPÉRIENCE REQUISE
+                        {% elseif key == 'market' %}MARCHÉ TJM
+                        {% else %}{{ key|upper }}{% endif %}
+                    </div>
+                    <div style="font-size: 13px; color: #1e40af; font-weight: 500;">{{ detail }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Conclusion mise en avant -->
+            <div style="padding: 15px; background: rgba(255,255,255,0.8); border-left: 4px solid #3b82f6; border-radius: 6px;">
+                <div style="font-size: 15px; font-weight: bold; color: #1e40af;">
+                    {{ estimation.freelanceAnalysis.conclusion }}
+                </div>
             </div>
         </div>
     </div>

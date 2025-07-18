@@ -56,7 +56,7 @@
             @update:form-data="updateFreelanceObjectives"
           />
 
-          <!-- Section 6 : Informations Client (seulement en régie) -->
+          <!-- Section 6 : Informations Client (seulement en forfait) -->
           <FreelanceClientInfo
             :freelance-type="freelanceData.constraints.freelanceType"
             :form-data="freelanceData.clientInfo"

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="freelanceType === 'regie'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  <div v-if="freelanceType === 'forfait'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <!-- En-tête avec toggle -->
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center space-x-3">

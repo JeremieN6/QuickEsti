@@ -36,7 +36,83 @@
         </div>
       </div>
 
+      <!-- Analyse spécifique freelance -->
+      <div v-if="result.estimation.freelanceAnalysis && userType === 'freelance'" class="mt-6">
+        <!-- Justification TJM pour Régie -->
+        <div v-if="result.estimation.freelanceAnalysis.type === 'tjm_justification'"
+             class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+          <h5 class="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3 flex items-center">
+            <span class="mr-2">📈</span>
+            {{ result.estimation.freelanceAnalysis.title }}
+          </h5>
+          <p class="text-sm text-blue-800 dark:text-blue-300 mb-4">
+            {{ result.estimation.freelanceAnalysis.summary }}
+          </p>
 
+          <!-- Étiquettes colorées au lieu de bullet points -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div v-for="(detail, key) in result.estimation.freelanceAnalysis.details" :key="key"
+                 class="bg-blue-100 dark:bg-blue-800/30 px-3 py-2 rounded-lg border border-blue-200 dark:border-blue-600">
+              <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">
+                {{ getDetailLabel(key) }}
+              </div>
+              <div class="text-sm text-blue-900 dark:text-blue-200 font-medium">
+                {{ detail }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Conclusion mise en avant -->
+          <div class="mt-4 p-4 bg-white/70 dark:bg-gray-800/70 rounded-lg border-l-4 border-blue-500">
+            <div class="text-md font-semibold italic text-blue-900 dark:text-blue-200">
+              {{ result.estimation.freelanceAnalysis.conclusion }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Analyse Rentabilité pour Forfait -->
+        <div v-if="result.estimation.freelanceAnalysis.type === 'profitability_analysis'"
+             class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-700">
+          <h5 class="text-lg font-semibold text-green-900 dark:text-green-200 mb-3 flex items-center">
+            <span class="mr-2">⚖️</span>
+            {{ result.estimation.freelanceAnalysis.title }}
+          </h5>
+          <p class="text-sm text-green-800 dark:text-green-300 mb-4">
+            {{ result.estimation.freelanceAnalysis.summary }}
+          </p>
+
+          <!-- Étiquettes colorées au lieu de bullet points -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div v-for="(detail, key) in result.estimation.freelanceAnalysis.details" :key="key"
+                 class="bg-green-100 dark:bg-green-800/30 px-3 py-2 rounded-lg border border-green-200 dark:border-green-600">
+              <div class="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
+                {{ getDetailLabel(key) }}
+              </div>
+              <div class="text-sm text-green-900 dark:text-green-200 font-medium">
+                {{ detail }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Conclusion mise en avant -->
+          <div class="mt-4 p-4 bg-white/70 dark:bg-gray-800/70 rounded-lg border-l-4 border-green-500">
+            <div class="text-md font-semibold italic text-green-900 dark:text-green-200">
+              {{ result.estimation.freelanceAnalysis.conclusion }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détails supplémentaires -->
+      <div v-if="result.estimation.breakdown" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Répartition détaillée</h5>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+          <div v-for="(item, key) in result.estimation.breakdown" :key="key" class="text-center">
+            <div class="font-medium text-gray-900 dark:text-white">{{ item.days || 0 }}j</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 capitalize">{{ getBreakdownLabel(key) }}</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Actions d'export -->
       <div class="mt-6 flex justify-center">
@@ -56,16 +132,6 @@
         </button>
       </div>
 
-      <!-- Détails supplémentaires -->
-      <div v-if="result.estimation.breakdown" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Répartition détaillée</h5>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-          <div v-for="(item, key) in result.estimation.breakdown" :key="key" class="text-center">
-            <div class="font-medium text-gray-900 dark:text-white">{{ item.days || 0 }}j</div>
-            <div class="text-xs text-gray-600 dark:text-gray-400 capitalize">{{ getBreakdownLabel(key) }}</div>
-          </div>
-        </div>
-      </div>
 
       <!-- Recommandations -->
       <div v-if="result.estimation.recommendations && result.estimation.recommendations.length" class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -120,6 +186,22 @@ export default {
     };
   },
   methods: {
+    getDetailLabel(key) {
+      const labels = {
+        // Pour TJM Justification (Régie)
+        'complexity': 'Complexité Technique',
+        'technologies': 'Technologies',
+        'experience': 'Expérience Requise',
+        'market': 'Marché TJM',
+
+        // Pour Analyse Rentabilité (Forfait)
+        'effort': 'Effort Estimé',
+        'price': 'Prix Forfait',
+        'tjm_implicit': 'TJM Implicite',
+        'margin': 'Marge Sécurité'
+      };
+      return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    },
     formatPrice(price) {
       if (!price || isNaN(price)) return '0 €';
       return new Intl.NumberFormat('fr-FR', {

@@ -21,7 +21,7 @@
 ### ✅ Composants Vue.js migrés (13/13)
 **Communs (3/3)** :
 - [x] **UserTypeSelector** : Sélection freelance/entreprise
-- [x] **EstimationResults** : Affichage résultats détaillés
+- [x] **EstimationResults** : Affichage résultats détaillés + analyses spécifiques freelance
 - [x] **Tooltip** : Composant d'aide contextuelle
 
 **Freelance (5/5)** :
@@ -167,7 +167,8 @@ js/
   - TJM : Conditionnel (seulement en forfait)
   - Champs client : Déplacés de section 2 vers section 6
 - **Service OpenAI** : Adapté pour freelanceType vs estimationMode
-- **Impact** : Logique métier cohérente et intuitive
+- **Analyses spécifiques** : Justification TJM (régie) + Rentabilité (forfait) ✨ NOUVEAU
+- **Impact** : Logique métier cohérente et analyses concrètes
 
 ## 🚀 Prochaines étapes prioritaires
 
