@@ -1,4 +1,7 @@
 {
+    "name": "quickesti",
+    "version": "2.1.0",
+    "description": "Application d'estimation de projets avec IA",
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",

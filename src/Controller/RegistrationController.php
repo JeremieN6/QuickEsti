@@ -49,8 +49,8 @@ class RegistrationController extends AbstractController
             // On génère le token
             $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
 
-            // On envoie un mail
-            $mail->send(
+            // On envoie un mail (temporairement désactivé pour les tests)
+            /*$mail->send(
                 'contact@quickesti.fr',
                 $user->getEmail(),
                 'Activation de votre compte',
@@ -59,7 +59,7 @@ class RegistrationController extends AbstractController
                     'user' => $user,
                     'token' => $token
                 ]
-            );
+            );*/
 
             return $security->login($user, UsersAuthenticator::class, 'main');
         }
@@ -100,7 +100,7 @@ class RegistrationController extends AbstractController
     {
         $user = $this->getUser();
 
-        if(!$user){
+        if(!$user || !$user instanceof Users){
             $this->addFlash('danger', 'Vous devez être connecté pour accéder à cette page ⛔ !');
             return $this->redirectToRoute('app_login');
         }

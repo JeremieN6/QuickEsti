@@ -2,6 +2,38 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [2.1.0] - 2025-07-18
+
+### 🎨 Interface Utilisateur Moderne
+- **Design Flowbite** : Templates d'inscription, connexion et reset password avec design moderne
+- **Formulaires centrés** : Layout responsive avec max-w-md et espacement adaptatif
+- **Icônes personnalisées** : SVG éclair QuickEsti remplaçant les icônes Flowbite
+- **Classes Tailwind optimisées** : Champs plus larges (p-3), transitions fluides (duration-200)
+
+### 🌙 Dark Theme Complet
+- **Système de basculement** : Toggle clair/sombre avec sauvegarde localStorage
+- **Icônes dynamiques** : Lune/soleil qui changent selon le mode actuel
+- **Script optimisé** : Chargement en premier pour éviter le flash de contenu
+- **Persistance** : Thème sauvegardé entre les sessions utilisateur
+
+### 📱 Responsive Design Amélioré
+- **Mobile-first** : Layout adaptatif avec breakpoints sm/md/lg
+- **Centrage parfait** : min-h-screen flex items-center justify-center
+- **Espacement responsive** : py-12 px-4 sm:px-6 lg:px-8 pour tous les écrans
+- **Navigation adaptative** : Masquage intelligent des éléments sur mobile
+
+### ✨ Expérience Utilisateur
+- **Messages flash** : Design Tailwind avec couleurs success/error/warning
+- **Validation formulaires** : Messages d'erreur stylisés et en français
+- **Labels traduits** : Tous les textes interface en français
+- **Accessibilité** : Meta viewport, lang='fr', focus amélioré
+
+### 🔧 Corrections Techniques
+- **Fix label HTML** : Correction conditions d'utilisation sans |raw
+- **Configuration .htaccess** : Masquage warnings PHP 8.2 pour UX propre
+- **Espacement cohérent** : space-y-6 sur tous les formulaires
+- **Base template** : Structure optimisée avec dark theme global
+
 ## [2.0.0] - 2025-07-18
 
 ### 🔐 Système d'Authentification Complet

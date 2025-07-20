@@ -324,6 +324,82 @@ props: {
 
 ---
 
+## 🎨 Interface Utilisateur Moderne (18/07/2025)
+
+### Design System Flowbite
+**Décision** : Adaptation Flowbite avec personnalisation QuickEsti
+
+**Justification** :
+- ✅ Composants modernes et accessibles
+- ✅ Compatible Tailwind CSS natif
+- ✅ Templates auth prêts à l'emploi
+- ✅ Personnalisation facile (icônes, couleurs)
+
+**Personnalisations appliquées** :
+- Icône éclair QuickEsti au lieu des icônes Flowbite
+- Palette de couleurs adaptée
+- Espacement optimisé pour mobile
+
+### Dark Theme Implementation
+**Décision** : Système natif Tailwind avec localStorage
+
+**Justification** :
+- ✅ Performance optimale (pas de framework externe)
+- ✅ Persistance utilisateur via localStorage
+- ✅ Support natif Tailwind dark: classes
+- ✅ Script optimisé pour éviter le flash
+
+**Implémentation** :
+```javascript
+// Script en premier dans <head> pour éviter le flash
+if (localStorage.getItem('color-theme') === 'dark' ||
+    (!('color-theme' in localStorage) &&
+     window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+}
+```
+
+### Responsive Strategy
+**Décision** : Mobile-first avec formulaires centrés
+
+**Justification** :
+- ✅ Majorité du trafic mobile pour les formulaires
+- ✅ UX optimisée sur tous les devices
+- ✅ Formulaires centrés plus professionnels
+
+**Breakpoints appliqués** :
+- Base : Mobile (320px+)
+- `sm:` (640px+) : Tablettes avec padding augmenté
+- `md:` (768px+) : Desktop avec max-width
+- `lg:` (1024px+) : Large desktop
+
+### UX Optimizations
+**Décision** : Transitions fluides et feedback visuel
+
+**Justification** :
+- ✅ Perception de performance améliorée
+- ✅ Interface plus moderne et professionnelle
+- ✅ Feedback utilisateur immédiat
+
+**Implémentations** :
+- `transition duration-200` sur tous les éléments interactifs
+- Messages flash avec couleurs sémantiques
+- Focus states améliorés avec ring-blue-600
+- Hover states cohérents
+
+### Corrections Techniques
+**Décision** : Fix warnings PHP et HTML propre
+
+**Justifications** :
+- ✅ UX propre sans messages d'erreur
+- ✅ HTML sémantique et accessible
+- ✅ Performance optimisée
+
+**Solutions appliquées** :
+- Configuration .htaccess pour masquer warnings PHP 8.2
+- Labels HTML natifs au lieu de form_label avec |raw
+- Meta viewport et lang='fr' pour accessibilité
+
 **Créé le** : Juillet 2024
-**Dernière révision** : Août 2024
-**Status** : 🔄 Mise à jour pour architecture Symfony
+**Dernière révision** : 18 juillet 2025
+**Status** : ✅ Interface moderne implémentée - Architecture Symfony complète
