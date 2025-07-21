@@ -3,14 +3,17 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 6.4 + Vue.js 3 avec intelligence artificielle OpenAI. L'application dispose maintenant d'un **système d'authentification complet** et d'une **intégration Stripe** prête pour la monétisation.
 
-## 🎉 **Dernière Mise à Jour : Navigation & Estimation V2 (20/01/2025)**
+## 🎉 **Dernière Mise à Jour : Profil Utilisateur Complet (21/01/2025)**
+- **✅ Profil utilisateur complet** : Section dédiée dans dashboard avec 8 champs éditables
+- **✅ Modal d'édition moderne** : Interface Flowbite responsive avec validation
+- **✅ Persistance automatique** : Sauvegarde en base avec messages de confirmation
+- **✅ Nouveaux champs** : Adresse, ville, numéro TVA, adresse entreprise
 - **✅ Navigation complètement corrigée** : Header responsive, menu desktop/mobile fonctionnel
 - **✅ Estimation V2** : Interface guidée par étapes avec barre de progression
 - **✅ Dark theme restauré** : Configuration Tailwind optimisée, styles préservés
 - **✅ Architecture optimisée** : Composant Vue.js EstimationForm accessible sur /estimation
 - **✅ UX optimisée** : Formulaires centrés, transitions fluides, messages stylisés
 - **✅ Responsive design** : Mobile-first avec breakpoints adaptatifs
-- **✅ Dark theme** : Basculement clair/sombre avec persistance localStorage
 - **✅ Intégration Stripe** : Entités Plan, Subscription, Invoice avec relations
 
 ## ✅ Migration terminée (100%)
@@ -92,6 +95,14 @@
 - **Styles préservés** : Gradients et classes personnalisées maintenues
 - **Résolution conflits** : CDN/build local harmonisés
 - **Cohérence visuelle** : Thème uniforme sur toutes les pages
+
+### ✅ Profil Utilisateur Complet (Implémenté)
+- **Section profil dashboard** : Affichage de toutes les informations utilisateur
+- **Modal d'édition responsive** : Interface Flowbite avec 8 champs éditables
+- **Champs disponibles** : Email, nom, prénom, entreprise, téléphone, adresse, ville, TVA
+- **Validation complète** : Contrôles côté client/serveur avec messages d'erreur
+- **Persistance automatique** : Sauvegarde en base avec confirmation utilisateur
+- **Design cohérent** : Intégration parfaite avec le thème existant
 
 ## 🔄 Prochaines Étapes
 - Intégration complète de la logique EstimationForm dans la V2

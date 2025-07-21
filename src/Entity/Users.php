@@ -49,7 +49,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $compagnyName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $addressCompagnyName = null;
+    private ?string $addressCompagny = null;
+
+    #[ORM\Column(length: 175, nullable: true)]
+    private ?string $ville = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tvaNumber = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = false;
@@ -201,14 +207,38 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAddressCompagnyName(): ?string
+    public function getAddressCompagny(): ?string
     {
-        return $this->addressCompagnyName;
+        return $this->addressCompagny;
     }
 
-    public function setAddressCompagnyName(?string $addressCompagnyName): static
+    public function setAddressCompagny(?string $addressCompagny): static
     {
-        $this->addressCompagnyName = $addressCompagnyName;
+        $this->addressCompagny = $addressCompagny;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getTvaNumber(): ?string
+    {
+        return $this->tvaNumber;
+    }
+
+    public function setTvaNumber(?string $tvaNumber): static
+    {
+        $this->tvaNumber = $tvaNumber;
 
         return $this;
     }

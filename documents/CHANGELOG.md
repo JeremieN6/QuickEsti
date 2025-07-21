@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [2.2.1] - 2025-01-21
+
+### 👤 Profil Utilisateur Complet
+- **Section profil dans dashboard** : Affichage de toutes les informations utilisateur avec design moderne
+- **Modal d'édition responsive** : Interface Flowbite avec 8 champs éditables
+- **Champs disponibles** : Email, nom, prénom, entreprise, téléphone, adresse personnelle, adresse entreprise, ville, numéro TVA
+- **Validation complète** : Contrôles côté client et serveur avec messages d'erreur détaillés
+- **Persistance automatique** : Sauvegarde en base de données avec confirmation utilisateur
+
+### 🔧 Améliorations Techniques
+- **Formulaire Symfony** : `UserProfileFormType` avec validation et styling Tailwind CSS
+- **Contrôleur sécurisé** : Vérification d'authentification et gestion des erreurs
+- **Base de données étendue** : Nouveaux champs `adresse`, `ville`, `tvaNumber`, `addressCompagny`
+- **Template optimisé** : Modal intégrée dans le dashboard existant sans conflits
+
+### 🐛 Corrections
+- **Structure formulaire** : Suppression des balises `<form>` dupliquées
+- **Boutons fonctionnels** : Correction du mapping des champs de formulaire
+- **Validation** : Gestion correcte des erreurs et messages flash
+
+### 📁 Fichiers Modifiés
+- `src/Form/UserProfileFormType.php` - Nouveau formulaire de profil
+- `src/Controller/HomeController.php` - Gestion du profil utilisateur
+- `templates/main/dashboard.html.twig` - Section profil et modal d'édition
+- `src/Entity/Users.php` - Nouveaux champs utilisateur
+
+---
+
 ## [2.1.1] - 2025-01-20
 
 ### 🎯 Nouvelle Interface d'Estimation V2

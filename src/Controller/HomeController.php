@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\UserProfileFormType;
 use App\Repository\PlanRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -44,10 +47,34 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/main', name: 'app_main')]
-    public function main(): Response
+    public function main(Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Vérifier que l'utilisateur est connecté
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $user = $this->getUser();
+
+        // Vérification supplémentaire au cas où
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Créer le formulaire de profil
+        $profileForm = $this->createForm(UserProfileFormType::class, $user);
+        $profileForm->handleRequest($request);
+
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre profil a été mis à jour avec succès !');
+
+            return $this->redirectToRoute('app_main');
+        }
+
         return $this->render('main/dashboard.html.twig', [
             'page_title' => 'Tableau de bord - QuickEsti',
+            'user' => $user,
+            'profileForm' => $profileForm->createView(),
         ]);
     }
 }

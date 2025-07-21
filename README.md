@@ -48,6 +48,7 @@
 - **Dark theme restauré** : Configuration Tailwind optimisée
 - **Architecture améliorée** : Template dédié pour l'outil d'estimation
 - **Route `/estimation-v2`** : Interface guidée avec validation conditionnelle
+- **Profil utilisateur complet** : Modal d'édition avec 8 champs (email, nom, prénom, entreprise, téléphone, adresse, ville, TVA)
 
 ## 🛠️ Technologies
 
@@ -253,7 +254,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 21 janvier 2025 | v2.1.1 |
+| **Dernière mise à jour** | 21 janvier 2025 | v2.2.1 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
@@ -271,7 +272,8 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 *Logique Forfait vs Régie implémentée le 16 juillet 2025*
 *Export PDF optimisé et suppression Chart.js le 18 juillet 2025*
 *Navigation corrigée et interface V2 ajoutée le 20 janvier 2025*
+*Profil utilisateur avec modal d'édition ajouté le 21 janvier 2025*
 
 ---
 
-**Dernière mise à jour : 20 janvier 2025 - Version 2.1.1**
+**Dernière mise à jour : 21 janvier 2025 - Version 2.2.1**
