@@ -33,6 +33,24 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $telephone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $compagnyName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $addressCompagnyName = null;
+
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = false;
 
@@ -121,6 +139,78 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(?string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(?string $prenom): static
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): static
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getCompagnyName(): ?string
+    {
+        return $this->compagnyName;
+    }
+
+    public function setCompagnyName(?string $compagnyName): static
+    {
+        $this->compagnyName = $compagnyName;
+
+        return $this;
+    }
+
+    public function getAddressCompagnyName(): ?string
+    {
+        return $this->addressCompagnyName;
+    }
+
+    public function setAddressCompagnyName(?string $addressCompagnyName): static
+    {
+        $this->addressCompagnyName = $addressCompagnyName;
+
+        return $this;
     }
 
     public function isVerified(): ?bool

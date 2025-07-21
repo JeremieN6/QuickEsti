@@ -16,6 +16,11 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Stripe\Stripe;
+use Stripe\Webhook;
+use Stripe\StripeClient;
+use Stripe\Subscription as StripeSubscription;
 
 
 class WebhookController extends AbstractController
@@ -30,7 +35,7 @@ class WebhookController extends AbstractController
         InvoiceRepository $invoiceRepository,
         EntityManagerInterface $em): Response
     {
-        \Stripe\Stripe::setApiKey($this->getParameter('stripe_sk'));
+        Stripe::setApiKey($this->getParameter('stripe_sk'));
         $event = null;
 
 
@@ -40,7 +45,7 @@ class WebhookController extends AbstractController
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
        
         try {
-            $event = \Stripe\Webhook::constructEvent(
+            $event = Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
             );
         } catch(\UnexpectedValueException $e) {
@@ -57,6 +62,7 @@ class WebhookController extends AbstractController
 
 
         // Handle the event
+        $logger->info('Webhook Stripe - Event type received: ' . $event->type);
         switch ($event->type) {
             case 'checkout.session.completed':
                 $logger->info('Webhook Stripe connect checkout.session.completed');
@@ -64,7 +70,7 @@ class WebhookController extends AbstractController
                 $subscriptionId = $session->subscription;
 
 
-                $stripe = new \Stripe\StripeClient($this->getParameter('stripe_sk'));
+                $stripe = new StripeClient($this->getParameter('stripe_sk'));
                 $subscriptionStripe = $stripe->subscriptions->retrieve($subscriptionId, array());
                 $planId = $subscriptionStripe->plan->id;
 
@@ -80,15 +86,16 @@ class WebhookController extends AbstractController
 
 
                 // Disable old subscription
-                dump($user->getId());
+                $logger->info('Webhook Stripe - User ID: ' . $user->getId());
                 $activeSub = $subscriptionRepository->findActiveSub($user->getId());
                 if ($activeSub) {
-                    \Stripe\Subscription::update(
+                    $logger->info('Webhook Stripe - Cancelling old subscription: ' . $activeSub->getStripeId());
+                    StripeSubscription::update(
                         $activeSub->getStripeId(), [
-                            'cancel_at_period_end' => false,
+                            'cancel_at_period_end' => true,  // ✅ Annuler à la fin de la période
                         ]
                     );
-                   
+
                     $activeSub->setIsActive(false);
                     $em->persist($activeSub);
                 }
@@ -103,6 +110,8 @@ class WebhookController extends AbstractController
                 }
 
 
+                // Create subscription
+                $logger->info('Webhook Stripe - Creating new subscription for plan: ' . $plan->getName());
                 $subscription = new Subscription();
                 $subscription->setPlan($plan);
                 $subscription->setStripeId($subscriptionStripe->id);
@@ -111,16 +120,78 @@ class WebhookController extends AbstractController
                 $subscription->setUser($user);
                 $subscription->setIsActive(true);
                 $user->setStripeId($session->customer);
-                // dd($subscription);
+                $logger->info('Webhook Stripe - Subscription isActive set to: ' . ($subscription->isIsActive() ? 'true' : 'false'));
                 $em->persist($subscription);
                 $em->flush();
+                $logger->info('Webhook Stripe - Subscription created with ID: ' . $subscription->getId());
+
+                // Créer l'invoice immédiatement si elle n'existe pas déjà
+                $logger->info('Webhook Stripe - Checking if invoice needs to be created');
+                try {
+                    // Récupérer la dernière invoice de cette session
+                    $invoiceStripe = $stripe->invoices->all([
+                        'subscription' => $subscriptionId,
+                        'limit' => 1
+                    ])->data[0] ?? null;
+
+                    if ($invoiceStripe) {
+                        // Vérifier si l'invoice existe déjà en base
+                        $existingInvoice = $em->getRepository(Invoice::class)->findOneBy(['stripeId' => $invoiceStripe->id]);
+
+                        if ($existingInvoice) {
+                            $logger->info('Webhook Stripe - Invoice already exists, updating with subscription');
+                            // Mettre à jour l'invoice existante avec la subscription
+                            $existingInvoice->setSubscription($subscription);
+                            $em->persist($existingInvoice);
+                            $em->flush();
+                            $logger->info('Webhook Stripe - Invoice updated with subscription ID: ' . $existingInvoice->getId());
+                        } else {
+                            $logger->info('Webhook Stripe - Creating new invoice from checkout session');
+                            $invoice = new Invoice();
+                            $invoice->setStripeId($invoiceStripe->id);
+                            $invoice->setSubscription($subscription);
+                            $invoice->setNumber($invoiceStripe->number);
+                            $invoice->setAmountPaid($invoiceStripe->amount_paid);
+                            $invoice->setHostedInvoiceUrl($invoiceStripe->hosted_invoice_url);
+
+                            $em->persist($invoice);
+                            $em->flush();
+                            $logger->info('Webhook Stripe - Invoice created from checkout with ID: ' . $invoice->getId());
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $logger->error('Webhook Stripe - Error creating invoice: ' . $e->getMessage());
+                }
+
                 break;
             case 'invoice.paid':
+                $logger->info('Webhook Stripe - invoice.paid event received');
+                $logger->info('Webhook Stripe - Invoice data: ' . json_encode($event->data->object));
                 $subscriptionId = $event->data->object->subscription;
                 if (!$subscriptionId) {
-                    $logger->info('No subscription');
+                    $logger->info('Webhook Stripe - No subscription in invoice.paid');
+
+                    // Vérifier si l'invoice existe déjà
+                    $existingInvoice = $em->getRepository(Invoice::class)->findOneBy(['stripeId' => $event->data->object->id]);
+                    if ($existingInvoice) {
+                        $logger->info('Webhook Stripe - Invoice already exists, skipping creation');
+                        break;
+                    }
+
+                    // Créer l'invoice sans subscription (pour les paiements one-time)
+                    $logger->info('Webhook Stripe - Creating invoice without subscription');
+                    $invoice = new Invoice();
+                    $invoice->setStripeId($event->data->object->id);
+                    $invoice->setNumber($event->data->object->number);
+                    $invoice->setAmountPaid($event->data->object->amount_paid);
+                    $invoice->setHostedInvoiceUrl($event->data->object->hosted_invoice_url);
+
+                    $em->persist($invoice);
+                    $em->flush();
+                    $logger->info('Webhook Stripe - Invoice created without subscription, ID: ' . $invoice->getId());
                     break;
                 }
+                $logger->info('Webhook Stripe - Processing invoice for subscription: ' . $subscriptionId);
 
 
                 $subscription = null;
@@ -136,22 +207,33 @@ class WebhookController extends AbstractController
                 if ($subscription) {
                     // Vous avez trouvé la subscription, vous pouvez maintenant obtenir son ID
                     $subscriptionId = $subscription->getId();
+                    $logger->info('Webhook Stripe - Subscription found, ID: ' . $subscriptionId);
                 } else {
-                    $logger->info('Subscription not found in the database');
+                    $logger->info('Webhook Stripe - Subscription not found in the database');
                     break;
                 }
 
+                // Vérifier si l'invoice existe déjà
+                $existingInvoice = $em->getRepository(Invoice::class)->findOneBy(['stripeId' => $event->data->object->id]);
+                if ($existingInvoice) {
+                    $logger->info('Webhook Stripe - Invoice already exists, updating with subscription');
+                    $existingInvoice->setSubscription($subscription);
+                    $em->persist($existingInvoice);
+                    $em->flush();
+                    $logger->info('Webhook Stripe - Invoice updated with subscription');
+                } else {
+                    $logger->info('Webhook Stripe - Creating invoice for subscription: ' . $subscriptionId);
+                    $invoice = new Invoice();
+                    $invoice->setStripeId($event->data->object->id);
+                    $invoice->setSubscription($subscription);
+                    $invoice->setNumber($event->data->object->number);
+                    $invoice->setAmountPaid($event->data->object->amount_paid);
+                    $invoice->setHostedInvoiceUrl($event->data->object->hosted_invoice_url);
 
-                $invoice = new Invoice();
-                $invoice->setStripeId($event->data->object->id);
-                $invoice->setSubscription($subscription);
-                $invoice->setNumber($event->data->object->number);
-                $invoice->setAmountPaid($event->data->object->amount_paid);
-                // Hosted invoice url is now generated by formator
-                $invoice->setHostedInvoiceUrl($event->data->object->hosted_invoice_url);
-               
-                $em->persist($invoice);
-                $em->flush();
+                    $em->persist($invoice);
+                    $em->flush();
+                    $logger->info('Webhook Stripe - Invoice created with ID: ' . $invoice->getId());
+                }
 
 
                 break;

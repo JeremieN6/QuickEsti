@@ -1,40 +1,50 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ page_title }}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚡</text></svg>">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{{ page_title }}</title>
+		<link
+		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚡</text></svg>">
 
-        <!-- Flowbite CSS & JS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
-        <!-- Webpack Encore CSS -->
-        {{ encore_entry_link_tags('app') }}
+		<!-- Flowbite CSS & JS -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+		<!-- Webpack Encore CSS -->
+		{{ encore_entry_link_tags('app') }}
 
-        <!-- Script pour le dark theme (doit être en premier pour éviter le flash) -->
-        <script>
-            // Vérifier le thème sauvegardé ou utiliser la préférence système
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        </script>
-    </head>
-    <body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
-        <!-- Header -->
-        {% include 'header.html.twig' %}
-        <!-- Votre application Vue.js d'estimation -->
-        <div id="app"></div>
+		<!-- Script pour le dark theme (doit être en premier pour éviter le flash) -->
+		<script>
+			// Vérifier le thème sauvegardé ou utiliser la préférence système
+if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+document.documentElement.classList.add('dark');
+} else {
+document.documentElement.classList.remove('dark');
+}
+		</script>
+	</head>
+	<body
+		class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+		<!-- Header -->
+		{% include 'header.html.twig' %}
+		<div class="py-8 px-4 mx-auto max-w-screen-lg sm:py-16 lg:px-6">
+			<h1 class="mb-4 text-5xl font-extrabold text-center tracking-tight leading-none text-gray-900 md:text-5xl lg:text-5xl dark:text-white">Estimation de projet web<br>
+				<span class="text-gradient">QuickEsti</span>
+			</h1>
+			<p class="mb-8 text-lg font-normal text-center text-gray-500 lg:text-xl sm:px-16 xl:px-28 dark:text-gray-400">
+				QuickEsti vous aide à calculer le temps et le coût de votre projet web en prenant en compte vos contraintes, technologies et objectifs. Simple, rapide et pensé pour les développeurs et entreprises.
+			</p>
+		</div>
+		<!-- Votre application Vue.js d'estimation -->
+		<div id="app"></div>
 
-        <!-- Webpack Encore JavaScript -->
-        {{ encore_entry_script_tags('app') }}
+		<!-- Webpack Encore JavaScript -->
+		{{ encore_entry_script_tags('app') }}
 
-        <!-- Footer -->
-        {% include 'footer.html.twig' %}
+		<!-- Footer -->
+		{% include 'footer.html.twig' %}
 
-        <!-- Flowbite JS -->
-        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    </body>
+		<!-- Flowbite JS -->
+		<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+	</body>
 </html>
