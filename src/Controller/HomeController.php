@@ -12,15 +12,34 @@ final class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'page_title' => 'QuickEsti - Estimations de projets web avec IA',
+            'meta_description' => 'Créez des devis professionnels en quelques clics avec notre IA. Adapté aux freelances et entreprises.',
+        ]);
+    }
+
+    #[Route('/estimation', name: 'app_estimation')]
+    public function estimation(): Response
+    {
+        return $this->render('estimation/index.html.twig', [
+            'page_title' => 'Estimation de projet - QuickEsti',
+            'meta_description' => 'Utilisez notre outil d\'estimation intelligent pour créer votre devis personnalisé.',
+        ]);
+    }
+
+    #[Route('/estimation-v2', name: 'app_estimation_v2')]
+    public function estimationV2(): Response
+    {
+        return $this->render('estimation/v2.html.twig', [
+            'page_title' => 'Estimation de projet V2 - QuickEsti',
+            'meta_description' => 'Nouvelle version de notre outil d\'estimation avec interface guidée par étapes.',
         ]);
     }
 
     #[Route('/main', name: 'app_main')]
     public function main(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController - Main',
+        return $this->render('main/dashboard.html.twig', [
+            'page_title' => 'Tableau de bord - QuickEsti',
         ]);
     }
 }

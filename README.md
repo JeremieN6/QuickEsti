@@ -42,6 +42,13 @@
 - **Analyses comparatives** : Métriques fiscales et de performance
 - **Interface allégée** : Suppression Chart.js pour optimisation (-415KB)
 
+### 🆕 **Nouvelles fonctionnalités V2.2.0**
+- **Navigation responsive corrigée** : Header fonctionnel desktop/mobile
+- **Interface d'estimation V2** : Navigation par étapes avec barre de progression
+- **Dark theme restauré** : Configuration Tailwind optimisée
+- **Architecture améliorée** : Template dédié pour l'outil d'estimation
+- **Route `/estimation-v2`** : Interface guidée avec validation conditionnelle
+
 ## 🛠️ Technologies
 
 ### **Backend**
@@ -52,10 +59,9 @@
 
 ### **Frontend**
 - **Vue.js 3** - Framework JavaScript réactif
-- **Chart.js** - Graphiques interactifs et visualisations
 - **Webpack Encore** - Build et bundling
-- **Tailwind CSS** - Framework CSS utilitaire
-- **Flowbite** - Composants UI
+- **Tailwind CSS** - Framework CSS utilitaire avec dark mode
+- **Flowbite** - Composants UI modernes
 
 ### **Outils**
 - **Composer** - Gestionnaire de dépendances PHP
@@ -247,7 +253,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 18 juillet 2025 | v1.5.0 |
+| **Dernière mise à jour** | 20 janvier 2025 | v2.1.1 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
@@ -264,3 +270,8 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 *Structure projet restructurée le 16 juillet 2025*
 *Logique Forfait vs Régie implémentée le 16 juillet 2025*
 *Export PDF optimisé et suppression Chart.js le 18 juillet 2025*
+*Navigation corrigée et interface V2 ajoutée le 20 janvier 2025*
+
+---
+
+**Dernière mise à jour : 20 janvier 2025 - Version 2.1.1**

@@ -2,6 +2,38 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [2.1.1] - 2025-01-20
+
+### 🎯 Nouvelle Interface d'Estimation V2
+- **Navigation par étapes** : Interface guidée avec barre de progression visuelle (4 étapes)
+- **Route `/estimation-v2`** : Nouvelle version avec UX améliorée
+- **Validation conditionnelle** : Impossible de passer à l'étape suivante sans compléter
+- **Design moderne** : Cartes sélectionnables, animations fluides, responsive
+
+### 🧭 Correction Navigation Complète
+- **Header responsive** : Menu horizontal visible en desktop, hamburger fonctionnel en mobile
+- **Liens fonctionnels** : Navigation entre toutes les pages (/estimation, /login, /register, etc.)
+- **Menu adaptatif** : Boutons CTA qui changent selon l'état de connexion
+- **JavaScript optimisé** : Gestion propre du menu mobile sans conflits
+
+### 🎨 Système de Styles Optimisé
+- **Dark mode restauré** : Configuration Tailwind avec `darkMode: 'class'`
+- **Styles personnalisés préservés** : Gradients et classes custom maintenues
+- **Résolution conflits** : CDN Tailwind configuré pour ne pas écraser le build local
+- **Cohérence visuelle** : Tous les composants respectent le thème
+
+### 🔧 Architecture Technique Améliorée
+- **Template d'estimation dédié** : Chargement direct de l'app Vue.js sans conflits
+- **Composant EstimationForm accessible** : Route `/estimation` fonctionnelle avec votre outil
+- **Cache Symfony optimisé** : Mises à jour instantanées des templates
+- **Webpack Encore configuré** : Build Vue.js + Tailwind opérationnel
+
+### 🐛 Corrections Critiques
+- **Boutons hero alignés** : Côte à côte en desktop, colonne en mobile (classes Tailwind corrigées)
+- **Menu desktop visible** : Plus de hamburger affiché en large screen
+- **Dark theme fonctionnel** : Toggle et persistance restaurés
+- **Navigation responsive** : Tous les breakpoints fonctionnent correctement
+
 ## [2.1.0] - 2025-07-18
 
 ### 🎨 Interface Utilisateur Moderne

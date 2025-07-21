@@ -1,42 +1,8 @@
 <template>
   <div id="quickesti-app" class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-      <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4">
-          <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-gradient">
-              QuickEsti 🚀
-            </h1>
-            <span class="ml-3 text-sm text-gray-500 dark:text-gray-400">
-              Estimation de projet web
-            </span>
-          </div>
-
-          <!-- Version -->
-          <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-600 dark:text-gray-300">
-              Version MVP
-            </span>
-          </div>
-        </div>
-      </div>
-    </header>
 
     <!-- Main Content -->
     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Hero Section -->
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
-          Estimez votre projet web
-          <span class="text-gradient">en quelques clics</span>
-        </h2>
-        <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          QuickEsti vous aide à calculer le temps et le coût de votre projet web en prenant en compte
-          vos contraintes, technologies et objectifs. Simple, rapide et pensé pour les développeurs et entreprises.
-        </p>
-      </div>
-
       <!-- Estimation Form Container -->
       <div class="">
         <EstimationForm />

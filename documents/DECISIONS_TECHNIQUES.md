@@ -400,6 +400,72 @@ if (localStorage.getItem('color-theme') === 'dark' ||
 - Labels HTML natifs au lieu de form_label avec |raw
 - Meta viewport et lang='fr' pour accessibilité
 
+## 🆕 Décisions V2.1.1 - Navigation & Interface Guidée (Janvier 2025)
+
+### 🧭 Architecture Navigation Responsive
+**Décision** : Header unifié avec JavaScript vanilla pour le responsive
+
+**Justification** :
+- ✅ Simplicité : Pas de dépendance Flowbite complexe
+- ✅ Performance : JavaScript minimal et optimisé
+- ✅ Maintenance : Code compréhensible et modifiable
+- ✅ Compatibilité : Fonctionne avec tous les breakpoints
+
+**Implémentation** :
+- Classes Tailwind `md:flex` et `md:hidden` pour le responsive
+- Script JavaScript pour toggle du menu mobile
+- Boutons CTA adaptatifs selon l'état de connexion
+
+### 🎨 Gestion des Styles CSS
+**Décision** : Tailwind CSS local + CDN temporaire avec configuration
+
+**Justification** :
+- ✅ Flexibilité : CDN pour développement rapide
+- ✅ Performance : Build local pour production
+- ✅ Dark mode : Configuration `darkMode: 'class'` préservée
+- ✅ Styles custom : Gradients et classes personnalisées maintenues
+
+**Configuration** :
+```javascript
+tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: { colors: { primary: {...} } } }
+}
+```
+
+### 🎯 Interface d'Estimation par Étapes
+**Décision** : Nouvelle route `/estimation-v2` avec navigation guidée
+
+**Justification** :
+- ✅ UX améliorée : Progression claire et validation conditionnelle
+- ✅ Réduction cognitive : Une étape à la fois
+- ✅ Conversion : Moins d'abandon grâce au guidage
+- ✅ Flexibilité : Coexistence avec l'outil existant
+
+**Architecture** :
+- 4 étapes : Type projet → Infos de base → Fonctionnalités → Résultats
+- Barre de progression visuelle avec pourcentage
+- Validation avant passage à l'étape suivante
+- Navigation Précédent/Suivant intelligente
+
+### 🔧 Intégration Vue.js Optimisée
+**Décision** : Template dédié pour l'estimation sans header Symfony
+
+**Justification** :
+- ✅ Séparation des responsabilités : Landing page vs Outil
+- ✅ Performance : Chargement direct de l'app Vue.js
+- ✅ Maintenance : Pas de conflit entre headers
+- ✅ Évolutivité : Facilite les futures améliorations
+
+**Implémentation** :
+- `/estimation` : Template dédié avec `<div id="app"></div>`
+- Chargement direct du composant `EstimationForm.vue`
+- Assets Webpack Encore optimisés
+
 **Créé le** : Juillet 2024
-**Dernière révision** : 18 juillet 2025
-**Status** : ✅ Interface moderne implémentée - Architecture Symfony complète
+**Dernière révision** : 21 janvier 2025
+**Status** : ✅ Navigation corrigée - Interface V2 implémentée - Architecture optimisée
+
+---
+
+**Version actuelle : 2.1.1**

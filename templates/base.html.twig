@@ -5,10 +5,40 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}QuickEsti{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚡</text></svg>">
+        <!-- Tailwind CSS avec configuration dark mode -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <!-- Flowbite CSS & JS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+
+        <script>document.documentElement.classList.add('js')</script>
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
+
+        <!-- Styles personnalisés pour préserver le gradient -->
+        <style>
+            .text-gradient {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        </style>
 
         <!-- Script pour le dark theme (doit être en premier pour éviter le flash) -->
         <script>
@@ -34,12 +64,20 @@
                 </svg>
             </button>
         </div>
+        <!-- Header -->
+        {% include 'header.html.twig' %}
 
         {% block body %}{% endblock %}
 
+        <!-- Footer -->
+        {% include 'footer.html.twig' %}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+        <!-- Flowbite JS -->
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+        <script src="https://unpkg.com/taos@1.0.5/dist/taos.js"></script>
 
         <!-- Script pour le fonctionnement du dark theme -->
         <script>

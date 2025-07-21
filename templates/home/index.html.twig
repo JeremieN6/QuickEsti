@@ -1,7 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}QuickEsti - Estimation de projets web{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block body %}
-<div id="app"></div>
+<div id="homepage-app">
+
+    <!-- Hero Section -->
+    {{ include('home/hero.html.twig') }}
+    <!-- Features Section -->
+    {{ include('home/features.html.twig') }}
+    <!-- Testimonials Section -->
+    {{ include('home/testimonials.html.twig') }}
+    <!-- Pricing Section -->
+    {{ include('home/pricing.html.twig') }}
+    <!-- FAQ Section -->
+    {{ include('home/faq.html.twig') }}
+
+</div>
 {% endblock %}

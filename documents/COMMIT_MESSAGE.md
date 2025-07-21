@@ -2,39 +2,40 @@
 
 ```bash
 git add .
-git commit -m "feat(ui): Interface utilisateur moderne et responsive avec dark theme
+git commit -m "feat(nav): Navigation corrigée et interface d'estimation V2 avec progression
 
-🎨 INTERFACE UTILISATEUR MODERNE
-- Design Flowbite adapté pour inscription, connexion, reset password
-- Formulaires centrés et responsive (max-w-md, espacement adaptatif)
-- Templates Twig avec classes Tailwind CSS optimisées
-- Icônes SVG personnalisées (éclair QuickEsti au lieu de Flowbite)
+🧭 NAVIGATION RESPONSIVE CORRIGÉE
+- Header fonctionnel : Menu horizontal desktop, hamburger mobile
+- JavaScript optimisé : Gestion propre du menu sans conflits
+- Liens fonctionnels : Navigation entre toutes les pages
+- Boutons CTA adaptatifs : Changent selon l'état de connexion
 
-🌙 DARK THEME COMPLET
-- Système de basculement clair/sombre avec localStorage
-- Bouton toggle avec icônes lune/soleil dynamiques
-- Script optimisé pour éviter le flash au chargement
-- Thème persistant entre les sessions utilisateur
+🎯 INTERFACE D'ESTIMATION V2
+- Route /estimation-v2 : Interface guidée par étapes
+- Barre de progression : 4 étapes avec pourcentage visuel
+- Navigation intelligente : Boutons Précédent/Suivant conditionnels
+- Design moderne : Cartes sélectionnables, animations fluides
+- Validation conditionnelle : Impossible de passer sans compléter
 
-📱 RESPONSIVE DESIGN AMÉLIORÉ
-- Layout mobile-first avec breakpoints adaptatifs
-- Formulaires centrés sur tous les écrans (py-12 px-4 sm:px-6 lg:px-8)
-- Champs de saisie plus larges (p-3) pour meilleure UX mobile
-- Navigation adaptative avec masquage intelligent sur mobile
+🎨 SYSTÈME DE STYLES OPTIMISÉ
+- Dark mode restauré : Configuration Tailwind avec darkMode class
+- Styles préservés : Gradients et classes personnalisées maintenues
+- Résolution conflits : CDN Tailwind configuré pour ne pas écraser
+- Cohérence visuelle : Thème uniforme sur toutes les pages
 
-✨ EXPÉRIENCE UTILISATEUR
-- Transitions fluides (duration-200) sur tous les éléments interactifs
-- Messages flash avec design Tailwind cohérent
-- Labels et placeholders en français
-- Validation formulaires avec messages d'erreur stylisés
+🔧 ARCHITECTURE TECHNIQUE AMÉLIORÉE
+- Template estimation dédié : Chargement direct app Vue.js
+- Composant EstimationForm accessible : Route /estimation fonctionnelle
+- Cache Symfony optimisé : Mises à jour instantanées
+- Webpack Encore configuré : Build Vue.js + Tailwind opérationnel
 
-🔧 CORRECTIONS TECHNIQUES
-- Fix label conditions d'utilisation (HTML propre sans |raw)
-- Configuration .htaccess pour masquer warnings PHP 8.2
-- Espacement cohérent (space-y-6) sur tous les formulaires
-- Meta viewport et lang='fr' pour accessibilité
+🐛 CORRECTIONS CRITIQUES
+- Boutons hero alignés : Côte à côte desktop, colonne mobile
+- Menu desktop visible : Plus de hamburger en large screen
+- Dark theme fonctionnel : Toggle et persistance restaurés
+- Navigation responsive : Tous les breakpoints fonctionnels
 
-Version: v2.1.0 - Interface utilisateur moderne et responsive"
+Version: v2.1.1 - Navigation corrigée et interface V2"
 
 git push origin main
 ```

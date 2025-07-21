@@ -3,9 +3,11 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 6.4 + Vue.js 3 avec intelligence artificielle OpenAI. L'application dispose maintenant d'un **système d'authentification complet** et d'une **intégration Stripe** prête pour la monétisation.
 
-## 🎉 **Dernière Mise à Jour : Interface Utilisateur Moderne (18/07/2025)**
-- **✅ Interface moderne** : Design Flowbite responsive avec dark theme complet
-- **✅ Authentification sécurisée** : Inscription, connexion, vérification email avec JWT
+## 🎉 **Dernière Mise à Jour : Navigation & Estimation V2 (20/01/2025)**
+- **✅ Navigation complètement corrigée** : Header responsive, menu desktop/mobile fonctionnel
+- **✅ Estimation V2** : Interface guidée par étapes avec barre de progression
+- **✅ Dark theme restauré** : Configuration Tailwind optimisée, styles préservés
+- **✅ Architecture optimisée** : Composant Vue.js EstimationForm accessible sur /estimation
 - **✅ UX optimisée** : Formulaires centrés, transitions fluides, messages stylisés
 - **✅ Responsive design** : Mobile-first avec breakpoints adaptatifs
 - **✅ Dark theme** : Basculement clair/sombre avec persistance localStorage
@@ -70,7 +72,29 @@
 - **Mise en page** : Timeline limitée, tableau pleine largeur
 - **Nommage** : Format "estimation-[type]-quickesti-[date].pdf"
 
-### 🔄 Prochaines Étapes
+### 🆕 Nouvelles Fonctionnalités V2.1.1
+
+### ✅ Interface d'Estimation V2 (Implémentée)
+- **Route `/estimation-v2`** : Nouvelle interface guidée par étapes
+- **Barre de progression** : 4 étapes avec validation conditionnelle
+- **Design moderne** : Cartes sélectionnables, animations fluides
+- **Navigation intelligente** : Boutons Précédent/Suivant/Télécharger
+- **Responsive** : Adaptatif desktop/mobile avec dark mode
+
+### ✅ Navigation Corrigée (Implémentée)
+- **Header responsive** : Menu horizontal desktop, hamburger mobile
+- **Liens fonctionnels** : Navigation entre toutes les pages
+- **JavaScript optimisé** : Gestion propre du menu sans conflits
+- **Boutons CTA adaptatifs** : Changent selon l'état de connexion
+
+### ✅ Système de Styles Optimisé (Implémenté)
+- **Dark mode restauré** : Configuration Tailwind avec `darkMode: 'class'`
+- **Styles préservés** : Gradients et classes personnalisées maintenues
+- **Résolution conflits** : CDN/build local harmonisés
+- **Cohérence visuelle** : Thème uniforme sur toutes les pages
+
+## 🔄 Prochaines Étapes
+- Intégration complète de la logique EstimationForm dans la V2
 - Graphiques et visualisations (charts, jauges, diagrammes)
 - Optimisations visuelles avancées
 
@@ -288,7 +312,7 @@ git push origin main
 
 ---
 
-**Dernière mise à jour** : 18 Juillet 2025
-**Phase actuelle** : ✅ Interface Utilisateur Moderne (v2.1.0) - TERMINÉE
+**Dernière mise à jour** : 21 Juillet 2025
+**Phase actuelle** : ✅ Interface Utilisateur Moderne (v2.1.1) - TERMINÉE
 **Prochaine phase** : 🎯 Tests Complets et Finalisation Stripe
 **Confiance** : 🟢 Haute - Application avec interface moderne, auth sécurisée et UX optimisée
