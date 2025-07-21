@@ -42,7 +42,7 @@
 - **Analyses comparatives** : Métriques fiscales et de performance
 - **Interface allégée** : Suppression Chart.js pour optimisation (-415KB)
 
-### 🆕 **Nouvelles fonctionnalités V2.2.0**
+### 🆕 **Nouvelles fonctionnalités V2.1.1**
 - **Navigation responsive corrigée** : Header fonctionnel desktop/mobile
 - **Interface d'estimation V2** : Navigation par étapes avec barre de progression
 - **Dark theme restauré** : Configuration Tailwind optimisée
@@ -253,7 +253,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 20 janvier 2025 | v2.1.1 |
+| **Dernière mise à jour** | 21 janvier 2025 | v2.1.1 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
