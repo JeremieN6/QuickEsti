@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Blog
 {
     #[ORM\Id]
@@ -122,5 +123,14 @@ class Blog
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * Méthode appelée automatiquement avant chaque mise à jour
+     */
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable('now');
     }
 }

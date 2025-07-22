@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [2.3.1] - 2025-01-22
+
+### 🔧 **Corrections critiques**
+- **FIX: Structure HTML des articles générés** - Résolution du problème des `<div>` indésirables
+  - Remplacement de `TextEditorField` par `TextareaField` dans `BlogCrudController`
+  - Préservation de la structure HTML sémantique (`<h2>`, `<p>`, `<ul>`, `<ol>`)
+  - Suppression de la transformation automatique par l'éditeur WYSIWYG
+
+### ✨ **Améliorations**
+- **Prompt IA optimisé** - Instructions HTML simplifiées et plus efficaces
+  - Règles de formatage placées en début de prompt
+  - Suppression des instructions complexes qui distraient l'IA
+  - Exemple concret fourni pour garantir la structure attendue
+- **Interface d'édition améliorée** - Textarea 20 lignes avec aide contextuelle
+- **Commande de test** - `GenerateBlogCommand` pour validation en console
+
+### 📝 **Technique**
+- Modification de `BlogGeneratorService::buildStructuredPrompt()`
+- Ajout de `GenerateBlogCommand` pour tests
+- Configuration `TextareaField` avec `setNumOfRows(20)` et aide
+
+### 📄 **Pagination blog (V2.3.1)**
+- **Système de pagination** : 8 articles par page avec Doctrine Paginator
+- **Navigation complète** : Boutons Précédent/Suivant + numéros de pages
+- **Template pagination** : Composant réutilisable `_pagination.html.twig`
+- **Ordre chronologique** : Articles triés par ID croissant (ordre de création)
+- **Filtrage** : Affichage des articles publiés uniquement
+
 ## [2.3.0] - 2025-01-21
 
 ### 🔐 Interface d'Administration EasyAdmin

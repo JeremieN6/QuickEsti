@@ -26,11 +26,8 @@ final class HomeController extends AbstractController
     #[Route('/estimation', name: 'app_estimation')]
     public function estimation(): Response
     {
-        $connectedUser = $this->getUser();
-        if($connectedUser)
-        {
-            return $this->redirectToRoute('app_home');
-        }
+        // La sécurité est gérée par security.yaml (ROLE_USER requis)
+        // Pas besoin de vérification manuelle ici
         return $this->render('estimation/index.html.twig', [
             'page_title' => 'Estimation de projet - QuickEsti',
             'meta_description' => 'Utilisez notre outil d\'estimation intelligent pour créer votre devis personnalisé.',
@@ -46,7 +43,7 @@ final class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/main', name: 'app_main')]
+    #[Route('/mon-compte', name: 'app_account')]
     public function main(Request $request, EntityManagerInterface $entityManager): Response
     {
         // Vérifier que l'utilisateur est connecté
@@ -68,7 +65,7 @@ final class HomeController extends AbstractController
 
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès !');
 
-            return $this->redirectToRoute('app_main');
+            return $this->redirectToRoute('app_account');
         }
 
         return $this->render('main/dashboard.html.twig', [

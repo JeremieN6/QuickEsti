@@ -3,7 +3,16 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 6.4 + Vue.js 3 avec intelligence artificielle OpenAI. L'application dispose maintenant d'un **système d'authentification complet** et d'une **intégration Stripe** prête pour la monétisation.
 
-## 🎉 **Dernière Mise à Jour : Administration EasyAdmin + Sécurité (21/01/2025)**
+## 🎉 **Dernière Mise à Jour : Génération de contenu IA + Pagination (22/01/2025)**
+- **✅ FIX CRITIQUE** : Structure HTML des articles générés préservée
+- **✅ Prompt IA optimisé** : Instructions simplifiées pour meilleure efficacité
+- **✅ TextareaField** : Remplacement de l'éditeur WYSIWYG pour préserver le HTML
+- **✅ Commande de test** : `php bin/console app:generate-blog` pour validation
+- **✅ Structure sémantique** : Utilisation exclusive de `<h2>`, `<p>`, `<ul>`, `<ol>`
+- **✅ Pagination blog** : 8 articles par page avec navigation complète
+- **✅ Ordre chronologique** : Articles triés par ID croissant (ordre de création)
+
+## 🎉 **Administration EasyAdmin + Sécurité (21/01/2025)**
 - **✅ Interface d'administration** : EasyAdmin v4 complètement configuré sur `/admin`
 - **✅ CRUD complets** : Gestion de toutes les entités avec interface moderne
 - **✅ Sécurité renforcée** : Protection admin (ROLE_ADMIN) et estimation (ROLE_USER)

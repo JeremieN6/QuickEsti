@@ -14,13 +14,16 @@
                 Accueil
             </a>
             <a href="{{ path('app_estimation') }}" class="text-gray-900 hover:text-blue-700 px-3 py-2 text-sm font-medium dark:text-white dark:hover:text-blue-500">
-                Estimation
+                Estimation <sup class="text-gradient italic text-xs">New</sup>
             </a>
             <a href="#features" class="text-gray-900 hover:text-blue-700 px-3 py-2 text-sm font-medium dark:text-white dark:hover:text-blue-500">
                 Fonctionnalités
             </a>
             <a href="#pricing" class="text-gray-900 hover:text-blue-700 px-3 py-2 text-sm font-medium dark:text-white dark:hover:text-blue-500">
                 Tarifs
+            </a>
+            <a href="#faq" class="text-gray-900 hover:text-blue-700 px-3 py-2 text-sm font-medium dark:text-white dark:hover:text-blue-500">
+                Faq
             </a>
             <a href="{{ path('app_blog') }}" class="text-gray-900 hover:text-blue-700 px-3 py-2 text-sm font-medium dark:text-white dark:hover:text-blue-500">
                 Blog
@@ -30,7 +33,7 @@
         <!-- Boutons CTA Desktop -->
         <div class="hidden md:flex items-center space-x-3">
             {% if app.user %}
-                <a href="{{ path('app_main') }}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700">
+                <a href="{{ path('app_account') }}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700">
                     Tableau de bord
                 </a>
                 <a href="{{ path('app_estimation') }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700">
@@ -64,7 +67,7 @@
                 </li>
                 <li>
                     <a href="{{ path('app_estimation') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        Estimation
+                        Estimation <sup class="text-gradient italic">New</sup>
                     </a>
                 </li>
                 <li>
@@ -78,6 +81,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#faq" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        Faq
+                    </a>
+                </li>
+                <li>
                     <a href="{{path('app_blog')}}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         Blog
                     </a>
@@ -87,7 +95,7 @@
             <!-- Boutons CTA Mobile -->
             <div class="flex flex-col space-y-2 mt-4 px-3 pb-3">
                 {% if app.user %}
-                    <a href="{{ path('app_main') }}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700">
+                    <a href="{{ path('app_account') }}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700">
                         Tableau de bord
                     </a>
                     <a href="{{ path('app_estimation') }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700">

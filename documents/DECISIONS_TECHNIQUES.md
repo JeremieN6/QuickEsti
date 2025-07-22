@@ -1,5 +1,27 @@
 # 🔧 Décisions techniques - QuickEsti
 
+## 📝 **Génération de contenu IA (V2.3.1)**
+
+### Problème résolu : Structure HTML des articles
+**Contexte** : L'IA OpenAI générait du HTML propre avec des balises sémantiques (`<h2>`, `<p>`, `<ul>`, `<ol>`), mais l'éditeur WYSIWYG d'EasyAdmin (TextEditorField) transformait automatiquement ces balises en `<div>` lors de l'édition, détruisant la structure sémantique.
+
+**Diagnostic** : Le problème survenait lors de la redirection vers la page d'édition après génération, où le TextEditorField chargeait le contenu dans un éditeur WYSIWYG (TinyMCE/CKEditor) qui "normalisait" le HTML.
+
+**Solution adoptée** :
+- **Remplacement de TextEditorField par TextareaField** dans `BlogCrudController`
+- **Prompt IA drastiquement simplifié** : Instructions HTML placées en début de prompt
+- **Règles strictes** : "Utilise UNIQUEMENT `<h2>`, `<p>`, `<ul>`, `<ol>`. JAMAIS de `<div>`"
+- **Suppression des distractions** : Prompt réduit de 200+ lignes à ~30 lignes essentielles
+
+**Résultats** :
+- ✅ Structure HTML sémantique préservée
+- ✅ Contrôle total sur le formatage
+- ✅ Pas de transformation indésirable par l'éditeur
+- ✅ Meilleur SEO avec balises appropriées
+- ✅ IA plus efficace avec instructions simplifiées
+
+**Leçon apprise** : Les éditeurs WYSIWYG sont incompatibles avec du contenu HTML généré par IA qui doit respecter une structure précise.
+
 ## 🎯 Philosophie générale
 
 ### Principe directeur

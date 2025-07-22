@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Repository\BlogRepository;
 use App\Service\OpenAIService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 final class BlogController extends AbstractController
 {
@@ -40,20 +42,48 @@ final class BlogController extends AbstractController
         return $this->redirectToRoute('app_blog_post', ['slug' => $article->getSlug()]);
     }
     #[Route('/blog', name: 'app_blog')]
-    public function index(BlogRepository $blogRepository): Response
+    public function index(Request $request, BlogRepository $blogRepository): Response
     {
-        // Ici, vous pourriez récupérer les articles depuis la base de données
-        $articles = $blogRepository->findAll();
+        // Récupération du numéro de page depuis l'URL (par défaut 1)
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 8; // 8 articles par page
 
-        //Pour récupérer le début d'un article, vous pouvez utiliser une méthode comme substr() ou une fonction personnalisée
-        foreach ($articles as $article) {
-            $article->intro = substr($article->getContenu(), 0, 150) . '...'; // Limite à 150 caractères
+        // Création de la requête paginée
+        $query = $blogRepository->createQueryBuilder('b')
+            ->where('b.published = :published')
+            ->setParameter('published', true)
+            ->orderBy('b.id', 'ASC')
+            ->getQuery();
+
+        // Configuration de la pagination
+        $paginator = new Paginator($query);
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        // Calcul des informations de pagination
+        $totalItems = count($paginator);
+        $totalPages = ceil($totalItems / $limit);
+
+        // Ajout de l'intro pour chaque article
+        foreach ($paginator as $article) {
+            $article->intro = substr(strip_tags($article->getContenu()), 0, 150) . '...';
         }
-        
+
         return $this->render('blog/index.html.twig', [
             'controller_name' => 'BlogController',
             'page_title' => 'Le Blog - QuickEsti',
-            'articles' => $articles,
+            'articles' => $paginator,
+            'pagination' => [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_items' => $totalItems,
+                'limit' => $limit,
+                'has_previous' => $page > 1,
+                'has_next' => $page < $totalPages,
+                'previous_page' => $page - 1,
+                'next_page' => $page + 1,
+            ]
         ]);
     }
     #[Route('/blog/{slug}', name: 'app_blog_post')]

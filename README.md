@@ -48,6 +48,16 @@
 - **Sécurité renforcée** : Protection admin (ROLE_ADMIN) et estimation (ROLE_USER)
 - **Menu organisé** : Sections logiques avec icônes FontAwesome
 - **Redirection intelligente** : Retour automatique à la page cible après connexion
+
+### 📝 **Génération de contenu IA (V2.3.1)**
+- **Service de génération d'articles** : BlogGeneratorService avec OpenAI
+- **Prompts optimisés** : Instructions HTML strictes pour structure sémantique
+- **HTML propre garanti** : Utilisation exclusive de `<h2>`, `<p>`, `<ul>`, `<ol>` (pas de `<div>`)
+- **Interface admin intégrée** : Génération d'articles directement depuis EasyAdmin
+- **Commande console** : `php bin/console app:generate-blog` pour tests
+- **Éditeur HTML brut** : TextareaField au lieu de WYSIWYG pour préserver la structure
+- **Pagination blog** : 8 articles par page avec navigation Doctrine Paginator
+- **Ordre chronologique** : Affichage par ID croissant (ordre de création en base)
 - **Navigation responsive corrigée** : Header fonctionnel desktop/mobile
 - **Interface d'estimation V2** : Navigation par étapes avec barre de progression
 - **Dark theme restauré** : Configuration Tailwind optimisée
