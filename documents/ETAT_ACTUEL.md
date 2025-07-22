@@ -3,7 +3,8 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 6.4 + Vue.js 3 avec intelligence artificielle OpenAI. L'application dispose maintenant d'un **système d'authentification complet** et d'une **intégration Stripe** prête pour la monétisation.
 
-## 🎉 **Dernière Mise à Jour : Profil Utilisateur Complet (21/01/2025)**
+## 🎉 **Dernière Mise à Jour : Blog + Profil Utilisateur (21/01/2025)**
+- **✅ Section blog ajoutée** : Navigation mise à jour avec lien vers blog
 - **✅ Profil utilisateur complet** : Section dédiée dans dashboard avec 8 champs éditables
 - **✅ Modal d'édition moderne** : Interface Flowbite responsive avec validation
 - **✅ Persistance automatique** : Sauvegarde en base avec messages de confirmation
@@ -103,6 +104,12 @@
 - **Validation complète** : Contrôles côté client/serveur avec messages d'erreur
 - **Persistance automatique** : Sauvegarde en base avec confirmation utilisateur
 - **Design cohérent** : Intégration parfaite avec le thème existant
+
+### ✅ Section Blog (Implémentée)
+- **Navigation mise à jour** : Remplacement "FAQ" par "Blog" dans header desktop/mobile
+- **Route préparée** : Lien vers `app_blog` configuré dans la navigation
+- **UX améliorée** : Préparation pour section contenu et articles de blog
+- **Cohérence design** : Intégration harmonieuse avec la navigation existante
 
 ## 🔄 Prochaines Étapes
 - Intégration complète de la logique EstimationForm dans la V2

@@ -1,0 +1,52 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ page_title }} {% endblock %}
+
+{% block body %}
+    <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900 antialiased">
+        <div class="flex justify-between px-4 mx-auto max-w-screen-xl ">
+        {% if article %}
+            <article v-if="article"
+                class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                <header class="mb-4 lg:mb-6 not-format">
+                    <address class="flex items-center mb-6 not-italic">
+                        <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+                            <img class="mr-4 w-16 h-16 rounded-full" src="{{ asset('assets/images/moi.webp') }}   "
+                                alt="{{article.auteur}} avatar">
+                            <div>
+                                <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white">{{article.auteur}}</a>
+                                <p class="text-base text-gray-500 dark:text-gray-400">Développeur, &amp; CEO de QuickEsti &amp; SnapCode™ Agency</p>
+                                <p class="text-base text-gray-500 dark:text-gray-400"><time pubdate
+                                        datetime="{{ article.createdAt|date('d/m/Y') }}" title="{{ article.titre }}">{{ article.createdAt|date('d/m/Y') }}</time></p>
+                            </div>
+                        </div>
+                    </address>
+                    <h1 v-if="article"
+                        class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
+                        {{ article.titre }}</h1>
+                </header>
+                {# <p class="lead mb-6 text-lg text-gray-700 dark:text-gray-300">{{ article.intro }}.</p>
+
+                <section v-for="(section, index) in article.sections" :key="index">
+                    <h2 class="mt-12 mb-6 text-2xl font-semibold text-gray-900 dark:text-white">{{ section.subtitle }}
+                    </h2>
+                    <p class="mb-6 text-gray-700 dark:text-gray-300">{{ section.content }}</p>
+                </section> #}
+                <section>
+                    <p class="mb-6 text-gray-700 dark:text-gray-300">{{ article.contenu}}</p>
+                </section>
+            </article>
+        {% else %}
+            <div class="mx-auto max-w-screen-sm text-center">
+                <h2 class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Article
+                    introuvable</h2>
+                <p class="font-light text-gray-500 sm:text-xl dark:text-gray-400">L'article que vous cherchez n'existe pas ou a été supprimé.</p>
+                <a href="{{ path('app_blog') }}" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                    Retour au blog
+                </a>
+            </div>
+        {% endif %}
+        </div>
+    </main>
+{% endblock %}

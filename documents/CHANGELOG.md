@@ -2,7 +2,12 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
-## [2.2.1] - 2025-01-21
+## [2.2.2] - 2025-01-21
+
+### 📝 Section Blog Ajoutée
+- **Navigation mise à jour** : Remplacement du lien "FAQ" par "Blog" dans le header
+- **Route blog** : Nouveau lien vers `app_blog` dans la navigation desktop et mobile
+- **UX améliorée** : Préparation pour section contenu et articles
 
 ### 👤 Profil Utilisateur Complet
 - **Section profil dans dashboard** : Affichage de toutes les informations utilisateur avec design moderne
@@ -23,6 +28,7 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 - **Validation** : Gestion correcte des erreurs et messages flash
 
 ### 📁 Fichiers Modifiés
+- `templates/header.html.twig` - Navigation mise à jour avec lien blog
 - `src/Form/UserProfileFormType.php` - Nouveau formulaire de profil
 - `src/Controller/HomeController.php` - Gestion du profil utilisateur
 - `templates/main/dashboard.html.twig` - Section profil et modal d'édition

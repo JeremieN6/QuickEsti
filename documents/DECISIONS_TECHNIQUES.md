@@ -466,6 +466,42 @@ tailwind.config = {
 **Dernière révision** : 21 janvier 2025
 **Status** : ✅ Navigation corrigée - Interface V2 implémentée - Architecture optimisée
 
+## 👤 Profil Utilisateur (21/01/2025)
+
+### Décision : Modal d'édition intégrée au dashboard
+**Problème** : Permettre aux utilisateurs de modifier leurs informations personnelles
+**Solution** : Modal Flowbite intégrée dans le dashboard existant
+
+**Justification** :
+- ✅ **UX cohérente** : Pas de redirection, modification en place
+- ✅ **Formulaire Symfony** : Validation côté serveur avec `UserProfileFormType`
+- ✅ **8 champs éditables** : Email, nom, prénom, entreprise, téléphone, adresse, ville, TVA
+- ✅ **Responsive design** : Compatible desktop/mobile avec dark mode
+- ✅ **Persistance automatique** : Sauvegarde en base avec messages de confirmation
+
+**Implémentation** :
+- `src/Form/UserProfileFormType.php` : Formulaire avec validation
+- `templates/main/dashboard.html.twig` : Section profil + modal d'édition
+- `src/Controller/HomeController.php` : Gestion sécurisée du profil
+- Nouveaux champs BDD : `adresse`, `ville`, `tvaNumber`, `addressCompagny`
+
+## 📝 Section Blog (21/01/2025)
+
+### Décision : Ajout navigation blog dans header
+**Problème** : Préparer l'ajout d'une section blog pour le contenu
+**Solution** : Remplacement du lien "FAQ" par "Blog" dans la navigation
+
+**Justification** :
+- ✅ **Préparation contenu** : Section blog pour articles et guides
+- ✅ **Navigation cohérente** : Intégration harmonieuse dans header existant
+- ✅ **UX améliorée** : Accès direct au blog depuis toutes les pages
+- ✅ **Route préparée** : Lien vers `app_blog` configuré
+
+**Implémentation** :
+- `templates/header.html.twig` : Remplacement FAQ par Blog (desktop + mobile)
+- Route `app_blog` configurée dans la navigation
+- Design cohérent avec thème existant
+
 ---
 
-**Version actuelle : 2.1.1**
+**Version actuelle : 2.2.2**
