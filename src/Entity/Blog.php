@@ -27,6 +27,9 @@ class Blog
     private ?string $auteur = null;
 
     #[ORM\Column(nullable: true)]
+    private ?bool $published = null;
+
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -81,6 +84,18 @@ class Blog
     public function setAuteur(?string $auteur): static
     {
         $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(?bool $published): static
+    {
+        $this->published = $published;
 
         return $this;
     }

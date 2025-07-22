@@ -2,7 +2,27 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
-## [2.2.2] - 2025-01-21
+## [2.3.0] - 2025-01-21
+
+### 🔐 Interface d'Administration EasyAdmin
+- **EasyAdmin Bundle** : Installation et configuration complète d'EasyAdmin v4
+- **Dashboard d'administration** : Interface moderne accessible sur `/admin`
+- **CRUD complets** : Gestion de toutes les entités (Users, Blog, Plans, Subscriptions, Invoices)
+- **Menu latéral organisé** : Sections logiques avec icônes FontAwesome
+- **Sécurité renforcée** : Accès limité aux utilisateurs avec `ROLE_ADMIN`
+
+### 🛡️ Sécurité et Contrôle d'Accès
+- **Protection `/admin`** : Accessible uniquement aux `ROLE_ADMIN` connectés
+- **Protection `/estimation`** : Accessible uniquement aux utilisateurs connectés (`ROLE_USER`)
+- **Protection `/main`** : Dashboard utilisateur sécurisé
+- **Redirection intelligente** : Retour automatique à la page cible après connexion
+- **Commande admin** : `app:create-admin` pour créer des administrateurs
+
+### 🔧 Améliorations Techniques
+- **Résolution conflit assets** : EasyAdmin compatible avec Webpack Encore
+- **Template surchargé** : Layout EasyAdmin personnalisé sans importmap
+- **Assets CDN** : Bootstrap et FontAwesome via CDN pour éviter les conflits
+- **Contrôleurs CRUD** : 5 contrôleurs avec champs configurés selon les entités
 
 ### 📝 Section Blog Ajoutée
 - **Navigation mise à jour** : Remplacement du lien "FAQ" par "Blog" dans le header
@@ -28,11 +48,16 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 - **Validation** : Gestion correcte des erreurs et messages flash
 
 ### 📁 Fichiers Modifiés
+- `config/packages/easy_admin.yaml` - Configuration EasyAdmin avec assets CDN
+- `config/packages/security.yaml` - Règles d'accès pour admin et estimation
+- `src/Controller/Admin/DashboardController.php` - Dashboard principal avec menu
+- `src/Controller/Admin/*CrudController.php` - 5 contrôleurs CRUD créés
+- `src/Command/CreateAdminCommand.php` - Commande pour créer des administrateurs
+- `templates/admin/dashboard.html.twig` - Template dashboard personnalisé
+- `templates/bundles/EasyAdminBundle/layout.html.twig` - Layout surchargé
 - `templates/header.html.twig` - Navigation mise à jour avec lien blog
-- `src/Form/UserProfileFormType.php` - Nouveau formulaire de profil
-- `src/Controller/HomeController.php` - Gestion du profil utilisateur
+- `src/Form/UserProfileFormType.php` - Formulaire de profil utilisateur
 - `templates/main/dashboard.html.twig` - Section profil et modal d'édition
-- `src/Entity/Users.php` - Nouveaux champs utilisateur
 
 ---
 

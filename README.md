@@ -42,7 +42,12 @@
 - **Analyses comparatives** : Métriques fiscales et de performance
 - **Interface allégée** : Suppression Chart.js pour optimisation (-415KB)
 
-### 🆕 **Nouvelles fonctionnalités V2.1.1**
+### 🆕 **Nouvelles fonctionnalités V2.3.0**
+- **Interface d'administration EasyAdmin** : Dashboard moderne accessible sur `/admin`
+- **CRUD complets** : Gestion de toutes les entités (Users, Blog, Plans, Subscriptions, Invoices)
+- **Sécurité renforcée** : Protection admin (ROLE_ADMIN) et estimation (ROLE_USER)
+- **Menu organisé** : Sections logiques avec icônes FontAwesome
+- **Redirection intelligente** : Retour automatique à la page cible après connexion
 - **Navigation responsive corrigée** : Header fonctionnel desktop/mobile
 - **Interface d'estimation V2** : Navigation par étapes avec barre de progression
 - **Dark theme restauré** : Configuration Tailwind optimisée
@@ -255,7 +260,7 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 | **Frontend** | ✅ Vue.js 3 | Tous composants migrés |
 | **API** | ✅ REST fonctionnelle | 3 endpoints actifs |
 | **IA** | ✅ OpenAI optimisée | -85% coûts, cache intelligent |
-| **Dernière mise à jour** | 21 janvier 2025 | v2.2.2 |
+| **Dernière mise à jour** | 21 janvier 2025 | v2.3.0 |
 
 ### 🎯 Métriques de migration
 - **Composants migrés** : 13/13 (100%) ✅
@@ -275,7 +280,8 @@ Ce projet est en développement actif. Les contributions sont les bienvenues !
 *Navigation corrigée et interface V2 ajoutée le 20 janvier 2025*
 *Profil utilisateur avec modal d'édition ajouté le 21 janvier 2025*
 *Section blog ajoutée dans la navigation le 21 janvier 2025*
+*Interface d'administration EasyAdmin + sécurité renforcée le 21 janvier 2025*
 
 ---
 
-**Dernière mise à jour : 21 janvier 2025 - Version 2.2.2**
+**Dernière mise à jour : 21 janvier 2025 - Version 2.3.0**

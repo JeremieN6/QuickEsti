@@ -502,6 +502,41 @@ tailwind.config = {
 - Route `app_blog` configurée dans la navigation
 - Design cohérent avec thème existant
 
+## 🔐 Interface d'Administration EasyAdmin (21/01/2025)
+
+### Décision : EasyAdmin Bundle pour l'administration
+**Problème** : Besoin d'une interface d'administration pour gérer les entités
+**Solution** : Installation et configuration d'EasyAdmin v4 avec sécurité renforcée
+
+**Justification** :
+- ✅ **CRUD automatiques** : Interface complète pour toutes les entités
+- ✅ **Menu organisé** : Sections logiques (Utilisateurs, Contenu, Facturation)
+- ✅ **Sécurité intégrée** : Protection par rôles avec redirection intelligente
+- ✅ **Compatible Webpack** : Résolution conflit AssetMapper vs Webpack Encore
+- ✅ **Extensible** : Contrôleurs personnalisables et champs configurables
+
+**Implémentation** :
+- `config/packages/easy_admin.yaml` : Configuration avec assets CDN
+- `src/Controller/Admin/DashboardController.php` : Dashboard principal
+- `src/Controller/Admin/*CrudController.php` : 5 contrôleurs CRUD
+- `templates/bundles/EasyAdminBundle/layout.html.twig` : Layout surchargé
+- `src/Command/CreateAdminCommand.php` : Commande création admin
+
+### Décision : Sécurité renforcée avec access_control
+**Problème** : Protéger l'administration et les outils d'estimation
+**Solution** : Configuration security.yaml avec règles d'accès par rôles
+
+**Justification** :
+- ✅ **Protection admin** : `/admin` accessible uniquement aux ROLE_ADMIN
+- ✅ **Protection estimation** : `/estimation` nécessite connexion utilisateur
+- ✅ **Redirection intelligente** : Retour automatique après login
+- ✅ **Hiérarchie claire** : ROLE_ADMIN > ROLE_USER > Anonyme
+
+**Implémentation** :
+- `config/packages/security.yaml` : Rules access_control configurées
+- Redirection automatique vers page cible après authentification
+- Commande `app:create-admin` pour créer des administrateurs
+
 ---
 
-**Version actuelle : 2.2.2**
+**Version actuelle : 2.3.0**
