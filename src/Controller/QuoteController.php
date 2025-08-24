@@ -290,6 +290,17 @@ class QuoteController extends AbstractController
             $response->headers->set('Content-Type', 'application/pdf');
             $response->headers->set('Content-Disposition', $disposition);
 
+            // Mettre à jour le compteur de téléchargements
+            try {
+                $quote->incrementDownloadCount();
+                $quote->setLastDownloadedAt(new \DateTimeImmutable());
+                $this->entityManager->persist($quote);
+                $this->entityManager->flush();
+            } catch (\Throwable $e) {
+                // Ne pas empêcher la réponse si la persistance échoue
+                $this->logger->warning('Impossible de mettre à jour le compteur de téléchargement: ' . $e->getMessage());
+            }
+
             return $response;
 
         } catch (\Exception $e) {

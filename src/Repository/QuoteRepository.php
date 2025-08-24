@@ -83,4 +83,61 @@ class QuoteRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * Compte le nombre de devis d'un utilisateur
+     */
+    public function countByUser(Users $user): int
+    {
+        return (int) $this->createQueryBuilder('q')
+            ->select('COUNT(q.id)')
+            ->andWhere('q.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Compte le nombre d'estimations (quotes où estimationData IS NOT NULL) d'un utilisateur
+     */
+    public function countEstimationsByUser(Users $user): int
+    {
+        return (int) $this->createQueryBuilder('q')
+            ->select('COUNT(q.id)')
+            ->andWhere('q.user = :user')
+            ->andWhere('q.estimationData IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Compte le nombre de devis acceptés pour un utilisateur
+     */
+    public function countAcceptedByUser(Users $user): int
+    {
+        return (int) $this->createQueryBuilder('q')
+            ->select('COUNT(q.id)')
+            ->andWhere('q.user = :user')
+            ->andWhere('q.status = :status')
+            ->setParameter('user', $user)
+            ->setParameter('status', Quote::STATUS_ACCEPTED)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Somme des téléchargements de devis pour un utilisateur
+     */
+    public function sumDownloadsByUser(Users $user): int
+    {
+        $result = $this->createQueryBuilder('q')
+            ->select('SUM(q.downloadCount) as total')
+            ->andWhere('q.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return (int) ($result['total'] ?? 0);
+    }
 }

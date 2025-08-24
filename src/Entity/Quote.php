@@ -85,11 +85,45 @@ class Quote
     #[ORM\OneToMany(targetEntity: QuoteItem::class, mappedBy: 'quote', cascade: ['persist', 'remove'])]
     private Collection $items;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $downloadCount = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastDownloadedAt = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->expiresAt = new \DateTimeImmutable('+30 days');
+    }
+
+    public function getDownloadCount(): int
+    {
+        return $this->downloadCount;
+    }
+
+    public function setDownloadCount(int $count): static
+    {
+        $this->downloadCount = $count;
+        return $this;
+    }
+
+    public function incrementDownloadCount(int $by = 1): static
+    {
+        $this->downloadCount = $this->downloadCount + $by;
+        return $this;
+    }
+
+    public function getLastDownloadedAt(): ?\DateTimeImmutable
+    {
+        return $this->lastDownloadedAt;
+    }
+
+    public function setLastDownloadedAt(?\DateTimeImmutable $dt): static
+    {
+        $this->lastDownloadedAt = $dt;
+        return $this;
     }
 
     public function getId(): ?int

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Form\UserProfileFormType;
 use App\Repository\PlanRepository;
+use App\Repository\QuoteRepository;
+use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +46,7 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/mon-compte', name: 'app_account')]
-    public function main(Request $request, EntityManagerInterface $entityManager): Response
+    public function main(Request $request, EntityManagerInterface $entityManager, QuoteRepository $quoteRepository, ClientRepository $clientRepository): Response
     {
         // Vérifier que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -68,10 +70,24 @@ final class HomeController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
+        // Compteurs dynamiques
+    $quotesCount = $quoteRepository->countByUser($user);
+    $estimationsCount = $quoteRepository->countEstimationsByUser($user);
+    $acceptedQuotes = $quoteRepository->countAcceptedByUser($user);
+    $clientsCount = $clientRepository->countByUser($user);
+    $downloadsCount = $quoteRepository->sumDownloadsByUser($user);
+
         return $this->render('main/dashboard.html.twig', [
             'page_title' => 'Tableau de bord - QuickEsti',
             'user' => $user,
             'profileForm' => $profileForm->createView(),
+            'counters' => [
+                'quotes' => $quotesCount,
+                'estimations' => $estimationsCount,
+                'accepted' => $acceptedQuotes,
+                'clients' => $clientsCount,
+                'downloads' => $downloadsCount,
+            ],
         ]);
     }
 }

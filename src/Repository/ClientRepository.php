@@ -31,6 +31,19 @@ class ClientRepository extends ServiceEntityRepository
     }
 
     /**
+     * Compte les clients d'un utilisateur
+     */
+    public function countByUser(Users $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Recherche de clients par nom ou entreprise
      */
     public function searchByNameOrCompany(Users $user, string $search): array
