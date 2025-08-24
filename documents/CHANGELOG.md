@@ -2,7 +2,7 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
-## [2.3.1] - 2025-01-22
+## [2.3.1] - 2025-07-22
 
 ### 🔧 **Corrections critiques**
 - **FIX: Structure HTML des articles générés** - Résolution du problème des `<div>` indésirables
@@ -30,7 +30,19 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 - **Ordre chronologique** : Articles triés par ID croissant (ordre de création)
 - **Filtrage** : Affichage des articles publiés uniquement
 
-## [2.3.0] - 2025-01-21
+### 💼 **Système de devis complet (V2.4.0)**
+- **Entités complètes** : Client, Quote, QuoteItem avec relations Doctrine
+- **Génération automatique** : Devis depuis estimations avec postes détaillés
+- **Interface utilisateur** : Templates création, visualisation, gestion statuts
+- **Intégration estimation** : Bouton "Créer un devis" dans EstimationResults
+- **API endpoints** : Génération, clients, mise à jour statuts
+- **Administration** : CRUD EasyAdmin pour clients et devis
+- **Navigation** : Lien "Mes Devis" dans header pour utilisateurs connectés
+- **Fix**: PDF generation template corrected (quote items use correct getters) so server-side PDF export works.
+- **Fix**: Multiple front-end Vue fixes to stabilize estimation UI and avoid runtime errors.
+- **Fix**: Client creation endpoint improved with validation and safer persistence handling.
+
+## [2.3.0] - 2025-07-21
 
 ### 🔐 Interface d'Administration EasyAdmin
 - **EasyAdmin Bundle** : Installation et configuration complète d'EasyAdmin v4
@@ -89,7 +101,7 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 
 ---
 
-## [2.1.1] - 2025-01-20
+## [2.1.1] - 2025-07-20
 
 ### 🎯 Nouvelle Interface d'Estimation V2
 - **Navigation par étapes** : Interface guidée avec barre de progression visuelle (4 étapes)

@@ -3,7 +3,7 @@
 ## 🎯 Résumé exécutif
 **QuickEsti** est une application d'estimation de projets web **COMPLÈTEMENT MIGRÉE** vers Symfony 6.4 + Vue.js 3 avec intelligence artificielle OpenAI. L'application dispose maintenant d'un **système d'authentification complet** et d'une **intégration Stripe** prête pour la monétisation.
 
-## 🎉 **Dernière Mise à Jour : Génération de contenu IA + Pagination (22/01/2025)**
+## 🎉 **Dernière Mise à Jour : Système de devis complet (22/01/2025)**
 - **✅ FIX CRITIQUE** : Structure HTML des articles générés préservée
 - **✅ Prompt IA optimisé** : Instructions simplifiées pour meilleure efficacité
 - **✅ TextareaField** : Remplacement de l'éditeur WYSIWYG pour préserver le HTML
@@ -11,6 +11,8 @@
 - **✅ Structure sémantique** : Utilisation exclusive de `<h2>`, `<p>`, `<ul>`, `<ol>`
 - **✅ Pagination blog** : 8 articles par page avec navigation complète
 - **✅ Ordre chronologique** : Articles triés par ID croissant (ordre de création)
+- **✅ Système de devis** : Entités, génération automatique, interface complète
+- **✅ Intégration estimation** : Bouton "Créer un devis" depuis les résultats d'estimation
 
 ## 🎉 **Administration EasyAdmin + Sécurité (21/01/2025)**
 - **✅ Interface d'administration** : EasyAdmin v4 complètement configuré sur `/admin`
@@ -134,9 +136,21 @@
 ### ✅ Sécurité et Contrôle d'Accès (Implémenté)
 - **Protection admin** : `/admin` accessible uniquement aux `ROLE_ADMIN`
 - **Protection estimation** : `/estimation` et `/estimation-v2` nécessitent connexion
-- **Protection dashboard** : `/main` sécurisé pour utilisateurs connectés
+- **Protection dashboard** : `/mon-compte` sécurisé pour utilisateurs connectés
+- **Protection devis** : `/quotes` accessible uniquement aux utilisateurs connectés
 - **Redirection intelligente** : Retour automatique à la page cible après login
 - **Hiérarchie des rôles** : ROLE_ADMIN > ROLE_USER > Anonyme
+
+### 💼 **Système de Devis (V2.4.0)**
+- **Entités Doctrine** : Client, Quote, QuoteItem avec relations complètes
+- **Génération automatique** : Devis créés depuis estimations avec postes détaillés
+- **Numérotation** : Format `DE-YYYY-NNNN` avec génération automatique
+- **Statuts complets** : Draft → Sent → Accepted/Refused/Expired
+- **Interface utilisateur** : Création, visualisation, gestion des statuts
+- **API endpoints** : `/api/quote/generate`, `/api/clients/search`, `/api/clients`
+- **Intégration estimation** : Bouton "Créer un devis" dans EstimationResults.vue
+- **Administration** : CRUD EasyAdmin pour clients et devis
+- **Navigation** : Lien "Mes Devis" dans header pour utilisateurs connectés
 
 ## 🔄 Prochaines Étapes
 - Intégration complète de la logique EstimationForm dans la V2
@@ -355,9 +369,8 @@ git push origin main
 - ✅ Guides de test complets
 - ✅ Prêt pour intégration continue
 
----
-
-**Dernière mise à jour** : 21 Juillet 2025
+**Dernière mise à jour** : 24 août 2025 — v0.9.0 (stabilisation export PDF)
 **Phase actuelle** : ✅ Interface Utilisateur Moderne (v2.1.1) - TERMINÉE
 **Prochaine phase** : 🎯 Tests Complets et Finalisation Stripe
+**Confiance** : 🟢 Haute - Application avec interface moderne, auth sécurisée et UX optimisée
 **Confiance** : 🟢 Haute - Application avec interface moderne, auth sécurisée et UX optimisée

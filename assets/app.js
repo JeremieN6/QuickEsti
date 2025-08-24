@@ -19,5 +19,12 @@ import App from './vue/App.vue';
 // Create Vue app
 const app = createApp(App);
 
-// Mount Vue app
-app.mount('#app');
+// Mount Vue app only if the target exists (some pages don't render a #app container)
+const mountEl = document.getElementById('app');
+if (mountEl) {
+	app.mount('#app');
+} else {
+	// No mount target on this page (e.g., server-rendered pages like /quotes/new)
+	// Avoid Vue mount error in console
+	// console.debug('No #app element found — skipping Vue mount');
+}

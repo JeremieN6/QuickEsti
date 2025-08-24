@@ -1,0 +1,307 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis {{ quote.quoteNumber }} - QuickEsti{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <a href="{{ path('quote_index') }}" class="text-blue-600 hover:text-blue-800 mr-4">
+                    <i class="fas fa-arrow-left"></i> Retour aux devis
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ quote.title }}</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Devis {{ quote.quoteNumber }}</p>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button id="status-btn" data-quote-id="{{ quote.id }}" data-current-status="{{ quote.status }}"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600">
+                    <i class="fas fa-edit mr-2"></i>Changer statut
+                </button>
+                     <a href="{{ path('quote_pdf', {id: quote.id}) }}" target="_blank"
+                         class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">
+                    <i class="fas fa-download mr-2"></i>Télécharger PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- Statut et informations -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Statut</h3>
+                {% set statusClass = quote.status == 'accepted' ? 'bg-green-100 text-green-800' : 
+                                     quote.status == 'sent' ? 'bg-blue-100 text-blue-800' : 
+                                     quote.status == 'refused' ? 'bg-red-100 text-red-800' : 
+                                     quote.status == 'expired' ? 'bg-yellow-100 text-yellow-800' : 
+                                     'bg-gray-100 text-gray-800' %}
+                <span id="status-badge" class="inline-flex px-3 py-1 text-sm font-semibold rounded-full {{ statusClass }}">
+                    {{ quote.statusLabel }}
+                </span>
+                {% if quote.isExpired %}
+                    <p class="text-red-600 text-sm mt-2">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>Expiré le {{ quote.expiresAt|date('d/m/Y') }}
+                    </p>
+                {% else %}
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
+                        Expire le {{ quote.expiresAt|date('d/m/Y') }}
+                    </p>
+                {% endif %}
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Montant</h3>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ quote.totalTtc|number_format(2, ',', ' ') }} €</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">TTC</p>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Dates</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Créé le {{ quote.createdAt|date('d/m/Y') }}
+                </p>
+                {% if quote.estimatedStartDate %}
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Début prévu : {{ quote.estimatedStartDate|date('d/m/Y') }}
+                </p>
+                {% endif %}
+                {% if quote.estimatedDuration %}
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Durée : {{ quote.estimatedDuration }} jour{{ quote.estimatedDuration > 1 ? 's' : '' }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Informations client -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Informations client</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white">{{ quote.client.name }}</h3>
+                        {% if quote.client.company %}
+                            <p class="text-gray-600 dark:text-gray-400">{{ quote.client.company }}</p>
+                        {% endif %}
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">
+                            {{ quote.client.address }}<br>
+                            {{ quote.client.postalCode }} {{ quote.client.city }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-envelope mr-2"></i>{{ quote.client.email }}
+                        </p>
+                        {% if quote.client.phone %}
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-phone mr-2"></i>{{ quote.client.phone }}
+                        </p>
+                        {% endif %}
+                        {% if quote.client.siret %}
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">
+                            SIRET : {{ quote.client.siret }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description du projet -->
+        {% if quote.description %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Description du projet</h2>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ quote.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Détail des postes -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Détail des prestations</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Quantité
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Prix unitaire
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Total HT
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for item in quote.items %}
+                        <tr>
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                {{ item.description }}
+                                {% if item.notes %}
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ item.notes }}</p>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white text-center">
+                                {{ item.quantity|number_format(0, ',', ' ') }} {{ item.unit }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white text-center">
+                                {{ item.unitPrice|number_format(2, ',', ' ') }} €
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">
+                                {{ item.totalPrice|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">
+                                Sous-total HT :
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">
+                                {{ quote.totalHt|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">
+                                TVA ({{ quote.tvaRate }}%) :
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">
+                                {{ ((quote.totalTtc - quote.totalHt))|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                        <tr class="border-t-2 border-gray-300 dark:border-gray-600">
+                            <td colspan="3" class="px-6 py-4 text-lg font-bold text-gray-900 dark:text-white text-right">
+                                Total TTC :
+                            </td>
+                            <td class="px-6 py-4 text-lg font-bold text-gray-900 dark:text-white text-right">
+                                {{ quote.totalTtc|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Conditions de paiement -->
+        {% if quote.paymentTerms %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Conditions de paiement</h2>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ quote.paymentTerms }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal de changement de statut -->
+<div id="status-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Changer le statut</h3>
+            </div>
+            <div class="p-6">
+                <select id="new-status" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="draft">Brouillon</option>
+                    <option value="sent">Envoyé</option>
+                    <option value="accepted">Accepté</option>
+                    <option value="refused">Refusé</option>
+                    <option value="expired">Expiré</option>
+                </select>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+                <button type="button" id="cancel-status-btn" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600">
+                    Annuler
+                </button>
+                <button type="button" id="save-status-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">
+                    Mettre à jour
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusBtn = document.getElementById('status-btn');
+    const statusModal = document.getElementById('status-modal');
+    const cancelStatusBtn = document.getElementById('cancel-status-btn');
+    const saveStatusBtn = document.getElementById('save-status-btn');
+    const newStatusSelect = document.getElementById('new-status');
+    const statusBadge = document.getElementById('status-badge');
+    
+    // Ouvrir modal
+    statusBtn.addEventListener('click', function() {
+        newStatusSelect.value = this.dataset.currentStatus;
+        statusModal.classList.remove('hidden');
+    });
+    
+    // Fermer modal
+    cancelStatusBtn.addEventListener('click', function() {
+        statusModal.classList.add('hidden');
+    });
+    
+    // Sauvegarder statut
+    saveStatusBtn.addEventListener('click', function() {
+        const quoteId = statusBtn.dataset.quoteId;
+        const newStatus = newStatusSelect.value;
+        
+        fetch(`/quotes/${quoteId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mettre à jour l'interface
+                statusBtn.dataset.currentStatus = data.status;
+                statusBadge.textContent = data.statusLabel;
+                
+                // Mettre à jour les classes CSS du badge
+                statusBadge.className = 'inline-flex px-3 py-1 text-sm font-semibold rounded-full ';
+                if (data.status === 'accepted') {
+                    statusBadge.className += 'bg-green-100 text-green-800';
+                } else if (data.status === 'sent') {
+                    statusBadge.className += 'bg-blue-100 text-blue-800';
+                } else if (data.status === 'refused') {
+                    statusBadge.className += 'bg-red-100 text-red-800';
+                } else if (data.status === 'expired') {
+                    statusBadge.className += 'bg-yellow-100 text-yellow-800';
+                } else {
+                    statusBadge.className += 'bg-gray-100 text-gray-800';
+                }
+                
+                statusModal.classList.add('hidden');
+            } else {
+                alert('Erreur: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    });
+});
+</script>
+{% endblock %}

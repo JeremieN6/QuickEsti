@@ -323,6 +323,6 @@ Devenir la référence pour l'estimation de projets web avec une IA qui comprend
 ---
 
 **Créé le** : Juillet 2024
-**Dernière mise à jour** : 21 juillet 2025
-**Phase actuelle** : ✅ Phase 6 Interface Utilisateur + Administration EasyAdmin - TERMINÉE
-**Prochaine phase** : 🎯 Phase 7 - Tests Complets et Finalisation
+**Dernière mise à jour** : 24 août 2025 — v2.4.0 (stabilisation export PDF)
+**Phase actuelle** : ✅ Phase 7 Interface Utilisateur + Administration EasyAdmin + Génération de devis PDF - TERMINÉE
+**Prochaine phase** : 🎯 Phase 8 - Tests Complets et Finalisation

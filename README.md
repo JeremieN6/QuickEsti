@@ -58,6 +58,17 @@
 - **Éditeur HTML brut** : TextareaField au lieu de WYSIWYG pour préserver la structure
 - **Pagination blog** : 8 articles par page avec navigation Doctrine Paginator
 - **Ordre chronologique** : Affichage par ID croissant (ordre de création en base)
+
+### 💼 **Système de devis complet (V2.4.0)**
+- **Architecture complète** : Entités Client, Quote, QuoteItem avec relations Doctrine
+- **Génération automatique** : Devis créés depuis estimations avec postes détaillés
+- **Interface utilisateur** : Templates création, visualisation, gestion des statuts
+- **Intégration estimation** : Bouton "Créer un devis" dans EstimationResults.vue
+- **API endpoints** : Génération devis, recherche clients, gestion statuts
+- **Administration** : CRUD EasyAdmin pour clients et devis
+- **Numérotation** : Format `DE-YYYY-NNNN` avec génération automatique
+- **Statuts workflow** : Draft → Sent → Accepted/Refused/Expired
+- **Navigation** : Lien "Mes Devis" dans header pour utilisateurs connectés
 - **Navigation responsive corrigée** : Header fonctionnel desktop/mobile
 - **Interface d'estimation V2** : Navigation par étapes avec barre de progression
 - **Dark theme restauré** : Configuration Tailwind optimisée

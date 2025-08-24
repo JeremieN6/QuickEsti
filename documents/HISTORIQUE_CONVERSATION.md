@@ -362,7 +362,7 @@ Créer une interface utilisateur moderne et responsive avec dark theme pour opti
 ---
 
 **Créé le** : Juillet 2024
-**Dernière mise à jour** : 21 janvier 2025 (Administration EasyAdmin + Sécurité)
+**Dernière mise à jour** : 24 août 2025 — v2.4.0 — corrections PDF & docs
 **Status** : ✅ Application Symfony complète avec administration et sécurité renforcée
 
 ---

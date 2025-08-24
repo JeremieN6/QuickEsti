@@ -5,6 +5,7 @@ namespace App\Service;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Twig\Environment;
+use App\Entity\Quote;
 
 class DomPDFService
 {
@@ -13,6 +14,36 @@ class DomPDFService
     public function __construct(Environment $twig)
     {
         $this->twig = $twig;
+    }
+
+    /**
+     * Génère un PDF pour un devis (Quote entity)
+     * Retourne le binaire PDF
+     */
+    public function generateQuotePdf(Quote $quote): string
+    {
+        $template = 'quote/pdf.html.twig';
+
+        // Préparer les données minimales pour le template
+        $data = [
+            'quote' => $quote,
+            'client' => $quote->getClient(),
+            'generatedAt' => new \DateTime(),
+        ];
+
+        $html = $this->twig->render($template, $data);
+
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isRemoteEnabled', true);
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->output();
     }
 
     /**
