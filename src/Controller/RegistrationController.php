@@ -128,7 +128,7 @@ class RegistrationController extends AbstractController
 
         // On envoie un mail
         $mail->send(
-            'no-reply@quickesti.fr',
+            'no-reply-quickesti@sassify.fr',
             $user->getEmail(),
             'Activation de votre compte',
             'register',
