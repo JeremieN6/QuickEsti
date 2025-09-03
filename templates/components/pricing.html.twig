@@ -63,9 +63,10 @@
 			<div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
 				<h3 class="mb-4 text-2xl font-semibold">Pro</h3>
 				<p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Idéal pour les professionnels avec des besoins avancés et un support premium.</p>
-				<div class="flex justify-center items-baseline my-8">
-					<span class="mr-2 text-5xl font-extrabold">{{ plan.price }}€</span>
-				</div>
+					<div class="flex justify-center items-baseline my-8">
+						{# plan.price is stored as integer cents (e.g. 2990) -> display as euros 29,90 #}
+						<span class="mr-2 text-5xl font-extrabold">{{ ((plan.price|default(0)) / 100)|number_format(2, ',', ' ') }}€</span>
+					</div>
 				<ul role="list" class="mb-8 space-y-4 text-left">
 					<li class="flex items-center space-x-3">
 						<svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewbox="0 0 20 20">

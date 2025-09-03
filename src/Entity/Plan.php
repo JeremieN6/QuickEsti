@@ -106,4 +106,20 @@ class Plan
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        // Return a human readable representation so Doctrine proxies
+        // and forms can safely cast Plan objects to string.
+        // Prefer name, then slug, then id as fallback.
+        if (!empty($this->name)) {
+            return (string) $this->name;
+        }
+
+        if (!empty($this->slug)) {
+            return (string) $this->slug;
+        }
+
+        return $this->id !== null ? (string) $this->id : '';
+    }
 }

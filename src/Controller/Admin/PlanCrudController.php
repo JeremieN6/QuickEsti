@@ -25,7 +25,7 @@ class PlanCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Nom du plan'),
-            SlugField::new('slug')->setTargetFieldName('nom'),
+            SlugField::new('slug')->setTargetFieldName('name'),
             TextField::new('stripe_id'),
             MoneyField::new('price')->setCurrency('EUR'),
             DateField::new('created_at','Crée le'),

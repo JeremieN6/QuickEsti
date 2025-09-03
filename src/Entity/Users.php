@@ -305,6 +305,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString(): string
     {
+        if (!empty($this->prenom)) {
+            return (string) $this->prenom;
+        }
+
+        if (!empty($this->nom)) {
+            return (string) $this->nom;
+        }
+
         return $this->email ? (string) $this->email : '';
     }
 }

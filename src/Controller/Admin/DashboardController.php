@@ -64,7 +64,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Abonnements & Facturation');
         yield MenuItem::linkToCrud('Plans', 'fa fa-credit-card', Plan::class);
-        yield MenuItem::linkToCrud('Abonnements', 'fa fa-subscription', Subscription::class);
+        yield MenuItem::linkToCrud('Abonnements', 'fa fa-cart-plus', Subscription::class);
         yield MenuItem::linkToCrud('Factures', 'fa fa-file-invoice', Invoice::class);
 
         yield MenuItem::section('Navigation');
