@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 
 class PlanCrudController extends AbstractCrudController
@@ -23,9 +24,11 @@ class PlanCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Nom du plan'),
-            MoneyField::new('price', 'Prix')->setCurrency('EUR'),
-            IntegerField::new('duration', 'Durée (jours)'),
-            BooleanField::new('isActive', 'Actif'),
+            SlugField::new('slug')->setTargetFieldName('nom'),
+            TextField::new('stripe_id'),
+            MoneyField::new('prix')->setCurrency('EUR'),
+            DateField::new('created_at','Crée le'),
+            TextField::new('payment_link')
         ];
     }
 }
