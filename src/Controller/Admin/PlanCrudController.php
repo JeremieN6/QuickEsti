@@ -23,7 +23,6 @@ class PlanCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Nom du plan'),
-            TextEditorField::new('description', 'Description'),
             MoneyField::new('price', 'Prix')->setCurrency('EUR'),
             IntegerField::new('duration', 'Durée (jours)'),
             BooleanField::new('isActive', 'Actif'),
