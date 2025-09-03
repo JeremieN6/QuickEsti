@@ -27,8 +27,9 @@ class PlanCrudController extends AbstractCrudController
             TextField::new('name', 'Nom du plan'),
             SlugField::new('slug')->setTargetFieldName('nom'),
             TextField::new('stripe_id'),
-            MoneyField::new('prix')->setCurrency('EUR'),
+            MoneyField::new('price')->setCurrency('EUR'),
             DateField::new('created_at','Crée le'),
+            BooleanField::new('isActive', 'Actif'),
             TextField::new('payment_link')
         ];
     }
