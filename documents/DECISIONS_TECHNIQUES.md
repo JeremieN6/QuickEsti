@@ -562,3 +562,5 @@ tailwind.config = {
 ---
 
 **Version actuelle : 2.3.0**
+
+**Dernière mise à jour** : 24 août 2025 — v2.4.0 (stabilisation export PDF)

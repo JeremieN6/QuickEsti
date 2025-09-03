@@ -1,0 +1,411 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Devis - QuickEsti{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-8">
+            <a href="{{ path('quote_index') }}" class="text-blue-600 hover:text-blue-800 mr-4">
+                <i class="fas fa-arrow-left"></i> Retour aux devis
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Nouveau Devis</h1>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <form id="quote-form" class="space-y-6">
+                <!-- Sélection du client -->
+                <div>
+                    <label for="client-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Client *
+                    </label>
+                    <div class="relative">
+                        <select id="client-select" name="clientId" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">Sélectionner un client...</option>
+                            {% for client in clients %}
+                            <option value="{{ client.id }}" 
+                                    data-name="{{ client.name }}"
+                                    data-company="{{ client.company }}"
+                                    data-email="{{ client.email }}">
+                                {{ client.company ? client.name ~ ' (' ~ client.company ~ ')' : client.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Pas de client ? <a href="#" id="add-client-btn" class="text-blue-600 hover:text-blue-800">Ajouter un nouveau client</a>
+                    </p>
+                </div>
+
+                <!-- Informations du devis -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Titre du devis *
+                        </label>
+                        <input type="text" id="title" name="title" required
+                               placeholder="Ex: Développement site vitrine"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    
+                    <div>
+                        <label for="estimated-start" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Date de début estimée
+                        </label>
+                        <input type="date" id="estimated-start" name="estimatedStartDate"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Description du projet
+                    </label>
+                    <textarea id="description" name="description" rows="4"
+                              placeholder="Décrivez brièvement le projet..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+                </div>
+
+                <!-- Source d'estimation -->
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Source de l'estimation</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <input type="radio" id="from-estimation" name="source" value="estimation" class="mr-2">
+                            <label for="from-estimation" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                À partir d'une estimation existante
+                            </label>
+                        </div>
+                        
+                        <div id="estimation-data" class="hidden ml-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                Données de l'estimation :
+                            </p>
+                            <textarea id="estimation-json" name="estimationData" rows="6" readonly
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-xs font-mono bg-gray-100 dark:bg-gray-600"></textarea>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>Ces données proviennent de votre estimation précédente
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <input type="radio" id="manual" name="source" value="manual" class="mr-2">
+                            <label for="manual" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Création manuelle
+                            </label>
+                        </div>
+                        
+                        <div id="manual-items" class="hidden ml-6">
+                            <div class="space-y-3">
+                                <div class="grid grid-cols-12 gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                                    <div class="col-span-5">Description</div>
+                                    <div class="col-span-2">Quantité</div>
+                                    <div class="col-span-1">Unité</div>
+                                    <div class="col-span-2">Prix unitaire</div>
+                                    <div class="col-span-2">Total</div>
+                                </div>
+                                
+                                <div id="quote-items">
+                                    <!-- Les lignes seront ajoutées dynamiquement -->
+                                </div>
+                                
+                                <button type="button" id="add-item-btn" 
+                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-plus mr-1"></i> Ajouter une ligne
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end space-x-4 pt-6 border-t">
+                    <button type="button" onclick="window.history.back()" 
+                            class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                        Annuler
+                    </button>
+                    <button type="submit" id="submit-btn"
+                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-save mr-2"></i>Créer le devis
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout de client -->
+<div id="client-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Nouveau Client</h3>
+            </div>
+            <form id="client-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom *</label>
+                    <input type="text" name="name" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Entreprise</label>
+                    <input type="text" name="company" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email *</label>
+                    <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ville *</label>
+                        <input type="text" name="city" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Code postal *</label>
+                        <input type="text" name="postalCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse *</label>
+                    <input type="text" name="address" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+            </form>
+            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+                <button type="button" id="cancel-client-btn" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600">
+                    Annuler
+                </button>
+                <button type="button" id="save-client-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier s'il y a des données d'estimation dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const estimationDataParam = urlParams.get('data');
+
+    // Gestion des sources d'estimation
+    const estimationRadio = document.getElementById('from-estimation');
+    const manualRadio = document.getElementById('manual');
+    const estimationData = document.getElementById('estimation-data');
+    const manualItems = document.getElementById('manual-items');
+    const estimationJsonTextarea = document.getElementById('estimation-json');
+    const titleInput = document.getElementById('title');
+    
+    // Si des données d'estimation sont présentes, les pré-remplir (essayer plusieurs stratégies de parsing)
+    if (estimationDataParam) {
+        let parsed = null;
+        try {
+            parsed = JSON.parse(estimationDataParam);
+        } catch (e1) {
+            try {
+                parsed = JSON.parse(decodeURIComponent(estimationDataParam));
+            } catch (e2) {
+                console.error('Impossible de parser estimation data avec JSON.parse ni decodeURIComponent:', e1, e2);
+            }
+        }
+
+        if (parsed) {
+            // If the param already contains the wrapper (formData + estimationData), handle both shapes
+            const estimationObj = parsed.estimationData ? parsed : { estimationData: parsed };
+            try {
+                estimationJsonTextarea.value = JSON.stringify(estimationObj.estimationData, null, 2);
+            } catch (e) {
+                estimationJsonTextarea.value = String(estimationObj.estimationData || '');
+            }
+
+            // Pré-remplir le titre si possible
+            if (parsed.formData && parsed.formData.basics) {
+                const projectType = parsed.formData.basics.projectType || '';
+                const technologies = parsed.formData.basics.technologies || '';
+                if (projectType) {
+                    titleInput.value = `Développement ${projectType}${technologies ? ' (' + technologies + ')' : ''}`;
+                }
+            }
+
+            // Sélectionner automatiquement "À partir d'une estimation"
+            estimationRadio.checked = true;
+            estimationData.classList.remove('hidden');
+            manualItems.classList.add('hidden');
+        }
+    }
+
+    estimationRadio.addEventListener('change', function() {
+        if (this.checked) {
+            estimationData.classList.remove('hidden');
+            manualItems.classList.add('hidden');
+        }
+    });
+
+    manualRadio.addEventListener('change', function() {
+        if (this.checked) {
+            manualItems.classList.remove('hidden');
+            estimationData.classList.add('hidden');
+        }
+    });
+    
+    // Modal client
+    const clientModal = document.getElementById('client-modal');
+    const addClientBtn = document.getElementById('add-client-btn');
+    const cancelClientBtn = document.getElementById('cancel-client-btn');
+    const saveClientBtn = document.getElementById('save-client-btn');
+    
+    addClientBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        clientModal.classList.remove('hidden');
+    });
+    
+    cancelClientBtn.addEventListener('click', function() {
+        clientModal.classList.add('hidden');
+    });
+    
+    // Enregistrement d'un nouveau client via l'API
+    saveClientBtn.addEventListener('click', function() {
+        const clientForm = document.getElementById('client-form');
+        const formData = new FormData(clientForm);
+
+        // Validation basique
+        if (!formData.get('name') || !formData.get('email') || !formData.get('city') || !formData.get('postalCode') || !formData.get('address')) {
+            alert('Veuillez remplir tous les champs obligatoires du client.');
+            return;
+        }
+
+        const payload = {};
+        formData.forEach((v, k) => payload[k] = v);
+
+        // Basic client-side postal code sanitization: allow letters, numbers, spaces and hyphens, max 10 chars
+        if (payload.postalCode) {
+            payload.postalCode = payload.postalCode.trim().slice(0, 10);
+        }
+
+        fetch('{{ path('api_clients_create') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(resp => resp.json())
+        .then(json => {
+            if (json.success && json.client) {
+                // Ajouter l'option au select et la sélectionner
+                const select = document.getElementById('client-select');
+                const opt = document.createElement('option');
+                opt.value = json.client.id;
+                opt.textContent = json.client.display || json.client.name;
+                opt.setAttribute('data-name', json.client.name || '');
+                if (json.client.company) opt.setAttribute('data-company', json.client.company);
+                if (json.client.email) opt.setAttribute('data-email', json.client.email);
+                select.appendChild(opt);
+                select.value = json.client.id;
+
+                // Fermer le modal et réinitialiser le formulaire
+                clientModal.classList.add('hidden');
+                clientForm.reset();
+            } else {
+                alert('Erreur lors de la création du client: ' + (json.error || 'inconnue'));
+            }
+        })
+        .catch(err => {
+            console.error('Erreur création client', err);
+            alert('Erreur lors de la création du client. Vérifiez la console pour plus de détails.');
+        });
+    });
+    
+    // Soumission du formulaire principal
+    document.getElementById('quote-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = {
+            clientId: formData.get('clientId'),
+            title: formData.get('title'),
+            description: formData.get('description'),
+            estimatedStartDate: formData.get('estimatedStartDate'),
+            source: formData.get('source')
+        };
+        
+        if (data.source === 'estimation') {
+            try {
+                // estimationData textarea contains pretty-printed JSON
+                const raw = formData.get('estimationData') || '';
+                data.estimationData = raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                alert('Format JSON invalide pour les données d\'estimation');
+                return;
+            }
+        }
+        
+        // Validation
+        if (!data.clientId || !data.title) {
+            alert('Veuillez remplir tous les champs obligatoires');
+            return;
+        }
+        
+        // Envoi de la requête
+        fetch('{{ path('api_quote_generate') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert('Erreur: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    });
+
+    // Add manual item row handler
+    const addItemBtn = document.getElementById('add-item-btn');
+    const quoteItems = document.getElementById('quote-items');
+
+    function createItemRow() {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-2 items-center text-sm';
+        row.innerHTML = `
+            <div class="col-span-5"><input name="item_description[]" type="text" class="w-full px-2 py-1 border rounded" /></div>
+            <div class="col-span-2"><input name="item_quantity[]" type="number" min="1" value="1" class="w-full px-2 py-1 border rounded" /></div>
+            <div class="col-span-1"><input name="item_unit[]" type="text" class="w-full px-2 py-1 border rounded" /></div>
+            <div class="col-span-2"><input name="item_unit_price[]" type="number" min="0" step="0.01" value="0.00" class="w-full px-2 py-1 border rounded" /></div>
+            <div class="col-span-2 text-right"><span class="item-total">0.00</span></div>
+        `;
+
+        // Attach listeners to recalc total
+        const qtyInput = row.querySelector('input[name="item_quantity[]"]');
+        const priceInput = row.querySelector('input[name="item_unit_price[]"]');
+        const totalSpan = row.querySelector('.item-total');
+
+        function updateTotal() {
+            const q = parseFloat(qtyInput.value) || 0;
+            const p = parseFloat(priceInput.value) || 0;
+            totalSpan.textContent = (q * p).toFixed(2);
+        }
+
+        qtyInput.addEventListener('input', updateTotal);
+        priceInput.addEventListener('input', updateTotal);
+
+        return row;
+    }
+
+    if (addItemBtn) {
+        addItemBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const newRow = createItemRow();
+            quoteItems.appendChild(newRow);
+        });
+    }
+});
+</script>
+{% endblock %}

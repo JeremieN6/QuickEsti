@@ -290,7 +290,7 @@ export default {
              this.localFormData.hasWorkingDaysTarget ||
              this.localFormData.hasMarginTarget ||
              this.localFormData.securityMargin ||
-             Object.keys(this.localFormData.skillLevels).length > 0;
+             Object.keys(this.localFormData.skillLevels || {}).length > 0;
     },
 
     hasConstraintData() {
@@ -313,7 +313,7 @@ export default {
       });
 
       // Supprime les technologies qui ne sont plus dans la liste
-      Object.keys(this.localFormData.skillLevels).forEach(tech => {
+  Object.keys(this.localFormData.skillLevels || {}).forEach(tech => {
         if (!this.technologiesList.includes(tech)) {
           delete this.localFormData.skillLevels[tech];
         }

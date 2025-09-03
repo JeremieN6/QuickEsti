@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Devis {{ quote.quoteNumber }}</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .company { font-weight: bold; font-size: 16px; }
+        .client { margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+        .right { text-align: right; }
+        .totals { margin-top: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company">QuickEsti</div>
+        <div>Devis n° {{ quote.quoteNumber }}</div>
+        <div>{{ generatedAt|date('d/m/Y') }}</div>
+    </div>
+
+    <div class="client">
+        {% if client %}
+            <strong>Client :</strong><br>
+            {{ client.getName() }}{% if client.getCompany() %} - {{ client.getCompany() }}{% endif %}<br>
+            {{ client.getAddress() }}<br>
+            {{ client.getPostalCode() }} {{ client.getCity() }}<br>
+            {{ client.getEmail() }}
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Qté (jours)</th>
+                <th>PU</th>
+                <th class="right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in quote.getItems() %}
+                <tr>
+                    <td>{{ item.getDescription() }}</td>
+                    <td>{{ item.getQuantity() }}</td>
+                    <td>{{ item.getUnitPrice()|number_format(2, ',', ' ') }} €</td>
+                    <td class="right">{{ item.getTotalPrice()|number_format(2, ',', ' ') }} €</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <td><strong>Total HT</strong></td>
+                <td class="right">{{ quote.getTotalHt()|number_format(2, ',', ' ') }} €</td>
+            </tr>
+            <tr>
+                <td><strong>TVA</strong></td>
+                <td class="right">{{ (quote.getTotalTtc() - quote.getTotalHt())|number_format(2, ',', ' ') }} €</td>
+            </tr>
+            <tr>
+                <td><strong>Total TTC</strong></td>
+                <td class="right">{{ quote.getTotalTtc()|number_format(2, ',', ' ') }} €</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top:20px; font-size:11px;">
+        <strong>Conditions :</strong>
+        <div>{{ quote.getPaymentTerms() ?: 'Paiement à réception' }}</div>
+    </div>
+</body>
+</html>

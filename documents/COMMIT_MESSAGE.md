@@ -2,50 +2,63 @@
 
 ```bash
 git add .
-git commit -m "feat(blog): Pagination + structure HTML préservée
+git commit -m "feat(quotes): Système de devis complet avec intégration estimation
 
-🔧 PROBLÈME RÉSOLU : TextEditorField transformait le HTML sémantique en <div>
+💼 SYSTÈME DE DEVIS COMPLET IMPLÉMENTÉ
 
-AVANT:
-- IA génère HTML propre (<h2>, <p>, <ul>, <ol>)
-- TextEditorField/WYSIWYG transforme tout en <div>
-- Structure sémantique détruite lors de l'édition
+🏗️ ARCHITECTURE COMPLÈTE
+- Entités Doctrine : Client, Quote, QuoteItem avec relations
+- Service QuoteGeneratorService : Génération automatique depuis estimations
+- Repositories : ClientRepository, QuoteRepository avec méthodes métier
+- Numérotation automatique : Format DE-YYYY-NNNN avec unicité garantie
 
-APRÈS:
-- Remplacement TextEditorField → TextareaField dans BlogCrudController
-- Prompt IA optimisé avec instructions HTML en premier
-- Structure HTML préservée intégralement
+🎨 INTERFACE UTILISATEUR
+- Templates Twig : Création, visualisation, liste des devis
+- Gestion des statuts : Draft → Sent → Accepted/Refused/Expired
+- Modal de création client : Formulaire intégré avec validation
+- Design responsive : Tailwind CSS avec dark mode
 
-✨ AMÉLIORATIONS
-- BlogGeneratorService : Prompt simplifié de 200+ à 30 lignes essentielles
-- BlogCrudController : TextareaField 20 lignes avec aide contextuelle
-- GenerateBlogCommand : Commande test console pour validation
-- Pagination blog : 8 articles par page avec Doctrine Paginator
+🔗 INTÉGRATION ESTIMATION
+- Bouton "Créer un devis" dans EstimationResults.vue
+- Transfert automatique des données d'estimation
+- Pré-remplissage du titre et des données JSON
+- Génération automatique des postes de facturation
 
-📄 PAGINATION AJOUTÉE
-- BlogController : Pagination avec filtrage articles publiés
-- Template _pagination.html.twig : Navigation complète avec ellipses
-- Ordre chronologique : Tri par ID croissant (ordre de création)
-- Navigation responsive : Boutons Précédent/Suivant + numéros
+🛠️ API ENDPOINTS
+- POST /api/quote/generate : Génération devis depuis estimation
+- GET /api/clients/search : Recherche clients avec autocomplétion
+- POST /api/clients : Création nouveau client
+- PATCH /quotes/{id}/status : Mise à jour statut devis
 
-🎯 RÉSULTAT
-- HTML sémantique garanti : <h2>, <p>, <ul>, <ol> uniquement
-- Meilleur SEO avec structure appropriée
-- Contrôle total sur le formatage sans transformation WYSIWYG
-- Pagination fonctionnelle avec 8 articles par page
-- Ordre respecté selon l'ID de base de données
+👨‍💼 ADMINISTRATION
+- CRUD EasyAdmin : ClientCrudController, QuoteCrudController
+- Section "Devis & Clients" dans dashboard admin
+- Gestion complète des entités avec champs configurés
 
-📁 FICHIERS MODIFIÉS
-- src/Service/BlogGeneratorService.php : Prompt optimisé
-- src/Controller/Admin/BlogCrudController.php : TextareaField
-- src/Controller/BlogController.php : Pagination + tri par ID
-- src/Command/GenerateBlogCommand.php : Nouveau fichier
-- templates/blog/_pagination.html.twig : Nouveau composant
-- templates/blog/show.html.twig : Nouveau template
-- README.md : Section génération contenu IA + pagination
-- documents/ : Documentation mise à jour
+🧭 NAVIGATION
+- Lien "Mes Devis" dans header pour utilisateurs connectés
+- Protection ROLE_USER pour toutes les routes /quotes
+- Redirection intelligente après création de devis
 
-Version: v2.3.1 - Génération de contenu IA + Pagination"
+🎯 FONCTIONNALITÉS MÉTIER
+- Calculs automatiques : HT, TVA, TTC avec précision décimale
+- Conditions de paiement par défaut configurables
+- Gestion des dates : création, expiration, début estimé
+- Workflow complet : brouillon → envoi → acceptation/refus
+
+📁 FICHIERS CRÉÉS/MODIFIÉS
+- src/Entity/ : Client.php, Quote.php, QuoteItem.php
+- src/Repository/ : ClientRepository.php, QuoteRepository.php, QuoteItemRepository.php
+- src/Service/QuoteGeneratorService.php : Service de génération
+- src/Controller/QuoteController.php : Contrôleur principal
+- src/Controller/Admin/ : ClientCrudController.php, QuoteCrudController.php
+- templates/quote/ : index.html.twig, new.html.twig, show.html.twig
+- assets/vue/components/common/EstimationResults.vue : Bouton création devis
+- templates/header.html.twig : Navigation "Mes Devis"
+- migrations/ : Nouvelle migration pour les tables
+- README.md, documents/ : Documentation mise à jour
+
+Version: v2.4.0 - Système de devis complet avec intégration estimation"
 
 git push origin main
 ```

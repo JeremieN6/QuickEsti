@@ -9,7 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Users;
 use App\Entity\Blog;
+use App\Entity\Client;
 use App\Entity\Plan;
+use App\Entity\Quote;
 use App\Entity\Subscription;
 use App\Entity\Invoice;
 
@@ -55,6 +57,10 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Contenu');
         yield MenuItem::linkToCrud('Articles de blog', 'fa fa-blog', Blog::class);
+
+        yield MenuItem::section('Devis & Clients');
+        yield MenuItem::linkToCrud('Clients', 'fa fa-users', Client::class);
+        yield MenuItem::linkToCrud('Devis', 'fa fa-file-invoice', Quote::class);
 
         yield MenuItem::section('Abonnements & Facturation');
         yield MenuItem::linkToCrud('Plans', 'fa fa-credit-card', Plan::class);

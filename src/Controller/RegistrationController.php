@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/inscription', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager, SendMailService $mail, JWTService $jwt): Response
     {
         $user = new Users();
@@ -51,9 +51,9 @@ class RegistrationController extends AbstractController
 
             // On envoie un mail (temporairement désactivé pour les tests)
             /*$mail->send(
-                'contact@quickesti.fr',
+                'no-reply-quickesti@sassify.fr',
                 $user->getEmail(),
-                'Activation de votre compte',
+                'Activation de votre compte QuickEsti',
                 'register',
                 [
                     'user' => $user,
@@ -128,9 +128,9 @@ class RegistrationController extends AbstractController
 
         // On envoie un mail
         $mail->send(
-            'no-reply@quickesti.fr',
+            'no-reply-quickesti@sassify.fr',
             $user->getEmail(),
-            'Activation de votre compte',
+            'Activation de votre compte QuickEsti',
             'register',
             [
                 'user' => $user,

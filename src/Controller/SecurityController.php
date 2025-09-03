@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
+    #[Route(path: '/connexion', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // if ($this->getUser()) {
@@ -74,7 +74,7 @@ class SecurityController extends AbstractController
 
                 //Envoie du mail
                 $mail->send(
-                    'no-reply@quickesti.fr',
+                    'no-reply-quickesti@sassify.fr',
                     $user->getEmail(),
                     'Réinitialisation de Mot de Passe',
                     'password_reset',
