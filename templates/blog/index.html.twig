@@ -110,7 +110,7 @@
                             <div class="mb-5 font-light text-gray-500 dark:text-gray-400 article-intro">{{article.intro | raw }}</div>
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-4">
-                                    <img class="w-7 h-7 rounded-full" src="{{ asset('assets/images/moi.webp') }}" alt="{{ article.auteur ? article.auteur : 'Auteur inconnu' }} avatar" />
+                                    <img class="w-7 h-7 rounded-full" src="{{ asset('assets/images/moi.webp') }}" alt="{{ article.auteur ? article.auteur : 'Auteur inconnu' }} avatar" loading="lazy" decoding="async" />
                                     <span class="font-medium dark:text-white">
                                         {{ article.auteur ? article.auteur : 'Auteur inconnu' }}
                                     </span>
