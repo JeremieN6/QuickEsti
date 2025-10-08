@@ -10,8 +10,19 @@ import './styles/app.css';
 // Import Vue.js
 import { createApp } from 'vue';
 
-// Import Flowbite
-import 'flowbite';
+// Import Flowbite dynamically only when needed to reduce initial JS execution
+function needsFlowbite() {
+	// If page includes data attributes or components that rely on Flowbite
+	return document.querySelector('[data-dropdown]') || document.querySelector('[data-collapse]') || document.querySelector('[data-modal]') || document.querySelector('[data-accordion]') || document.querySelector('[data-datepicker]');
+}
+
+if (typeof window !== 'undefined' && needsFlowbite()) {
+	import('flowbite').then(() => {
+		// Flowbite loaded
+	}).catch(err => {
+		console.warn('Flowbite dynamic import failed', err);
+	});
+}
 
 // Import main Vue component
 import App from './vue/App.vue';
