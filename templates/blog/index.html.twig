@@ -106,7 +106,7 @@
                                 </span>
                                 <span class="text-sm">Le {{ article.createdAt|date('d/m/Y') }}</span>
                             </div>
-                            <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><a href="#">{{article.titre}}</a></h2>
+                            <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><a href="{{ path('app_blog_post', {slug: article.slug}) }}" aria-label="Lire l'article {{ article.titre }}">{{article.titre}}</a></h2>
                             <div class="mb-5 font-light text-gray-500 dark:text-gray-400 article-intro">{{article.intro | raw }}</div>
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-4">

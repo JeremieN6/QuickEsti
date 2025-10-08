@@ -34,7 +34,7 @@
                         </select>
                     </div>
                     <p class="mt-1 text-sm text-gray-500">
-                        Pas de client ? <a href="#" id="add-client-btn" class="text-blue-600 hover:text-blue-800">Ajouter un nouveau client</a>
+                        Pas de client ? <a href="#" id="add-client-btn" class="text-blue-600 hover:text-blue-800" aria-label="Ajouter un nouveau client">Ajouter un nouveau client</a>
                     </p>
                 </div>
 
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             payload.postalCode = payload.postalCode.trim().slice(0, 10);
         }
 
-        fetch('{{ path('api_clients_create') }}', {
+    fetch('{{ path("api_clients_create") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Envoi de la requête
-        fetch('{{ path('api_quote_generate') }}', {
+    fetch('{{ path("api_quote_generate") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
