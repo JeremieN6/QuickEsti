@@ -13,9 +13,11 @@
     <!-- Preconnect to CDNs used for assets to speed up handshake -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <!-- Flowbite CSS (kept) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
-    <!-- Flowbite JS removed from head (loaded at end of body) to avoid render-blocking -->
+    <link rel="preconnect" href="https://flowbite.com" crossorigin>
+    <!-- Flowbite CSS: load non-blocking using preload + onload to avoid render-blocking (noscript fallback for no-JS) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" /></noscript>
+    <!-- Flowbite JS removed from head (loaded at end of body) to avoid render-blocking; will be deferred -->
 
         <script>document.documentElement.classList.add('js')</script>
 
@@ -79,15 +81,17 @@
         </div>
         {% endif %}
 
-        {% block body %}{% endblock %}
+        <main id="main-content" role="main">
+            {% block body %}{% endblock %}
+        </main>
 
         <!-- Footer -->
         {% include 'footer.html.twig' %}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
-    <!-- Flowbite JS (deferred by being at the end of body) -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <!-- Flowbite JS (deferred to avoid blocking parsing) -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js" defer></script>
 
     {# Removed taos: causes runtime errors on some DOM mutations (className not always a string) #}
 

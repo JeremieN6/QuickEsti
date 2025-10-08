@@ -1,6 +1,7 @@
 {
-  "build/app.css": "/build/app.css",
-  "build/app.js": "/build/app.js",
-  "build/runtime.js": "/build/runtime.js",
-  "build/vendors-node_modules_flowbite_lib_esm_index_js-node_modules_vue-loader_dist_exportHelper_js-n-f90527.js": "/build/vendors-node_modules_flowbite_lib_esm_index_js-node_modules_vue-loader_dist_exportHelper_js-n-f90527.js"
+  "build/app.css": "/build/app.af2e17b6.css",
+  "build/app.js": "/build/app.af1fffd7.js",
+  "build/runtime.js": "/build/runtime.c0fae792.js",
+  "build/315.135135c1.js": "/build/315.135135c1.js",
+  "build/771.13ab39eb.js": "/build/771.13ab39eb.js"
 }
