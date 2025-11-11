@@ -49,8 +49,5 @@ test*.json
 .env
 
 .specstory
-<<<<<<< HEAD
 .cursorindexingignore
-=======
-.cursorindexingignore
->>>>>>> 492e58e3ff5e110b0df344123896f4a6121b8002
+node_modules
